@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brief Incoming · PlanItEarth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --ink: #0D0F14; --paper: #F5F2EC; --sage: #3D6B4F; --sage-lt: #C8DDD0; --mist: #E8E4DC; --mid: #8A8880; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; }
+
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--ink); margin-bottom: 60px; display: block; }
+    .logo span { color: var(--sage); }
+
+    .success-icon { font-size: 80px; margin-bottom: 32px; animation: pop .6s cubic-bezier(.175,.885,.32,1.275); }
+    @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; line-height: 1.05; }
+    .sub { font-size: 18px; color: var(--mid); font-weight: 300; max-width: 480px; line-height: 1.6; margin-bottom: 48px; }
+
+    .steps { display: flex; gap: 20px; margin-bottom: 48px; flex-wrap: wrap; justify-content: center; }
+    .step { background: white; border-radius: 16px; padding: 20px 24px; text-align: left; max-width: 200px; border: 1.5px solid var(--mist); }
+    .step .num { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--sage); margin-bottom: 6px; }
+    .step p { font-size: 13px; color: var(--mid); font-weight: 300; line-height: 1.5; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--paper); padding: 14px 28px; border-radius: 100px; font-size: 15px; font-weight: 500; text-decoration: none; transition: background .2s; }
+    .btn:hover { background: var(--sage); }
+
+    .share-note { margin-top: 32px; font-size: 13px; color: var(--mid); }
+    .share-note a { color: var(--sage); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">PlanIt<span>Earth</span></a>
+
+  <div class="success-icon">📬</div>
+  <h1>Your brief is<br>on its way.</h1>
+  <p class="sub">We're generating your personalised Career Intelligence Brief right now. Check your inbox — it'll arrive within 60 seconds.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <p>Payment confirmed by Stripe</p>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <p>Your brief is being generated</p>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <p>PDF landing in your inbox now</p>
+    </div>
+  </div>
+
+  <a href="/" class="btn">← Back to PlanItEarth</a>
+
+  <p class="share-note">
+    Know someone who should get this? <a onclick="share()">Share PlanItEarth</a>
+  </p>
+
+  <script>
+    function share() {
+      const text = 'Just got my personalised AI career analysis from PlanItEarth. Highly recommend finding out where you stand:';
+      const url  = 'https://theplanitearth.com';
+      if (navigator.share) { navigator.share({ title: 'PlanItEarth', text, url }); }
+      else { navigator.clipboard.writeText(text + ' ' + url).then(() => alert('Link copied!')); }
+    }
+  </script>
+</body>
+</html>
