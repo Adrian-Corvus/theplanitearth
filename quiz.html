@@ -724,31 +724,24 @@
 
 <!-- ── SCREEN 5: PAYMENT ── -->
 <div class="screen" id="screen-payment">
-  <div class="payment-form-card">
-    <h2>Complete your order</h2>
-    <p class="sub">Your Career Intelligence Brief will be delivered to your email instantly.</p>
-
-    <div class="form-row">
-      <label for="p-name">Full name</label>
-      <input type="text" id="p-name" placeholder="Your name" />
+  <div class="input-card" style="max-width:480px">
+    <h2>Almost there</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:28px;line-height:1.6">
+      Enter your name and email — we'll send your Career Intelligence Brief here instantly after payment.
+    </p>
+    <div style="margin-bottom:18px">
+      <label class="field-label" for="p-name">Your name</label>
+      <input class="text-input" type="text" id="p-name" placeholder="Your full name" />
     </div>
-    <div class="form-row">
-      <label for="p-email">Email address</label>
-      <input type="email" id="p-email" placeholder="you@example.com" />
+    <div style="margin-bottom:24px">
+      <label class="field-label" for="p-email">Email address</label>
+      <input class="text-input" type="email" id="p-email" placeholder="you@example.com" />
     </div>
-
-    <div style="margin:24px 0 8px;padding:20px;background:var(--mist);border-radius:14px;text-align:center;font-size:14px;color:var(--mid)">
-      💳 Stripe payment form will load here<br>
-      <span style="font-size:12px">(Connect your Stripe account to activate checkout)</span>
-    </div>
-
-    <div class="total-row">
-      <span>Career Intelligence Brief</span>
-      <span>£12.00</span>
-    </div>
-
-    <button class="btn-pay" onclick="completePurchase()">Pay £12 & Get My Brief →</button>
-    <div class="stripe-note">🔒 Secured by Stripe · SSL encrypted</div>
+    <button class="btn-analyse" id="checkout-btn" onclick="completePurchase()">
+      Continue to Payment — £12 →
+    </button>
+    <div class="privacy-note" style="margin-top:12px">🔒 Secure checkout via Stripe · Instant PDF delivery</div>
+    <div id="checkout-error" style="margin-top:12px;font-size:13px;color:var(--red);display:none"></div>
   </div>
 </div>
 
@@ -1175,6 +1168,8 @@ function showResults() {
 }
 
 // ── PAYMENT ──
+const BACKEND_URL = 'https://theplanitearth-backend.vercel.app/'; // ← update after Vercel deploy
+
 function goToPayment() {
   setProgress(90, 'Complete your order', 'Step 5 of 5');
   showScreen('screen-payment');
@@ -1183,17 +1178,50 @@ function goToPayment() {
   }
 }
 
-function completePurchase() {
-  const name  = document.getElementById('p-name').value;
-  const email = document.getElementById('p-email').value;
-  if (!email || !email.includes('@')) {
-    alert('Please enter a valid email address.');
-    return;
+async function completePurchase() {
+  const name  = document.getElementById('p-name').value.trim();
+  const email = document.getElementById('p-email').value.trim();
+  const errEl = document.getElementById('checkout-error');
+  const btn   = document.getElementById('checkout-btn');
+
+  errEl.style.display = 'none';
+
+  if (!name) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = 'Redirecting to secure checkout...';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        answers:    state.answers,
+        scores:     state.scores,
+        archetype:  state.archetype,
+        profession: state.profession,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.url) throw new Error(data.error || 'Checkout failed');
+
+    // Redirect to Stripe hosted checkout page
+    window.location.href = data.url;
+
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = 'Something went wrong. Please try again or contact us at hello@theplanitearth.com';
+    errEl.style.display = 'block';
+    btn.textContent = 'Continue to Payment — £12 →';
+    btn.style.opacity = '1';
+    btn.disabled = false;
   }
-  // In production: trigger Stripe checkout here
-  document.getElementById('d-email').value = email;
-  showScreen('screen-delivery');
-  setProgress(100, 'Brief delivered!', '✓ Complete');
 }
 
 function confirmDelivery() {
@@ -1204,7 +1232,7 @@ function confirmDelivery() {
 // ── SHARE ──
 function shareResult() {
   const text = `I just found out I'm "${state.archetype.name || 'a Strategic Adapter'}" on PlanItEarth — my personalised AI career analysis. Find out yours:`;
-  const url  = 'https://planitearth.me/quiz.html';
+  const url  = 'https://theplanitearth.com/quiz.html';
   if (navigator.share) {
     navigator.share({ title: 'My Career Archetype — PlanItEarth', text, url });
   } else {
