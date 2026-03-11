@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Career Analysis · PlanItEarth</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
@@ -1562,7 +1564,7 @@ function renderQuestion(idx) {
     setTimeout(() => inp.focus(), 100);
   } else {
     // Multiple choice
-    const letters = ['A','B','C','D','E','F','G'];
+    const letters = ['A','B','C','D','E','F','G','H'];
     q.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
@@ -1571,6 +1573,31 @@ function renderQuestion(idx) {
       btn.onclick = () => selectOption(q.id, opt.value, btn);
       container.appendChild(btn);
     });
+
+    // Add "Other" option to questions that benefit from it (not already having one)
+    const noOther = ['profession_cat','industry','concern','top_priority','timeline','biggest_worry'];
+    if (!noOther.includes(q.id)) {
+      const otherBtn = document.createElement('button');
+      otherBtn.className = 'option-btn' + (state.answers[q.id] === 'other_typed' ? ' selected' : '');
+      otherBtn.innerHTML = `<span class="opt-letter">${letters[q.options.length]}</span>Other — I'll describe it`;
+      otherBtn.onclick = () => selectOption(q.id, 'other_typed', otherBtn);
+      container.appendChild(otherBtn);
+
+      // Hidden text input for "other"
+      const otherBox = document.createElement('div');
+      otherBox.id = 'other-input-box';
+      otherBox.style.cssText = 'display:none;margin-top:8px';
+      const otherInp = document.createElement('input');
+      otherInp.type = 'text';
+      otherInp.className = 'text-input';
+      otherInp.placeholder = 'Describe your answer…';
+      otherInp.value = (state.answers[q.id] === 'other_typed' ? '' : '');
+      otherInp.oninput = () => { state.answers[q.id] = otherInp.value.trim() || 'other_typed'; };
+      if (state.answers[q.id] === 'other_typed') otherBox.style.display = 'block';
+      otherBox.appendChild(otherInp);
+      container.appendChild(otherBox);
+    }
+
     nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
   }
 
@@ -1579,9 +1606,21 @@ function renderQuestion(idx) {
 }
 
 function selectOption(qId, value, btn) {
-  state.answers[qId] = value;
   document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+
+  // Handle "other" — show inline text input instead of auto-advancing
+  const otherBox = document.getElementById('other-input-box');
+  if (value === 'other_typed') {
+    state.answers[qId] = '';
+    if (otherBox) { otherBox.style.display = 'block'; otherBox.querySelector('input').focus(); }
+    document.getElementById('quiz-next').classList.add('enabled');
+    return;
+  } else {
+    if (otherBox) otherBox.style.display = 'none';
+  }
+
+  state.answers[qId] = value;
   document.getElementById('quiz-next').classList.add('enabled');
   // Auto-advance after short delay for multiple choice
   setTimeout(() => quizNext(), 300);

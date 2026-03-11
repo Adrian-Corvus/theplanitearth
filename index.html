@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlanItEarth — Know Your Career Future</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="description" content="Find out exactly how AI will change your career — and what to do about it. Personalised Career Intelligence Brief for any profession." />
+  <meta property="og:title" content="PlanItEarth — Know Your Career Future" />
+  <meta property="og:description" content="Not a fear score. A real, personalised intelligence brief built for your profession." />
+  <meta property="og:image" content="https://theplanitearth.com/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
@@ -41,8 +47,10 @@
       font-family: 'Syne', sans-serif;
       font-weight: 800; font-size: 20px; letter-spacing: -0.5px;
       color: var(--ink); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
     }
     .logo span { color: var(--sage); }
+    .logo-img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; }
     nav a { color: var(--mid); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
     nav a:hover { color: var(--ink); }
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -379,14 +387,64 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+      /* Nav */
+      nav { padding: 14px 20px; }
+      .nav-links { gap: 12px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .logo-img { width: 28px; height: 28px; }
+      .logo { font-size: 17px; }
+
+      /* Hero */
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 90px 20px 48px;
+        gap: 0;
+        text-align: center;
+      }
       .hero-card { display: none; }
-      .steps-grid, .methods-grid, .archetypes-grid { grid-template-columns: 1fr; }
-      .report-grid { grid-template-columns: 1fr; }
-      .proof-grid { grid-template-columns: 1fr; }
-      .section { padding: 64px 24px; }
-      nav { padding: 16px 24px; }
-      .nav-links { gap: 16px; }
+      .hero-left { display: flex; flex-direction: column; align-items: center; }
+      .hero-eyebrow { font-size: 11px; }
+      h1 { font-size: clamp(36px, 10vw, 56px); }
+      .hero-sub { font-size: 15px; max-width: 100%; }
+      .hero-actions { flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; text-align: center; }
+      .hero-trust { justify-content: center; }
+
+      /* Sections */
+      .section { padding: 48px 20px; }
+      .section-header { margin-bottom: 32px; }
+
+      /* Steps */
+      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+
+      /* Methods */
+      .methods-grid { grid-template-columns: 1fr; gap: 12px; }
+      .method-item { flex-direction: row; text-align: left; padding: 20px; }
+
+      /* Archetypes */
+      .archetypes-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .archetype-card { padding: 20px 16px; }
+
+      /* Report grid */
+      .report-grid { grid-template-columns: 1fr; gap: 24px; }
+
+      /* Proof */
+      .proof-grid { grid-template-columns: 1fr; gap: 16px; }
+
+      /* CTA section */
+      .cta-section { padding: 48px 20px; text-align: center; }
+      .cta-section h2 { font-size: clamp(26px, 6vw, 40px); }
+
+      /* Footer */
+      footer { padding: 40px 20px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 36px; letter-spacing: -1.5px; }
+      .archetypes-grid { grid-template-columns: 1fr; }
+      nav { padding: 12px 16px; }
+      .nav-cta { padding: 8px 16px; font-size: 13px !important; }
     }
   </style>
 </head>
@@ -394,7 +452,10 @@
 
 <!-- NAV -->
 <nav>
-  <a href="/" class="logo">PlanIt<span>Earth</span></a>
+  <a href="/" class="logo">
+    <img src="ThePlanItEarthLogoB.png" alt="PlanItEarth" class="logo-img" />
+    PlanIt<span>Earth</span>
+  </a>
   <div class="nav-links">
     <a href="#how-it-works">How it works</a>
     <a href="#report">The Report</a>
