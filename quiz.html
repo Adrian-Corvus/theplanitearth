@@ -686,17 +686,17 @@
   <p class="screen-sub">All three paths lead to the same place — your personalised Career Intelligence Brief.</p>
 
   <div class="method-cards">
-    <div class="method-btn" onclick="selectMethod('quiz')">
+    <div class="method-btn" onclick="selectMethod('quiz', this)">
       <div class="icon">🎯</div>
       <h3>Quick Quiz</h3>
       <p>30 questions, 5 minutes max. No login needed.</p>
     </div>
-    <div class="method-btn" onclick="selectMethod('linkedin')">
+    <div class="method-btn" onclick="selectMethod('linkedin', this)">
       <div class="icon">💼</div>
       <h3>LinkedIn URL</h3>
       <p>Paste your profile link for a richer analysis.</p>
     </div>
-    <div class="method-btn" onclick="selectMethod('cv')">
+    <div class="method-btn" onclick="selectMethod('cv', this)">
       <div class="icon">📄</div>
       <h3>Upload CV</h3>
       <p>Most accurate. Upload your CV file.</p>
@@ -1578,10 +1578,10 @@ function showScreen(id) {
 }
 
 // ── METHOD SELECTION ──
-function selectMethod(method) {
+function selectMethod(method, el) {
   state.method = method;
   document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
+  if (el) el.classList.add('selected');
 
   setTimeout(() => {
     if (method === 'quiz') {
@@ -2197,9 +2197,9 @@ function shareResult() {
 (function init() {
   const params = new URLSearchParams(window.location.search);
   const mode   = params.get('mode');
-  if (mode === 'linkedin') { setTimeout(() => selectMethod('linkedin'), 50); }
-  else if (mode === 'cv')  { setTimeout(() => selectMethod('cv'), 50); }
-  else if (mode === 'quiz'){ setTimeout(() => selectMethod('quiz'), 50); }
+  if (mode === 'linkedin') { setTimeout(() => selectMethod('linkedin', null), 50); }
+  else if (mode === 'cv')  { setTimeout(() => selectMethod('cv', null), 50); }
+  else if (mode === 'quiz'){ setTimeout(() => selectMethod('quiz', null), 50); }
 })();
 </script>
 
