@@ -492,14 +492,171 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      .method-cards { grid-template-columns: 1fr; }
-      .results-body { grid-template-columns: 1fr; padding: 40px 24px; }
-      .results-hero { padding: 40px 24px 60px; }
-      .tasks-grid { grid-template-columns: 1fr; }
+      /* Topbar */
+      .topbar { padding: 14px 16px; }
+      .progress-wrap { max-width: 140px; margin: 0 10px; }
+      .topbar-right { display: none; }
+
+      /* Method picker */
+      #screen-method { padding: 90px 20px 40px; }
+      .method-cards { grid-template-columns: 1fr; max-width: 100%; gap: 12px; }
+      .method-btn { padding: 24px 20px; flex-direction: row; text-align: left; gap: 16px; }
+      .method-btn .icon { font-size: 28px; flex-shrink: 0; }
+
+      /* Quiz */
+      #screen-quiz { padding: 90px 16px 40px; }
+      .quiz-wrap { max-width: 100%; }
+      .question-text { font-size: clamp(18px, 5vw, 26px); margin-bottom: 24px; }
+      .option-btn { padding: 14px 16px; font-size: 14px; gap: 12px; }
+      .option-btn:hover { transform: none; }
+      .opt-letter { width: 28px; height: 28px; font-size: 12px; }
+      .quiz-nav { margin-top: 24px; }
+      .btn-next { padding: 13px 22px; font-size: 14px; }
+      .screen-eyebrow { font-size: 11px; }
+
+      /* Input screens */
+      #screen-linkedin, #screen-cv, #screen-payment { padding: 90px 16px 40px; }
+      .input-card { padding: 32px 24px; border-radius: 20px; }
+
+      /* Loading */
+      #screen-loading { padding: 90px 20px 40px; }
+
+      /* Results */
+      #screen-results { padding: 80px 0 0; }
+      .results-hero { padding: 32px 20px 48px; }
+      .results-name { font-size: clamp(26px, 7vw, 40px); }
+      .results-profession { font-size: 15px; margin-bottom: 28px; }
+      .archetype-display { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 20px; }
+      .archetype-display .arch-emoji { font-size: 36px; }
+      .archetype-display .arch-name { font-size: 20px; }
+      .results-body { grid-template-columns: 1fr; padding: 24px 16px 40px; gap: 20px; }
+      .metrics-card { padding: 24px 20px; border-radius: 16px; }
+      .tasks-grid { grid-template-columns: 1fr; gap: 12px; }
       .payment-sidebar { position: static; }
-      .topbar { padding: 16px 20px; }
-      .progress-wrap { max-width: 180px; margin: 0 16px; }
+
+      /* Brief hook card */
+      .brief-hook { margin: 0 16px 20px; }
+      .hook-preview-grid { grid-template-columns: 1fr; gap: 8px; }
+
+      /* Payment */
+      .payment-card { padding: 28px 20px; }
     }
+
+    @media (max-width: 400px) {
+      .method-btn { padding: 18px 16px; }
+      .question-text { font-size: 17px; }
+      .results-name { font-size: 24px; }
+    }
+
+    /* ── BRIEF HOOK (results preview) ── */
+    .brief-hook {
+      background: var(--ink); border-radius: 20px;
+      overflow: hidden; margin-bottom: 24px;
+      box-shadow: 0 8px 40px rgba(13,15,20,.18);
+    }
+    .hook-header {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hook-header-left { flex: 1; }
+    .hook-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 6px;
+    }
+    .hook-title {
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
+      color: white; letter-spacing: -0.5px; line-height: 1.2;
+    }
+    .hook-badge {
+      background: var(--sage); color: white; font-size: 10px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 100px; white-space: nowrap;
+      margin-left: 16px;
+    }
+    .hook-preview-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 20px 28px;
+    }
+    .hook-stat {
+      background: rgba(255,255,255,.05); border-radius: 12px;
+      padding: 16px 18px; border: 1px solid rgba(255,255,255,.07);
+    }
+    .hook-stat-val {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .hook-stat-label {
+      font-size: 11px; color: rgba(255,255,255,.45); font-weight: 400; line-height: 1.3;
+    }
+    .hook-teaser {
+      padding: 0 28px 20px;
+      font-size: 13px; color: rgba(255,255,255,.5);
+      font-weight: 300; line-height: 1.6;
+    }
+    .hook-blurred-section {
+      margin: 0 28px 28px;
+      border-radius: 12px; overflow: hidden;
+      position: relative;
+    }
+    .hook-blurred-inner {
+      padding: 18px 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      filter: blur(5px);
+      user-select: none; pointer-events: none;
+    }
+    .hook-blurred-inner p {
+      font-size: 12px; color: rgba(255,255,255,.6);
+      margin-bottom: 8px; line-height: 1.5;
+    }
+    .hook-blurred-inner p:last-child { margin-bottom: 0; }
+    .hook-lock-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(13,15,20,.6);
+      border-radius: 12px;
+      backdrop-filter: blur(2px);
+    }
+    .hook-lock-icon { font-size: 22px; margin-bottom: 6px; }
+    .hook-lock-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,.5);
+    }
+    .hook-cta-bar {
+      padding: 20px 28px;
+      background: rgba(61,107,79,.15);
+      border-top: 1px solid rgba(61,107,79,.2);
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hook-cta-text { color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.4; }
+    .hook-cta-text strong { color: white; display: block; font-size: 14px; margin-bottom: 2px; }
+    .btn-hook-buy {
+      background: var(--sage); color: white;
+      padding: 12px 24px; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; white-space: nowrap;
+      transition: background .2s, transform .15s;
+    }
+    .btn-hook-buy:hover { background: #2d5239; transform: translateY(-1px); }
+
+    /* Trust strip */
+    .trust-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; padding: 16px 24px;
+      background: white; border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(13,15,20,.05);
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500; color: var(--mid);
+    }
+    .trust-item span { font-size: 16px; }
   </style>
 </head>
 <body>
@@ -529,7 +686,7 @@
     <div class="method-btn" onclick="selectMethod('quiz')">
       <div class="icon">🎯</div>
       <h3>Quick Quiz</h3>
-      <p>5 questions, 3 minutes. No login needed.</p>
+      <p>30 questions, 5 minutes max. No login needed.</p>
     </div>
     <div class="method-btn" onclick="selectMethod('linkedin')">
       <div class="icon">💼</div>
@@ -614,6 +771,7 @@
 <!-- ── SCREEN 4: RESULTS ── -->
 <div class="screen" id="screen-results">
 
+  <!-- Dark hero -->
   <div class="results-hero">
     <div class="results-eyebrow">Your Career Intelligence Report</div>
     <div class="results-name" id="r-name">Your Analysis</div>
@@ -623,7 +781,7 @@
       <div>
         <div class="arch-label">Your Career Archetype</div>
         <div class="arch-name" id="r-arch-name">Strategic Adapter</div>
-        <div class="arch-desc" id="r-arch-desc">Your role is evolving. Not disappearing — shifting. Your brief tells you exactly how to lead that change.</div>
+        <div class="arch-desc" id="r-arch-desc">Your role is evolving. Not disappearing — shifting.</div>
       </div>
     </div>
   </div>
@@ -631,13 +789,21 @@
   <div class="results-body">
     <div>
 
-      <!-- Metrics -->
+      <!-- Trust strip -->
+      <div class="trust-strip">
+        <div class="trust-item"><span>🔬</span> Based on WEF & McKinsey data</div>
+        <div class="trust-item"><span>🎯</span> Specific to your job title</div>
+        <div class="trust-item"><span>⚡</span> AI-generated in real time</div>
+        <div class="trust-item"><span>🔒</span> Stripe secured</div>
+      </div>
+
+      <!-- Metrics card -->
       <div class="metrics-card">
         <div class="card-title">Your Career Dashboard</div>
         <div id="metrics-list"></div>
       </div>
 
-      <!-- Tasks preview (free) -->
+      <!-- Task preview -->
       <div class="metrics-card">
         <div class="card-title">Task-Level Preview</div>
         <div class="tasks-grid">
@@ -652,40 +818,62 @@
         </div>
       </div>
 
-      <!-- Skill roadmap (locked) -->
-      <div class="metrics-card">
-        <div class="card-title">Your Skill Roadmap</div>
-        <div class="paid-preview">
-          <div class="paid-preview-inner">
-            <p style="margin-bottom:12px">Step 1: Learn AI-assisted tools in your field</p>
-            <p style="margin-bottom:12px">Step 2: Develop strategic judgment skills</p>
-            <p style="margin-bottom:12px">Step 3: Build cross-functional communication</p>
-            <p>Step 4: Explore adjacent specialist paths</p>
+      <!-- BRIEF HOOK — dark card, no API call -->
+      <div class="brief-hook">
+        <div class="hook-header">
+          <div class="hook-header-left">
+            <div class="hook-eyebrow">Inside Your Full Brief</div>
+            <div class="hook-title" id="hook-title">Your complete Career<br>Intelligence Brief</div>
           </div>
-          <div class="paid-overlay">
-            <div class="lock">🔒</div>
-            <h4>Full roadmap in your brief</h4>
-            <p>6 prioritised steps with specific course links, timelines, and income impact estimates.</p>
-            <button class="btn-buy" onclick="goToPayment()" style="max-width:200px;font-size:14px;padding:14px">Get Full Brief — £12</button>
+          <div class="hook-badge">4 Pages</div>
+        </div>
+
+        <!-- Live score teasers (populated from quiz answers, no LLM) -->
+        <div class="hook-preview-grid">
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-1" style="color:#C8DDD0">—</div>
+            <div class="hook-stat-label">Augmentation Potential</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-2" style="color:#D4841A">—</div>
+            <div class="hook-stat-label">Income Protection Score</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-3" style="color:#7B5EA7">—</div>
+            <div class="hook-stat-label">Skill Evolution Pressure</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-4" style="color:#C0392B">—</div>
+            <div class="hook-stat-label">Automation Exposure</div>
           </div>
         </div>
-      </div>
 
-      <!-- Horizon outlook (locked) -->
-      <div class="metrics-card">
-        <div class="card-title">1, 3 & 5-Year Outlook</div>
-        <div class="paid-preview">
-          <div class="paid-preview-inner">
-            <p>12 months: Moderate stability with early pressure on...</p>
-            <p>3 years: Structural shift in...</p>
-            <p>5 years: Professionals who...</p>
+        <div class="hook-teaser" id="hook-teaser">
+          Your brief includes a full task-level breakdown, a 6-step skill roadmap
+          specific to your role, and 1, 3 &amp; 5-year horizon forecasts — all generated
+          by AI trained on WEF, McKinsey, and O*NET labour data.
+        </div>
+
+        <!-- Blurred locked section -->
+        <div class="hook-blurred-section">
+          <div class="hook-blurred-inner">
+            <p>→ Your 6-step prioritised skill roadmap with timelines</p>
+            <p>→ 12-month, 3-year, and 5-year income trajectory</p>
+            <p>→ The specific AI tools your profession should learn first</p>
+            <p>→ Executive summary written for your exact job title</p>
           </div>
-          <div class="paid-overlay">
-            <div class="lock">🔒</div>
-            <h4>Horizon outlook in your brief</h4>
-            <p>Detailed 1, 3, and 5-year forecasts with income trajectory and sector-specific trends.</p>
-            <button class="btn-buy" onclick="goToPayment()" style="max-width:200px;font-size:14px;padding:14px">Unlock — £12</button>
+          <div class="hook-lock-overlay">
+            <div class="hook-lock-icon">🔒</div>
+            <div class="hook-lock-label">Unlocked in your brief</div>
           </div>
+        </div>
+
+        <div class="hook-cta-bar">
+          <div class="hook-cta-text">
+            <strong>Get the full Career Intelligence Brief</strong>
+            Personalised PDF · Delivered instantly to your inbox
+          </div>
+          <button class="btn-hook-buy" onclick="goToPayment()">Get My Brief — £12 →</button>
         </div>
       </div>
 
@@ -702,22 +890,18 @@
           <div class="pay-item"><div class="pay-check">✓</div>Full 6-dimension dashboard</div>
           <div class="pay-item"><div class="pay-check">✓</div>Complete task-level breakdown</div>
           <div class="pay-item"><div class="pay-check">✓</div>6-step prioritised skill roadmap</div>
-          <div class="pay-item"><div class="pay-check">✓</div>1, 3 & 5-year horizon outlook</div>
+          <div class="pay-item"><div class="pay-check">✓</div>1, 3 &amp; 5-year horizon outlook</div>
           <div class="pay-item"><div class="pay-check">✓</div>Income trajectory estimate</div>
-          <div class="pay-item"><div class="pay-check">✓</div>Sources & methodology</div>
+          <div class="pay-item"><div class="pay-check">✓</div>AI-written for your exact role</div>
         </div>
-        <button class="btn-buy" onclick="goToPayment()">
-          Get My Brief →
-        </button>
+        <button class="btn-buy" onclick="goToPayment()">Get My Brief →</button>
         <div class="secure-note">🔒 Secure checkout · Instant delivery</div>
       </div>
 
       <div class="share-card">
         <h4>Know someone who should see this?</h4>
         <p>Share the free preview. Help them plan ahead too.</p>
-        <button class="share-btn" onclick="shareResult()">
-          📤 Share my archetype
-        </button>
+        <button class="share-btn" onclick="shareResult()">📤 Share my archetype</button>
       </div>
     </div>
   </div>
@@ -1535,6 +1719,20 @@ function showResults() {
     `<div class="task-item"><span>⚠</span>${t}</div>`).join('');
   ts.innerHTML = taskData.safe.slice(0,3).map(t =>
     `<div class="task-item"><span>✦</span>${t}</div>`).join('');
+
+  // ── Populate hook card (no API call) ──
+  document.getElementById('hook-score-1').textContent = Math.round(scores.augmentation) + '/100';
+  document.getElementById('hook-score-2').textContent = Math.round(scores.income) + '/100';
+  document.getElementById('hook-score-3').textContent = Math.round(scores.skill_pressure) + '/100';
+  document.getElementById('hook-score-4').textContent = Math.round(scores.automation) + '/100';
+  document.getElementById('hook-title').innerHTML =
+    `Your <em style="font-style:normal;color:var(--sage-lt)">${archetype.name}</em><br>Career Intelligence Brief`;
+
+  const jobTitle = state.answers.job_title || profLabel;
+  document.getElementById('hook-teaser').textContent =
+    `As a ${jobTitle}, your brief includes a full task-level breakdown, a 6-step skill roadmap ` +
+    `specific to your role, and 1, 3 & 5-year horizon forecasts — all generated by AI trained on ` +
+    `WEF, McKinsey, and O*NET labour data.`;
 
   setProgress(100, 'Analysis complete', 'Step 4 of 4');
   showScreen('screen-results');
