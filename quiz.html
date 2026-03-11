@@ -785,6 +785,10 @@
   </div>
   <div class="loading-stage" id="loading-stage">Analysing your profile</div>
   <div class="loading-sub">Please wait a moment<span class="loading-dots" id="loading-dots">...</span></div>
+  <div id="debug-log" style="margin-top:24px;max-width:480px;width:90%;font-size:11px;font-family:monospace;color:#888;text-align:left;line-height:1.8;background:#f5f5f5;padding:12px 16px;border-radius:8px;display:none"></div>
+  <button id="debug-skip" onclick="debugSkip()" style="display:none;margin-top:16px;padding:10px 24px;background:var(--sage);color:white;border:none;border-radius:100px;font-size:13px;cursor:pointer">
+    Skip — Show My Results Anyway →
+  </button>
 </div>
 
 <!-- ── SCREEN 4: RESULTS ── -->
@@ -1813,6 +1817,24 @@ async function extractTextFromFile(file) {
   });
 }
 
+// ── DEBUG HELPERS ──
+function debugLog(msg) {
+  const el = document.getElementById('debug-log');
+  const sk = document.getElementById('debug-skip');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML += new Date().toISOString().slice(11,19) + '  ' + msg + '<br>';
+  // Show skip button after 5s of being on the loading screen
+  if (sk) setTimeout(() => { sk.style.display = 'inline-block'; }, 5000);
+}
+
+function debugSkip() {
+  if (!state.answers.profession_cat) {
+    state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+  }
+  showResults();
+}
+
 // ── LINKEDIN ANALYSIS (URL-based) ──
 async function startLinkedInAnalysis() {
   const url   = document.getElementById('li-url').value.trim();
@@ -1835,33 +1857,40 @@ async function startLinkedInAnalysis() {
   showScreen('screen-loading');
   startLoadingMessages();
 
-  const liFallback = () => {
+  debugLog('Starting LinkedIn analysis for: ' + url);
+
+  const liFallback = (reason) => {
+    debugLog('FALLBACK: ' + (reason || 'unknown'));
     if (!state.answers.profession_cat) {
       state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
     }
     state.cvQualityIssues = ['LinkedIn profile could not be read — brief will use general defaults'];
     showResults();
   };
-  const liTimer = setTimeout(liFallback, 12000);
+  const liTimer = setTimeout(() => liFallback('12s timeout hit'), 12000);
 
   try {
+    debugLog('Calling backend /api/parse-input...');
     const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'linkedin', url, name }),
       signal: AbortSignal.timeout(11000),
     });
+    debugLog('Backend responded: HTTP ' + res.status);
     clearTimeout(liTimer);
     const data = await res.json();
+    debugLog('Parsed JSON: ' + JSON.stringify(data).slice(0, 120));
     if (!res.ok) throw new Error(data.error || 'Could not read profile');
     applyParsedData(data.data);
     state.cvQualityIssues     = data.data.cv_quality_issues || [];
     state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
+    debugLog('Success — showing results');
     showResults();
   } catch (err) {
     clearTimeout(liTimer);
-    console.error('LinkedIn error:', err.message);
-    liFallback();
+    debugLog('ERROR: ' + err.message);
+    liFallback(err.message);
   }
 }
 
@@ -1891,17 +1920,21 @@ async function startCVAnalysis() {
     state.cvQualityIssues = ['CV could not be fully parsed — brief will use general defaults'];
     showResults();
   };
-  const cvTimer = setTimeout(cvFallback, 15000);
+  const cvTimer = setTimeout(() => cvFallback('15s timeout hit'), 15000);
 
   try {
+    debugLog('Extracting text from file: ' + file.name + ' (' + file.type + ')');
     const cvText = await extractTextFromFile(file);
+    debugLog('Extracted ' + (cvText ? cvText.length : 0) + ' chars');
 
     if (!cvText || cvText.trim().length < 50) {
+      debugLog('Text too short — fallback');
       clearTimeout(cvTimer);
-      cvFallback(); return;
+      cvFallback('text too short'); return;
     }
 
     setProgress(50, 'Analysing your CV…', 'Step 2 of 4');
+    debugLog('Calling backend /api/parse-input...');
 
     const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
       method: 'POST',
@@ -1909,17 +1942,20 @@ async function startCVAnalysis() {
       body: JSON.stringify({ type: 'cv', content: cvText, name, filename: file.name }),
       signal: AbortSignal.timeout(14000),
     });
+    debugLog('Backend responded: HTTP ' + res.status);
     clearTimeout(cvTimer);
     const data = await res.json();
+    debugLog('Parsed JSON: ' + JSON.stringify(data).slice(0, 120));
     if (!res.ok) throw new Error(data.error || 'Analysis failed');
 
     applyParsedData(data.data);
     state.cvQualityIssues     = data.data.cv_quality_issues || [];
     state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
+    debugLog('Success — showing results');
     showResults();
   } catch (err) {
     clearTimeout(cvTimer);
-    console.error('CV error:', err.message);
+    debugLog('ERROR: ' + err.message);
     setTimeout(() => {
       if (!state.answers.profession_cat) {
         state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
