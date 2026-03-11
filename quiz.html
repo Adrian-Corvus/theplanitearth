@@ -1835,27 +1835,33 @@ async function startLinkedInAnalysis() {
   showScreen('screen-loading');
   startLoadingMessages();
 
+  const liFallback = () => {
+    if (!state.answers.profession_cat) {
+      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    }
+    state.cvQualityIssues = ['LinkedIn profile could not be read — brief will use general defaults'];
+    showResults();
+  };
+  const liTimer = setTimeout(liFallback, 12000);
+
   try {
-    const res  = await fetch(`${BACKEND_URL}/api/parse-input`, {
+    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'linkedin', url, name }),
+      signal: AbortSignal.timeout(11000),
     });
+    clearTimeout(liTimer);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Could not read profile');
-
     applyParsedData(data.data);
     state.cvQualityIssues     = data.data.cv_quality_issues || [];
     state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
     showResults();
   } catch (err) {
-    console.error('LinkedIn error:', err);
-    // Graceful fallback — still show results with defaults
-    if (!state.answers.profession_cat) {
-      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
-    }
-    state.cvQualityIssues = ['Could not automatically read your profile — consider the quiz for the most accurate analysis'];
-    showResults();
+    clearTimeout(liTimer);
+    console.error('LinkedIn error:', err.message);
+    liFallback();
   }
 }
 
@@ -1878,12 +1884,21 @@ async function startCVAnalysis() {
   showScreen('screen-loading');
   startLoadingMessages();
 
+  const cvFallback = () => {
+    if (!state.answers.profession_cat) {
+      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    }
+    state.cvQualityIssues = ['CV could not be fully parsed — brief will use general defaults'];
+    showResults();
+  };
+  const cvTimer = setTimeout(cvFallback, 15000);
+
   try {
-    // Extract text client-side first — avoids sending large binary to API
     const cvText = await extractTextFromFile(file);
 
     if (!cvText || cvText.trim().length < 50) {
-      throw new Error('Could not extract readable text from your CV. Please try a .txt or copy-paste version.');
+      clearTimeout(cvTimer);
+      cvFallback(); return;
     }
 
     setProgress(50, 'Analysing your CV…', 'Step 2 of 4');
@@ -1892,7 +1907,9 @@ async function startCVAnalysis() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'cv', content: cvText, name, filename: file.name }),
+      signal: AbortSignal.timeout(14000),
     });
+    clearTimeout(cvTimer);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Analysis failed');
 
@@ -1901,9 +1918,8 @@ async function startCVAnalysis() {
     state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
     showResults();
   } catch (err) {
+    clearTimeout(cvTimer);
     console.error('CV error:', err.message);
-    // Show error on the loading screen briefly then fall back to results
-    document.getElementById('loading-stage').textContent = err.message.includes('extract') ? err.message : 'Analysis complete';
     setTimeout(() => {
       if (!state.answers.profession_cat) {
         state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
