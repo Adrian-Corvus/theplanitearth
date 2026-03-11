@@ -722,26 +722,29 @@
 
 <!-- ── SCREEN 2B: LINKEDIN ── -->
 <div class="screen" id="screen-linkedin">
-  <div class="input-card" style="max-width:560px">
-    <h2>Paste Your LinkedIn Profile</h2>
+  <div class="input-card" style="max-width:520px">
+    <h2>Your LinkedIn Profile</h2>
     <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
-      Go to your LinkedIn profile → select all text (Ctrl+A / Cmd+A) → copy and paste it below. We use it only to generate your brief.
+      Paste your LinkedIn profile URL below. Make sure your profile is set to <strong style="color:var(--ink)">public</strong> in your LinkedIn privacy settings.
     </p>
-    <div style="margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
-      <label class="field-label" style="margin:0" for="li-text">Your LinkedIn profile text</label>
-      <span id="li-char-count" style="font-size:11px;color:var(--mid)">0 characters</span>
+    <label class="field-label" for="li-url">LinkedIn Profile URL</label>
+    <input class="text-input" id="li-url" type="url"
+      placeholder="https://linkedin.com/in/yourname"
+      oninput="onLiUrlInput(this.value)" />
+    <div id="li-url-hint" style="display:none;font-size:12px;color:var(--amber);margin-top:6px">
+      URL should look like: linkedin.com/in/your-name
     </div>
-    <textarea id="li-text" class="text-input" rows="8"
-      placeholder="Paste your full LinkedIn profile text here — headline, about, experience, skills..."
-      style="resize:vertical;line-height:1.5;font-size:14px"
-      oninput="document.getElementById('li-char-count').textContent=this.value.length+' characters';document.getElementById('li-next').classList.toggle('enabled',this.value.trim().length>100)"></textarea>
     <label class="field-label" style="margin-top:18px" for="li-name">Your name (for the brief)</label>
     <input class="text-input" id="li-name" type="text" placeholder="Your name" />
-    <button class="btn-analyse" id="li-next" onclick="startLinkedInAnalysis()" style="opacity:.4;pointer-events:none">
+    <div style="margin-top:18px;padding:14px 16px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
+      <strong style="color:var(--ink)">Make your profile public first:</strong><br>
+      LinkedIn → Me → Settings &amp; Privacy → Visibility → Profile visibility → <em>Public</em>
+    </div>
+    <button class="btn-analyse" id="li-next" onclick="startLinkedInAnalysis()" style="opacity:.4;pointer-events:none;margin-top:20px">
       Analyse My LinkedIn →
     </button>
-    <div class="privacy-note" style="margin-top:12px">🔒 Your text is processed securely. Never stored on our servers.</div>
-    <div id="li-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
+    <div class="privacy-note" style="margin-top:12px">🔒 We only read your public profile. Nothing is stored.</div>
+    <div id="li-error" style="display:none;margin-top:10px;font-size:13px;color:var(--red)"></div>
   </div>
 </div>
 
@@ -1744,60 +1747,116 @@ function handleDrop(e) {
 }
 
 // ── READ FILE AS TEXT ──
-async function readFileText(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = () => resolve('');
-    // For PDFs and DOCX we send as base64 and let backend parse
-    // For TXT we read directly
-    if (file.type === 'text/plain') {
-      reader.readAsText(file);
-    } else {
-      reader.readAsDataURL(file);
+function onLiUrlInput(val) {
+  const ok = val.trim().includes('linkedin.com/in/');
+  const btn = document.getElementById('li-next');
+  btn.style.opacity = ok ? '1' : '0.4';
+  btn.style.pointerEvents = ok ? 'all' : 'none';
+  const hint = document.getElementById('li-url-hint');
+  if (hint) hint.style.display = val && !ok ? 'block' : 'none';
+}
+
+// ── EXTRACT TEXT FROM CV FILE ──
+async function extractTextFromFile(file) {
+  // TXT — read directly
+  if (file.type === 'text/plain') {
+    return new Promise((resolve) => {
+      const r = new FileReader();
+      r.onload = e => resolve(e.target.result.slice(0, 8000));
+      r.onerror = () => resolve('');
+      r.readAsText(file);
+    });
+  }
+
+  // PDF — use PDF.js to extract text client-side
+  if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      // Dynamically load PDF.js from CDN
+      if (!window.pdfjsLib) {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          s.onload = resolve; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+      const pdf  = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = '';
+      for (let i = 1; i <= Math.min(pdf.numPages, 5); i++) {
+        const page    = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(s => s.str).join(' ') + '
+';
+      }
+      return text.slice(0, 8000);
+    } catch (err) {
+      console.error('PDF.js error:', err);
+      return '';
     }
+  }
+
+  // DOCX / other — read as text and hope for the best
+  return new Promise((resolve) => {
+    const r = new FileReader();
+    r.onload = e => {
+      // Strip binary noise, keep printable ASCII
+      const raw = e.target.result || '';
+      const clean = typeof raw === 'string'
+        ? raw.replace(/[^ -~
+]/g, ' ').replace(/\s+/g, ' ').slice(0, 8000)
+        : '';
+      resolve(clean);
+    };
+    r.onerror = () => resolve('');
+    r.readAsText(file, 'utf-8');
   });
 }
 
-// ── LINKEDIN ANALYSIS ──
+// ── LINKEDIN ANALYSIS (URL-based) ──
 async function startLinkedInAnalysis() {
-  const text = document.getElementById('li-text').value.trim();
-  const name = document.getElementById('li-name').value.trim();
+  const url   = document.getElementById('li-url').value.trim();
+  const name  = document.getElementById('li-name').value.trim();
   const errEl = document.getElementById('li-error');
   const btn   = document.getElementById('li-next');
 
-  if (!text || text.length < 100) {
-    errEl.textContent = 'Please paste more of your LinkedIn profile — at least the headline, About, and one experience entry.';
+  if (!url.includes('linkedin.com/in/')) {
+    errEl.textContent = 'Please enter a valid LinkedIn profile URL.';
     errEl.style.display = 'block'; return;
   }
 
   errEl.style.display = 'none';
   btn.textContent = 'Analysing…'; btn.style.opacity = '0.7'; btn.disabled = true;
 
-  state.name = name;
+  state.name   = name;
   state.method = 'linkedin';
-  state.rawInput = text;
 
-  setProgress(40, 'Analysing your LinkedIn…', 'Step 2 of 4');
+  setProgress(40, 'Fetching your LinkedIn profile…', 'Step 2 of 4');
   showScreen('screen-loading');
   startLoadingMessages();
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
+    const res  = await fetch(`${BACKEND_URL}/api/parse-input`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'linkedin', content: text, name }),
+      body: JSON.stringify({ type: 'linkedin', url, name }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Parse failed');
+    if (!res.ok) throw new Error(data.error || 'Could not read profile');
 
     applyParsedData(data.data);
+    state.cvQualityIssues     = data.data.cv_quality_issues || [];
+    state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
     showResults();
   } catch (err) {
-    console.error('LinkedIn parse error:', err);
-    // Fallback to defaults rather than failing
-    state.answers = state.answers.profession_cat ? state.answers
-      : { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    console.error('LinkedIn error:', err);
+    // Graceful fallback — still show results with defaults
+    if (!state.answers.profession_cat) {
+      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    }
+    state.cvQualityIssues = ['Could not automatically read your profile — consider the quiz for the most accurate analysis'];
     showResults();
   }
 }
@@ -1812,35 +1871,48 @@ async function startCVAnalysis() {
   if (!file) { errEl.textContent = 'Please upload a CV file first.'; errEl.style.display = 'block'; return; }
 
   errEl.style.display = 'none';
-  btn.textContent = 'Parsing CV…'; btn.style.opacity = '0.7'; btn.disabled = true;
+  btn.textContent = 'Extracting text…'; btn.style.opacity = '0.7'; btn.disabled = true;
 
   state.name   = name;
   state.method = 'cv';
 
-  setProgress(40, 'Parsing your CV…', 'Step 2 of 4');
+  setProgress(35, 'Reading your CV…', 'Step 2 of 4');
   showScreen('screen-loading');
   startLoadingMessages();
 
   try {
-    const fileContent = await readFileText(file);
+    // Extract text client-side first — avoids sending large binary to API
+    const cvText = await extractTextFromFile(file);
+
+    if (!cvText || cvText.trim().length < 50) {
+      throw new Error('Could not extract readable text from your CV. Please try a .txt or copy-paste version.');
+    }
+
+    setProgress(50, 'Analysing your CV…', 'Step 2 of 4');
+
     const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'cv', content: fileContent, name, filename: file.name }),
+      body: JSON.stringify({ type: 'cv', content: cvText, name, filename: file.name }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Parse failed');
+    if (!res.ok) throw new Error(data.error || 'Analysis failed');
 
     applyParsedData(data.data);
-    // Store CV quality issues for upsell
-    state.cvQualityIssues    = data.data.cv_quality_issues || [];
+    state.cvQualityIssues     = data.data.cv_quality_issues || [];
     state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
     showResults();
   } catch (err) {
-    console.error('CV parse error:', err);
-    state.answers = state.answers.profession_cat ? state.answers
-      : { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
-    showResults();
+    console.error('CV error:', err.message);
+    // Show error on the loading screen briefly then fall back to results
+    document.getElementById('loading-stage').textContent = err.message.includes('extract') ? err.message : 'Analysis complete';
+    setTimeout(() => {
+      if (!state.answers.profession_cat) {
+        state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+      }
+      state.cvQualityIssues = ['CV could not be fully parsed — the brief will use your file name and general defaults'];
+      showResults();
+    }, 2000);
   }
 }
 
