@@ -547,8 +547,9 @@
 <!-- ── SCREEN 2A: QUIZ ── -->
 <div class="screen" id="screen-quiz">
   <div class="quiz-wrap">
-    <div class="question-num" id="q-num">Question 1 of 5</div>
-    <div class="question-text" id="q-text">What is your current profession or job title?</div>
+    <div class="screen-eyebrow" id="q-section" style="display:none;margin-bottom:8px"></div>
+    <div class="question-num" id="q-num">Question 1 of 30</div>
+    <div class="question-text" id="q-text"></div>
     <div class="options-grid" id="q-options"></div>
     <div class="quiz-nav">
       <button class="btn-back" id="quiz-back" onclick="quizBack()">← Back</button>
@@ -778,59 +779,361 @@ const state = {
 
 // ── QUESTIONS ──
 const questions = [
+  // ── SECTION 1: WHO ARE YOU ──
   {
     id: 'profession_cat',
-    text: 'Which best describes your profession?',
+    section: 'About You',
+    text: 'Which sector best describes your profession?',
     options: [
-      { label: 'Healthcare (Doctor, Nurse, Radiologist, Pharmacist…)', value: 'healthcare', sector: 'Healthcare' },
-      { label: 'Finance & Accounting (Analyst, Accountant, Auditor…)', value: 'finance', sector: 'Finance' },
-      { label: 'Technology (Software Engineer, Data Analyst, PM…)', value: 'tech', sector: 'Technology' },
-      { label: 'Legal & Compliance (Lawyer, Paralegal, Compliance…)', value: 'legal', sector: 'Legal' },
-      { label: 'Creative & Media (Designer, Writer, Photographer…)', value: 'creative', sector: 'Creative' },
-      { label: 'Education (Teacher, Lecturer, Trainer…)', value: 'education', sector: 'Education' },
-      { label: 'Other / I\'ll type it in', value: 'other', sector: 'Other' },
+      { label: 'Healthcare & Medicine', value: 'healthcare' },
+      { label: 'Finance, Banking & Accounting', value: 'finance' },
+      { label: 'Technology & Engineering', value: 'tech' },
+      { label: 'Legal & Compliance', value: 'legal' },
+      { label: 'Creative, Media & Marketing', value: 'creative' },
+      { label: 'Education & Training', value: 'education' },
+      { label: 'Other profession', value: 'other' },
+    ]
+  },
+  {
+    id: 'job_title',
+    section: 'About You',
+    text: 'What is your specific job title or role?',
+    type: 'text',
+    placeholder: 'e.g. Senior Financial Analyst, UX Designer, GP...',
+  },
+  {
+    id: 'industry',
+    section: 'About You',
+    text: 'Which industry do you work in?',
+    options: [
+      { label: 'Public sector / Government / NHS', value: 'public' },
+      { label: 'Private sector corporation', value: 'private' },
+      { label: 'Startup or scale-up', value: 'startup' },
+      { label: 'Freelance or self-employed', value: 'freelance' },
+      { label: 'Non-profit or charity', value: 'nonprofit' },
+      { label: 'Academic or research institution', value: 'academic' },
     ]
   },
   {
     id: 'experience',
-    text: 'How long have you been in your current field?',
+    section: 'About You',
+    text: 'How long have you been working in your field?',
     options: [
-      { label: '0–2 years · Still building my foundation', value: 'junior' },
-      { label: '3–7 years · Established professional', value: 'mid' },
-      { label: '8–15 years · Senior practitioner', value: 'senior' },
-      { label: '15+ years · Deep expertise, leadership experience', value: 'expert' },
+      { label: '0–2 years — building foundations', value: 'junior' },
+      { label: '3–7 years — established professional', value: 'mid' },
+      { label: '8–15 years — senior practitioner', value: 'senior' },
+      { label: '15+ years — deep expertise, possible leadership', value: 'expert' },
     ]
   },
+  {
+    id: 'education',
+    section: 'About You',
+    text: 'What is your highest level of formal education?',
+    options: [
+      { label: 'Secondary / A-levels / equivalent', value: 'secondary' },
+      { label: "Bachelor's degree", value: 'bachelors' },
+      { label: "Master's degree or MBA", value: 'masters' },
+      { label: 'Doctorate / PhD', value: 'phd' },
+      { label: 'Professional qualification (CFA, Bar, ACCA, etc.)', value: 'professional' },
+      { label: 'Vocational / trade qualification', value: 'vocational' },
+    ]
+  },
+
+  // ── SECTION 2: YOUR WORK ──
   {
     id: 'tasks',
+    section: 'Your Work',
     text: 'Which best describes the core of your daily work?',
     options: [
-      { label: '📋 Structured, repeatable tasks with defined rules', value: 'structured' },
-      { label: '🧩 Problem-solving with judgment calls', value: 'judgment' },
-      { label: '🤝 Relationships, communication, and people management', value: 'people' },
-      { label: '🎨 Creative work — generating ideas, content, or design', value: 'creative' },
+      { label: 'Structured, repeatable tasks with defined rules', value: 'structured' },
+      { label: 'Complex problem-solving requiring judgment', value: 'judgment' },
+      { label: 'Relationships, communication, people management', value: 'people' },
+      { label: 'Creative work — ideas, content, design, strategy', value: 'creative' },
     ]
   },
   {
-    id: 'ai_exposure',
-    text: 'How much have AI tools entered your workplace so far?',
+    id: 'decision_level',
+    section: 'Your Work',
+    text: 'How much independent decision-making does your role require?',
     options: [
-      { label: '😶 Not at all — AI hasn\'t touched my field yet', value: 'none' },
-      { label: '👀 I\'ve heard about it but haven\'t used any', value: 'aware' },
-      { label: '🔧 I use a few AI tools in my workflow', value: 'using' },
-      { label: '🚀 AI is central to how I already work', value: 'deep' },
+      { label: 'Very little — I follow well-defined processes', value: 'low' },
+      { label: 'Moderate — I make decisions within guidelines', value: 'mid' },
+      { label: 'High — I regularly make complex judgment calls', value: 'high' },
+      { label: 'Very high — I define strategy and direction', value: 'strategic' },
+    ]
+  },
+  {
+    id: 'client_facing',
+    section: 'Your Work',
+    text: 'How much of your work involves direct human interaction?',
+    options: [
+      { label: 'Mostly independent — I work alone on tasks', value: 'solo' },
+      { label: 'Some collaboration with colleagues', value: 'internal' },
+      { label: 'Regular client or customer interaction', value: 'client' },
+      { label: 'Heavy people focus — my work is mostly relational', value: 'relational' },
+    ]
+  },
+  {
+    id: 'data_work',
+    section: 'Your Work',
+    text: 'How much of your work involves processing or analysing data?',
+    options: [
+      { label: 'Very little — minimal data involvement', value: 'none' },
+      { label: 'Some — I work with reports or spreadsheets occasionally', value: 'some' },
+      { label: 'Significant — data is a core part of my job', value: 'significant' },
+      { label: 'Heavy — I am primarily a data or analytical role', value: 'heavy' },
+    ]
+  },
+  {
+    id: 'writing_work',
+    section: 'Your Work',
+    text: 'How much of your role involves writing (reports, content, documents)?',
+    options: [
+      { label: 'Very little', value: 'none' },
+      { label: 'Occasional — emails and basic reports', value: 'some' },
+      { label: 'Regular — writing is a meaningful part of my job', value: 'regular' },
+      { label: 'Central — my output is primarily written', value: 'central' },
+    ]
+  },
+  {
+    id: 'team_size',
+    section: 'Your Work',
+    text: 'What size organisation or team do you work in?',
+    options: [
+      { label: 'Solo / freelance', value: 'solo' },
+      { label: 'Small team (2–15 people)', value: 'small' },
+      { label: 'Mid-size company (15–200 people)', value: 'mid' },
+      { label: 'Large organisation (200+ people)', value: 'large' },
+    ]
+  },
+  {
+    id: 'work_location',
+    section: 'Your Work',
+    text: 'Where do you primarily work?',
+    options: [
+      { label: 'Fully remote', value: 'remote' },
+      { label: 'Hybrid — mix of office and home', value: 'hybrid' },
+      { label: 'Fully in-office or on-site', value: 'onsite' },
+      { label: 'Field-based or location-dependent', value: 'field' },
+    ]
+  },
+
+  // ── SECTION 3: AI & TECHNOLOGY ──
+  {
+    id: 'ai_exposure',
+    section: 'AI & Technology',
+    text: 'How much have AI tools entered your current workplace?',
+    options: [
+      { label: 'Not at all — no AI tools in use', value: 'none' },
+      { label: 'Early stages — a few experiments', value: 'aware' },
+      { label: 'Growing — several tools in regular use', value: 'using' },
+      { label: 'Widespread — AI is core to our workflows', value: 'deep' },
+    ]
+  },
+  {
+    id: 'ai_personal_use',
+    section: 'AI & Technology',
+    text: 'Do you personally use AI tools in your own work?',
+    options: [
+      { label: 'No — I have not tried any AI tools', value: 'none' },
+      { label: 'Occasionally — I have experimented a little', value: 'occasional' },
+      { label: 'Yes — I use AI tools regularly', value: 'regular' },
+      { label: 'Yes — AI tools are central to how I work', value: 'central' },
+    ]
+  },
+  {
+    id: 'tech_comfort',
+    section: 'AI & Technology',
+    text: 'How would you describe your comfort with new technology?',
+    options: [
+      { label: 'Low — I prefer established tools and methods', value: 'low' },
+      { label: 'Moderate — I can adapt but prefer stability', value: 'mid' },
+      { label: 'High — I pick up new tools quickly', value: 'high' },
+      { label: 'Very high — I am usually an early adopter', value: 'pioneer' },
+    ]
+  },
+  {
+    id: 'automation_awareness',
+    section: 'AI & Technology',
+    text: 'Which statement best matches your view of AI in your field?',
+    options: [
+      { label: 'AI will not significantly affect my profession', value: 'dismissive' },
+      { label: 'AI will change some tasks but not my core role', value: 'cautious' },
+      { label: 'AI will significantly reshape how I work', value: 'aware' },
+      { label: 'AI could replace many roles in my field, including parts of mine', value: 'concerned' },
+    ]
+  },
+  {
+    id: 'digital_skills',
+    section: 'AI & Technology',
+    text: 'How would you rate your current digital and data skills?',
+    options: [
+      { label: 'Basic — email, documents, standard software', value: 'basic' },
+      { label: 'Intermediate — spreadsheets, some data tools', value: 'intermediate' },
+      { label: 'Advanced — coding, data analysis, or specialist tech', value: 'advanced' },
+      { label: 'Expert — deep technical background', value: 'expert' },
+    ]
+  },
+
+  // ── SECTION 4: CAREER & FINANCES ──
+  {
+    id: 'income_band',
+    section: 'Career & Finances',
+    text: 'What is your approximate annual income?',
+    options: [
+      { label: 'Under £25,000 / $30,000', value: 'low' },
+      { label: '£25k–£50k / $30k–$65k', value: 'mid_low' },
+      { label: '£50k–£90k / $65k–$120k', value: 'mid_high' },
+      { label: '£90k+ / $120k+', value: 'high' },
+    ]
+  },
+  {
+    id: 'job_security_feel',
+    section: 'Career & Finances',
+    text: 'How secure do you currently feel in your job?',
+    options: [
+      { label: 'Very insecure — I am worried about my position', value: 'very_insecure' },
+      { label: 'Somewhat uncertain — things feel unstable', value: 'uncertain' },
+      { label: 'Fairly secure — I feel reasonably safe', value: 'secure' },
+      { label: 'Very secure — I have strong job protection', value: 'very_secure' },
+    ]
+  },
+  {
+    id: 'career_trajectory',
+    section: 'Career & Finances',
+    text: 'How would you describe your career trajectory right now?',
+    options: [
+      { label: 'Stagnant — not progressing as I would like', value: 'stagnant' },
+      { label: 'Steady — stable but modest growth', value: 'steady' },
+      { label: 'Growing — clear progression upward', value: 'growing' },
+      { label: 'Accelerating — strong momentum and opportunity', value: 'accelerating' },
+    ]
+  },
+  {
+    id: 'specialisation',
+    section: 'Career & Finances',
+    text: 'How specialised is your expertise within your field?',
+    options: [
+      { label: 'Generalist — broad skills across many areas', value: 'generalist' },
+      { label: 'Moderate specialist — focused area with some breadth', value: 'moderate' },
+      { label: 'Strong specialist — deep expertise in a niche', value: 'specialist' },
+      { label: 'Rare specialist — skills very few people have', value: 'rare' },
+    ]
+  },
+  {
+    id: 'regulatory',
+    section: 'Career & Finances',
+    text: 'Does your profession require a licence, accreditation, or professional registration?',
+    options: [
+      { label: 'No — anyone can do my job without formal credentials', value: 'none' },
+      { label: 'Helpful but not required', value: 'optional' },
+      { label: 'Yes — a degree or certification is expected', value: 'required' },
+      { label: 'Yes — strict licensing with legal requirements', value: 'strict' },
+    ]
+  },
+
+  // ── SECTION 5: FUTURE ORIENTATION ──
+  {
+    id: 'learning_habit',
+    section: 'Future Orientation',
+    text: 'How often do you actively invest in developing new skills?',
+    options: [
+      { label: 'Rarely — I focus on the job I have', value: 'rarely' },
+      { label: 'Occasionally — when my employer organises it', value: 'occasional' },
+      { label: 'Regularly — I self-direct some learning each month', value: 'regular' },
+      { label: 'Consistently — continuous learning is a habit', value: 'consistent' },
+    ]
+  },
+  {
+    id: 'adaptability',
+    section: 'Future Orientation',
+    text: 'How have you responded to major changes in your industry before?',
+    options: [
+      { label: 'I have found it difficult and resisted change', value: 'resistant' },
+      { label: 'I adapted eventually but it was challenging', value: 'slow' },
+      { label: 'I adapted reasonably well', value: 'adapted' },
+      { label: 'I tend to embrace change and move quickly', value: 'proactive' },
+    ]
+  },
+  {
+    id: 'mobility',
+    section: 'Future Orientation',
+    text: 'How open are you to changing your role or career path?',
+    options: [
+      { label: 'Not open — I want to stay in my current role', value: 'closed' },
+      { label: 'Slightly open — only if necessary', value: 'reluctant' },
+      { label: 'Open — I would consider adjacent moves', value: 'open' },
+      { label: 'Very open — I am actively thinking about pivoting', value: 'active' },
+    ]
+  },
+  {
+    id: 'network',
+    section: 'Future Orientation',
+    text: 'How strong is your professional network?',
+    options: [
+      { label: 'Weak — I do not have many professional connections', value: 'weak' },
+      { label: 'Moderate — I have some but rarely engage with them', value: 'moderate' },
+      { label: 'Strong — I have a good network I maintain', value: 'strong' },
+      { label: 'Very strong — my network is a significant career asset', value: 'very_strong' },
+    ]
+  },
+  {
+    id: 'geographic_flexibility',
+    section: 'Future Orientation',
+    text: 'How geographically flexible are you?',
+    options: [
+      { label: 'Not flexible — tied to my current location', value: 'fixed' },
+      { label: 'Slightly — could consider nearby areas', value: 'low' },
+      { label: 'Moderately — open to moving for the right opportunity', value: 'moderate' },
+      { label: 'Very flexible — I could work anywhere', value: 'high' },
+    ]
+  },
+
+  // ── SECTION 6: PRIORITIES ──
+  {
+    id: 'biggest_worry',
+    section: 'Your Priorities',
+    text: 'What is your biggest career worry right now?',
+    options: [
+      { label: 'Being made redundant or replaced by AI', value: 'redundancy' },
+      { label: 'My skills becoming outdated too quickly', value: 'obsolescence' },
+      { label: 'Not earning enough relative to my potential', value: 'income' },
+      { label: 'Missing out on new opportunities I am not aware of', value: 'opportunity' },
+    ]
+  },
+  {
+    id: 'top_priority',
+    section: 'Your Priorities',
+    text: 'What matters most to you in your career right now?',
+    options: [
+      { label: 'Job security and stability', value: 'security' },
+      { label: 'Career growth and advancement', value: 'growth' },
+      { label: 'Higher income and financial freedom', value: 'income' },
+      { label: 'Meaningful, fulfilling work', value: 'meaning' },
+    ]
+  },
+  {
+    id: 'timeline',
+    section: 'Your Priorities',
+    text: 'Over what timeframe are you most concerned about AI impact?',
+    options: [
+      { label: 'Immediately — I am worried about the next 12 months', value: 'immediate' },
+      { label: 'Near-term — next 1–3 years', value: 'near' },
+      { label: 'Medium-term — next 3–5 years', value: 'medium' },
+      { label: 'Long-term — 5+ years out', value: 'long' },
     ]
   },
   {
     id: 'concern',
-    text: 'What are you most hoping to understand from this analysis?',
+    section: 'Your Priorities',
+    text: 'What do you most want from this analysis?',
     options: [
-      { label: '🛡️ Am I at risk of being replaced?', value: 'risk' },
-      { label: '📈 How do I grow my career in an AI world?', value: 'growth' },
-      { label: '🔄 Should I be considering a career pivot?', value: 'pivot' },
-      { label: '📚 What skills should I be building right now?', value: 'skills' },
+      { label: 'Know honestly — am I at risk of being replaced?', value: 'risk' },
+      { label: 'Understand how to grow my career in an AI world', value: 'growth' },
+      { label: 'Find out if I should be considering a career pivot', value: 'pivot' },
+      { label: 'Get a clear, prioritised list of skills to build', value: 'skills' },
     ]
-  }
+  },
 ];
 
 // ── ARCHETYPE ENGINE ──
@@ -877,47 +1180,89 @@ function computeArchetype(answers) {
 
 function computeScores(answers) {
   const base = {
-    healthcare:  { auto: 45, aug: 82, income: 70, reg: 85, skill: 65, adoption: 60 },
-    finance:     { auto: 68, aug: 74, income: 52, reg: 60, skill: 78, adoption: 72 },
-    tech:        { auto: 55, aug: 88, income: 58, reg: 30, skill: 85, adoption: 80 },
-    legal:       { auto: 60, aug: 70, income: 58, reg: 75, skill: 72, adoption: 55 },
-    creative:    { auto: 70, aug: 72, income: 45, reg: 20, skill: 80, adoption: 65 },
-    education:   { auto: 38, aug: 75, income: 60, reg: 65, skill: 68, adoption: 45 },
-    other:       { auto: 55, aug: 70, income: 55, reg: 50, skill: 70, adoption: 55 },
+    healthcare: { auto: 45, aug: 82, income: 70, reg: 85, skill: 65, adoption: 60 },
+    finance:    { auto: 68, aug: 74, income: 52, reg: 60, skill: 78, adoption: 72 },
+    tech:       { auto: 55, aug: 88, income: 58, reg: 30, skill: 85, adoption: 80 },
+    legal:      { auto: 60, aug: 70, income: 58, reg: 75, skill: 72, adoption: 55 },
+    creative:   { auto: 70, aug: 72, income: 45, reg: 20, skill: 80, adoption: 65 },
+    education:  { auto: 38, aug: 75, income: 60, reg: 65, skill: 68, adoption: 45 },
+    other:      { auto: 55, aug: 70, income: 55, reg: 50, skill: 70, adoption: 55 },
   };
   const b = base[answers.profession_cat] || base.other;
+  let { auto, aug, income, reg, skill, adoption } = { ...b };
 
-  // Adjustments
-  const taskMod = { structured: 15, judgment: -5, people: -10, creative: 5 };
-  const expMod  = { junior: 5, mid: 0, senior: -5, expert: -10 };
-  const aiMod   = { none: 5, aware: 2, using: -5, deep: -12 };
+  // Task type
+  if (answers.tasks === 'structured')  { auto += 15; aug -= 8; }
+  if (answers.tasks === 'judgment')    { auto -= 8;  aug += 5; }
+  if (answers.tasks === 'people')      { auto -= 14; aug += 3; }
+  if (answers.tasks === 'creative')    { auto += 5;  aug += 8; }
 
-  const autoAdj = (taskMod[answers.tasks] || 0) + (expMod[answers.experience] || 0);
-  const augAdj  = -(taskMod[answers.tasks] || 0) * 0.5 + (aiMod[answers.ai_exposure] || 0) * -1;
+  // Experience
+  if (answers.experience === 'junior') { auto += 6; income -= 5; }
+  if (answers.experience === 'senior') { auto -= 5; reg += 5; }
+  if (answers.experience === 'expert') { auto -= 10; reg += 10; income += 8; }
+
+  // AI personal use
+  if (answers.ai_personal_use === 'none')    { skill += 12; aug -= 10; }
+  if (answers.ai_personal_use === 'regular') { aug += 8; skill -= 5; }
+  if (answers.ai_personal_use === 'central') { aug += 14; skill -= 8; auto -= 8; }
+
+  // Decision level
+  if (answers.decision_level === 'low')       { auto += 12; }
+  if (answers.decision_level === 'strategic') { auto -= 12; income += 8; }
+
+  // Regulatory
+  if (answers.regulatory === 'strict')    { reg += 20; auto -= 8; }
+  if (answers.regulatory === 'required')  { reg += 10; }
+  if (answers.regulatory === 'none')      { reg -= 15; auto += 8; }
+
+  // Specialisation
+  if (answers.specialisation === 'rare')       { auto -= 12; income += 10; }
+  if (answers.specialisation === 'specialist') { auto -= 6; income += 5; }
+  if (answers.specialisation === 'generalist') { auto += 6; }
+
+  // Data work
+  if (answers.data_work === 'heavy')       { auto += 8; adoption += 10; }
+  if (answers.data_work === 'none')        { auto -= 5; }
+
+  // Writing work
+  if (answers.writing_work === 'central')  { auto += 10; }
+
+  // Tech comfort
+  if (answers.tech_comfort === 'pioneer')  { aug += 8; skill -= 6; }
+  if (answers.tech_comfort === 'low')      { skill += 8; aug -= 6; }
+
+  // Industry
+  if (answers.industry === 'startup')      { adoption += 12; skill += 5; }
+  if (answers.industry === 'public')       { reg += 8; adoption -= 8; }
+  if (answers.industry === 'academic')     { auto -= 5; }
+
+  // Client facing
+  if (answers.client_facing === 'relational') { auto -= 10; aug += 5; }
+
+  // Learning habit
+  if (answers.learning_habit === 'consistent') { skill -= 8; aug += 6; }
+  if (answers.learning_habit === 'rarely')     { skill += 10; }
 
   return {
-    automation:    Math.min(100, Math.max(0, b.auto + autoAdj)),
-    augmentation:  Math.min(100, Math.max(0, b.aug + augAdj)),
-    income:        b.income,
-    regulatory:    b.reg,
-    skill_pressure:b.skill,
-    ai_adoption:   b.adoption,
+    automation:     Math.min(100, Math.max(5, Math.round(auto))),
+    augmentation:   Math.min(100, Math.max(5, Math.round(aug))),
+    income:         Math.min(100, Math.max(5, Math.round(income))),
+    regulatory:     Math.min(100, Math.max(5, Math.round(reg))),
+    skill_pressure: Math.min(100, Math.max(5, Math.round(skill))),
+    ai_adoption:    Math.min(100, Math.max(5, Math.round(adoption))),
   };
 }
 
 function getProfessionLabel(answers) {
+  // Use the actual typed job title if available
+  if (answers.job_title && answers.job_title.length > 2) return answers.job_title;
   const map = {
-    healthcare: 'Healthcare Professional',
-    finance: 'Finance & Accounting Professional',
-    tech: 'Technology Professional',
-    legal: 'Legal & Compliance Professional',
-    creative: 'Creative & Media Professional',
-    education: 'Education Professional',
-    other: 'Professional'
+    healthcare: 'Healthcare Professional', finance: 'Finance Professional',
+    tech: 'Technology Professional', legal: 'Legal Professional',
+    creative: 'Creative Professional', education: 'Education Professional', other: 'Professional'
   };
-  const exp = {
-    junior: 'Early Career', mid: 'Mid-Level', senior: 'Senior', expert: 'Expert'
-  };
+  const exp = { junior: 'Early Career', mid: 'Mid-Level', senior: 'Senior', expert: 'Expert' };
   return `${exp[answers.experience] || ''} ${map[answers.profession_cat] || 'Professional'}`.trim();
 }
 
@@ -993,25 +1338,59 @@ function selectMethod(method) {
 // ── QUIZ ──
 function renderQuestion(idx) {
   const q = questions[idx];
-  document.getElementById('q-num').textContent = `Question ${idx+1} of ${questions.length}`;
-  document.getElementById('q-text').textContent = q.text;
   const container = document.getElementById('q-options');
   container.innerHTML = '';
 
-  const letters = ['A','B','C','D','E','F','G'];
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    if (state.answers[q.id] === opt.value) btn.classList.add('selected');
-    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt.label}`;
-    btn.onclick = () => selectOption(q.id, opt.value, btn);
-    container.appendChild(btn);
-  });
+  // Section label
+  const prevSection = idx > 0 ? questions[idx-1].section : null;
+  const sectionEl = document.getElementById('q-section');
+  if (q.section && q.section !== prevSection) {
+    sectionEl.textContent = q.section.toUpperCase();
+    sectionEl.style.display = 'block';
+  } else {
+    sectionEl.style.display = 'none';
+  }
 
-  document.getElementById('quiz-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('q-num').textContent = `Question ${idx+1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.text;
+
   const nextBtn = document.getElementById('quiz-next');
   nextBtn.textContent = idx === questions.length - 1 ? 'See My Results →' : 'Continue →';
-  nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
+
+  // Text input question
+  if (q.type === 'text') {
+    const wrap = document.createElement('div');
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'text-input';
+    inp.placeholder = q.placeholder || '';
+    inp.value = state.answers[q.id] || '';
+    inp.style.fontSize = '16px';
+    inp.oninput = () => {
+      state.answers[q.id] = inp.value.trim();
+      nextBtn.className = 'btn-next' + (inp.value.trim() ? ' enabled' : '');
+    };
+    // Allow Enter to advance
+    inp.onkeydown = (e) => { if (e.key === 'Enter' && inp.value.trim()) quizNext(); };
+    wrap.appendChild(inp);
+    container.appendChild(wrap);
+    nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
+    setTimeout(() => inp.focus(), 100);
+  } else {
+    // Multiple choice
+    const letters = ['A','B','C','D','E','F','G'];
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      if (state.answers[q.id] === opt.value) btn.classList.add('selected');
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt.label}`;
+      btn.onclick = () => selectOption(q.id, opt.value, btn);
+      container.appendChild(btn);
+    });
+    nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
+  }
+
+  document.getElementById('quiz-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
   state.currentQ = idx;
 }
 
@@ -1020,13 +1399,16 @@ function selectOption(qId, value, btn) {
   document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   document.getElementById('quiz-next').classList.add('enabled');
+  // Auto-advance after short delay for multiple choice
+  setTimeout(() => quizNext(), 300);
 }
 
 function quizNext() {
-  if (!state.answers[questions[state.currentQ].id]) return;
+  const q = questions[state.currentQ];
+  const ans = state.answers[q.id];
+  if (!ans) return;
   const pct = Math.round(((state.currentQ + 1) / questions.length) * 60) + 20;
-  setProgress(pct, `Question ${state.currentQ + 2} of ${questions.length}`, 'Step 2 of 4');
-
+  setProgress(pct, `${q.section || 'Quiz'} · ${state.currentQ + 1}/${questions.length}`, 'Step 2 of 4');
   if (state.currentQ < questions.length - 1) {
     renderQuestion(state.currentQ + 1);
   } else {
