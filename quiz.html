@@ -1788,8 +1788,7 @@ async function extractTextFromFile(file) {
       for (let i = 1; i <= Math.min(pdf.numPages, 5); i++) {
         const page    = await pdf.getPage(i);
         const content = await page.getTextContent();
-        text += content.items.map(s => s.str).join(' ') + '
-';
+        text += content.items.map(s => s.str).join(' ') + '\n';
       }
       return text.slice(0, 8000);
     } catch (err) {
@@ -1805,8 +1804,7 @@ async function extractTextFromFile(file) {
       // Strip binary noise, keep printable ASCII
       const raw = e.target.result || '';
       const clean = typeof raw === 'string'
-        ? raw.replace(/[^ -~
-]/g, ' ').replace(/\s+/g, ' ').slice(0, 8000)
+        ? raw.replace(/[^\x20-\x7E\r\n]/g, ' ').replace(/\s+/g, ' ').slice(0, 8000)
         : '';
       resolve(clean);
     };
