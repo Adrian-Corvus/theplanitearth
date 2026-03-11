@@ -722,17 +722,26 @@
 
 <!-- ── SCREEN 2B: LINKEDIN ── -->
 <div class="screen" id="screen-linkedin">
-  <div class="input-card">
-    <h2>Your LinkedIn URL</h2>
-    <p>Paste your public LinkedIn profile URL. We extract your role, skills, and experience to build your personalised analysis. We don't store your data.</p>
-    <label class="field-label" for="li-url">LinkedIn Profile URL</label>
-    <input class="text-input" id="li-url" type="url" placeholder="https://linkedin.com/in/yourname" />
+  <div class="input-card" style="max-width:560px">
+    <h2>Paste Your LinkedIn Profile</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+      Go to your LinkedIn profile → select all text (Ctrl+A / Cmd+A) → copy and paste it below. We use it only to generate your brief.
+    </p>
+    <div style="margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+      <label class="field-label" style="margin:0" for="li-text">Your LinkedIn profile text</label>
+      <span id="li-char-count" style="font-size:11px;color:var(--mid)">0 characters</span>
+    </div>
+    <textarea id="li-text" class="text-input" rows="8"
+      placeholder="Paste your full LinkedIn profile text here — headline, about, experience, skills..."
+      style="resize:vertical;line-height:1.5;font-size:14px"
+      oninput="document.getElementById('li-char-count').textContent=this.value.length+' characters';document.getElementById('li-next').classList.toggle('enabled',this.value.trim().length>100)"></textarea>
     <label class="field-label" style="margin-top:18px" for="li-name">Your name (for the brief)</label>
     <input class="text-input" id="li-name" type="text" placeholder="Your name" />
-    <button class="btn-analyse" onclick="startAnalysis()">
-      🔍 Analyse My Profile
+    <button class="btn-analyse" id="li-next" onclick="startLinkedInAnalysis()" style="opacity:.4;pointer-events:none">
+      Analyse My LinkedIn →
     </button>
-    <div class="privacy-note">🔒 Your data is used only to generate your brief. Never stored or shared.</div>
+    <div class="privacy-note" style="margin-top:12px">🔒 Your text is processed securely. Never stored on our servers.</div>
+    <div id="li-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
   </div>
 </div>
 
@@ -752,10 +761,14 @@
     <input type="file" id="cv-file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile(this)" />
     <label class="field-label" for="cv-name">Your name (for the brief)</label>
     <input class="text-input" id="cv-name" type="text" placeholder="Your name" />
-    <button class="btn-analyse" onclick="startAnalysis()">
-      🔍 Analyse My CV
+    <div id="cv-parse-status" style="display:none;margin-top:12px;padding:12px 16px;background:#F0F7F3;border-radius:10px;font-size:13px;color:var(--sage)">
+      ✓ CV ready — click below to analyse
+    </div>
+    <button class="btn-analyse" id="cv-next" onclick="startCVAnalysis()" style="opacity:.4;pointer-events:none" disabled>
+      Analyse My CV →
     </button>
-    <div class="privacy-note">🔒 Your file is processed locally. Never stored on our servers.</div>
+    <div class="privacy-note" style="margin-top:12px">🔒 Your file is processed securely. Never stored after analysis.</div>
+    <div id="cv-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
   </div>
 </div>
 
@@ -876,7 +889,7 @@
             <strong>Get the full Career Intelligence Brief</strong>
             Personalised PDF · Delivered instantly to your inbox
           </div>
-          <button class="btn-hook-buy" onclick="goToPayment()">Get My Brief — £12 →</button>
+          <button class="btn-hook-buy" onclick="goToPayment()">Get My Brief — €7.99 →</button>
         </div>
       </div>
 
@@ -887,8 +900,8 @@
       <div class="payment-card">
         <div class="eyebrow">Career Intelligence Brief</div>
         <h3>Your complete personalised report</h3>
-        <div class="price-display">£12</div>
-        <div class="price-note">One-time payment · Instant PDF delivery</div>
+        <div class="price-display">€7.99</div>
+        <div class="price-note">One-time · or €9.99 with Profile Optimisation</div>
         <div class="payment-includes">
           <div class="pay-item"><div class="pay-check">✓</div>Full 6-dimension dashboard</div>
           <div class="pay-item"><div class="pay-check">✓</div>Complete task-level breakdown</div>
@@ -912,24 +925,79 @@
 
 <!-- ── SCREEN 5: PAYMENT ── -->
 <div class="screen" id="screen-payment">
-  <div class="input-card" style="max-width:480px">
-    <h2>Almost there</h2>
-    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:28px;line-height:1.6">
-      Enter your name and email — we'll send your Career Intelligence Brief here instantly after payment.
-    </p>
-    <div style="margin-bottom:18px">
-      <label class="field-label" for="p-name">Your name</label>
-      <input class="text-input" type="text" id="p-name" placeholder="Your full name" />
+  <div style="max-width:520px;width:100%;padding:0 16px">
+
+    <!-- Upsell alert (shown only for CV/LinkedIn inputs) -->
+    <div id="upsell-alert" style="display:none;margin-bottom:20px;border-radius:16px;overflow:hidden;border:2px solid var(--amber)">
+      <div style="background:var(--amber);padding:14px 20px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">⚠️</span>
+        <strong style="color:white;font-size:14px" id="upsell-alert-title">Your profile could be significantly improved</strong>
+      </div>
+      <div style="background:#FFF8F0;padding:18px 20px">
+        <p style="font-size:13px;color:#6B4C0A;margin-bottom:14px;line-height:1.5" id="upsell-alert-body">
+          Based on your CV, we identified several areas that could improve your visibility with recruiters and ATS systems in the AI job market.
+        </p>
+        <div id="upsell-issues-list" style="margin-bottom:16px"></div>
+        <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid #F5D9A0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <strong style="font-size:13px;color:var(--ink)">Add Profile Optimisation Report</strong>
+            <span style="font-size:15px;font-weight:700;color:var(--sage)">+€2.00</span>
+          </div>
+          <p style="font-size:12px;color:var(--mid);margin-bottom:12px">LinkedIn headline rewrite · CV bullet transformations · ATS keywords · Quick wins · Total: <strong>€9.99</strong></p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button onclick="selectPlan('bundle')" id="btn-bundle"
+              style="flex:1;min-width:140px;padding:10px 16px;background:var(--sage);color:white;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer">
+              Yes — add it (€9.99)
+            </button>
+            <button onclick="selectPlan('brief')" id="btn-brief-only"
+              style="flex:1;min-width:120px;padding:10px 16px;background:none;color:var(--mid);border:1px solid var(--mist);border-radius:100px;font-size:13px;cursor:pointer">
+              Brief only (€7.99)
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="margin-bottom:24px">
-      <label class="field-label" for="p-email">Email address</label>
-      <input class="text-input" type="email" id="p-email" placeholder="you@example.com" />
+
+    <!-- Main form -->
+    <div class="input-card" style="padding:32px 28px">
+      <h2 style="font-size:22px;margin-bottom:6px">Almost there</h2>
+      <p style="font-size:13px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+        We'll send your brief to your inbox instantly after payment.
+      </p>
+
+      <div style="margin-bottom:16px">
+        <label class="field-label" for="p-name">Your name</label>
+        <input class="text-input" type="text" id="p-name" placeholder="Your full name" />
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="field-label" for="p-email">Email address</label>
+        <input class="text-input" type="email" id="p-email" placeholder="you@example.com" />
+      </div>
+
+      <!-- Plan selector (visible when no upsell alert) -->
+      <div id="plan-selector" style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <button onclick="selectPlan('brief')" id="plan-btn-brief"
+          class="plan-btn selected-plan"
+          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--sage);background:#F0F7F3;cursor:pointer;text-align:left">
+          <div style="font-size:11px;font-weight:700;color:var(--sage);letter-spacing:1px;margin-bottom:3px">CAREER BRIEF</div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink)">€7.99</div>
+          <div style="font-size:11px;color:var(--mid)">Personalised PDF</div>
+        </button>
+        <button onclick="selectPlan('bundle')" id="plan-btn-bundle"
+          class="plan-btn"
+          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--mist);background:white;cursor:pointer;text-align:left">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:3px">BRIEF + PROFILE OPT.</div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink)">€9.99</div>
+          <div style="font-size:11px;color:var(--mid)">Most popular</div>
+        </button>
+      </div>
+
+      <button class="btn-analyse" id="checkout-btn" onclick="completePurchase()">
+        Continue to Payment →
+      </button>
+      <div class="privacy-note" style="margin-top:10px">🔒 Secure checkout via Stripe · Instant delivery</div>
+      <div id="checkout-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
     </div>
-    <button class="btn-analyse" id="checkout-btn" onclick="completePurchase()">
-      Continue to Payment — £12 →
-    </button>
-    <div class="privacy-note" style="margin-top:12px">🔒 Secure checkout via Stripe · Instant PDF delivery</div>
-    <div id="checkout-error" style="margin-top:12px;font-size:13px;color:var(--red);display:none"></div>
   </div>
 </div>
 
@@ -961,7 +1029,12 @@ const state = {
   profession: '',
   sector: '',
   scores: {},
-  archetype: {}
+  archetype: {},
+  plan: 'brief',            // 'brief' or 'bundle'
+  cvFile: null,
+  cvQualityIssues: [],
+  optimisationUrgency: 'medium',
+  rawInput: '',
 };
 
 // ── QUESTIONS ──
@@ -1649,11 +1722,13 @@ function quizBack() {
 function handleFile(input) {
   const file = input.files[0];
   if (!file) return;
+  state.cvFile = file;
   document.getElementById('upload-icon').textContent = '✅';
   document.getElementById('upload-title').textContent = file.name;
   document.getElementById('upload-sub').textContent = `${(file.size/1024).toFixed(0)} KB · Ready to analyse`;
-  // Simulate parsing — in production this calls your backend
-  state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+  document.getElementById('cv-parse-status').style.display = 'block';
+  const btn = document.getElementById('cv-next');
+  btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; btn.disabled = false;
 }
 
 function handleDrop(e) {
@@ -1668,13 +1743,138 @@ function handleDrop(e) {
   }
 }
 
-// ── START ANALYSIS ──
+// ── READ FILE AS TEXT ──
+async function readFileText(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = () => resolve('');
+    // For PDFs and DOCX we send as base64 and let backend parse
+    // For TXT we read directly
+    if (file.type === 'text/plain') {
+      reader.readAsText(file);
+    } else {
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+// ── LINKEDIN ANALYSIS ──
+async function startLinkedInAnalysis() {
+  const text = document.getElementById('li-text').value.trim();
+  const name = document.getElementById('li-name').value.trim();
+  const errEl = document.getElementById('li-error');
+  const btn   = document.getElementById('li-next');
+
+  if (!text || text.length < 100) {
+    errEl.textContent = 'Please paste more of your LinkedIn profile — at least the headline, About, and one experience entry.';
+    errEl.style.display = 'block'; return;
+  }
+
+  errEl.style.display = 'none';
+  btn.textContent = 'Analysing…'; btn.style.opacity = '0.7'; btn.disabled = true;
+
+  state.name = name;
+  state.method = 'linkedin';
+  state.rawInput = text;
+
+  setProgress(40, 'Analysing your LinkedIn…', 'Step 2 of 4');
+  showScreen('screen-loading');
+  startLoadingMessages();
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'linkedin', content: text, name }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Parse failed');
+
+    applyParsedData(data.data);
+    showResults();
+  } catch (err) {
+    console.error('LinkedIn parse error:', err);
+    // Fallback to defaults rather than failing
+    state.answers = state.answers.profession_cat ? state.answers
+      : { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    showResults();
+  }
+}
+
+// ── CV ANALYSIS ──
+async function startCVAnalysis() {
+  const file  = state.cvFile;
+  const name  = document.getElementById('cv-name').value.trim();
+  const errEl = document.getElementById('cv-error');
+  const btn   = document.getElementById('cv-next');
+
+  if (!file) { errEl.textContent = 'Please upload a CV file first.'; errEl.style.display = 'block'; return; }
+
+  errEl.style.display = 'none';
+  btn.textContent = 'Parsing CV…'; btn.style.opacity = '0.7'; btn.disabled = true;
+
+  state.name   = name;
+  state.method = 'cv';
+
+  setProgress(40, 'Parsing your CV…', 'Step 2 of 4');
+  showScreen('screen-loading');
+  startLoadingMessages();
+
+  try {
+    const fileContent = await readFileText(file);
+    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'cv', content: fileContent, name, filename: file.name }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Parse failed');
+
+    applyParsedData(data.data);
+    // Store CV quality issues for upsell
+    state.cvQualityIssues    = data.data.cv_quality_issues || [];
+    state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
+    showResults();
+  } catch (err) {
+    console.error('CV parse error:', err);
+    state.answers = state.answers.profession_cat ? state.answers
+      : { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    showResults();
+  }
+}
+
+// ── APPLY PARSED DATA ──
+function applyParsedData(d) {
+  state.answers = {
+    profession_cat:  d.profession_cat  || 'other',
+    job_title:       d.job_title        || '',
+    experience:      d.experience       || 'mid',
+    tasks:           d.tasks            || 'judgment',
+    ai_exposure:     d.ai_exposure      || 'aware',
+    ai_personal_use: 'occasional',
+    industry:        d.industry         || 'private',
+    decision_level:  d.decision_level   || 'mid',
+    regulatory:      d.regulatory       || 'optional',
+    specialisation:  d.specialisation   || 'moderate',
+    data_work:       d.data_work        || 'some',
+    writing_work:    d.writing_work     || 'some',
+    tech_comfort:    d.tech_comfort     || 'mid',
+    client_facing:   'internal',
+    learning_habit:  'occasional',
+    concern:         'growth',
+    biggest_worry:   'obsolescence',
+    key_skills:      d.key_skills       || '',
+    career_summary:  d.career_summary   || '',
+  };
+  if (d.job_title) state.profession = d.job_title;
+}
+
+// ── START ANALYSIS (quiz path) ──
 function startAnalysis() {
-  // If LinkedIn/CV, use defaults if answers not set
   if (!state.answers.profession_cat) {
     state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
   }
-
   // Get name
   state.name = document.getElementById('li-name')?.value ||
                document.getElementById('cv-name')?.value ||
@@ -1790,12 +1990,78 @@ function showResults() {
 // ── PAYMENT ──
 const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
 
+function selectPlan(plan) {
+  state.plan = plan;
+  // Update plan selector buttons
+  const briefBtn  = document.getElementById('plan-btn-brief');
+  const bundleBtn = document.getElementById('plan-btn-bundle');
+  if (briefBtn && bundleBtn) {
+    if (plan === 'brief') {
+      briefBtn.style.borderColor  = 'var(--sage)';  briefBtn.style.background  = '#F0F7F3';
+      bundleBtn.style.borderColor = 'var(--mist)';  bundleBtn.style.background = 'white';
+    } else {
+      bundleBtn.style.borderColor = 'var(--amber)'; bundleBtn.style.background = '#FFF8F0';
+      briefBtn.style.borderColor  = 'var(--mist)';  briefBtn.style.background  = 'white';
+    }
+  }
+  // Update upsell buttons too
+  const bb = document.getElementById('btn-bundle'), bo = document.getElementById('btn-brief-only');
+  if (bb && bo) {
+    bb.style.background = plan === 'bundle' ? '#2d5239' : 'var(--sage)';
+    bo.style.background = plan === 'brief'  ? 'var(--mist)' : 'none';
+  }
+  // Update checkout button label
+  const btn = document.getElementById('checkout-btn');
+  if (btn) btn.textContent = plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+}
+
 function goToPayment() {
   setProgress(90, 'Complete your order', 'Step 5 of 5');
   showScreen('screen-payment');
+
   if (state.name && state.name !== 'Your') {
-    document.getElementById('p-name').value = state.name;
+    const pName = document.getElementById('p-name');
+    if (pName) pName.value = state.name;
   }
+
+  // Show upsell alert for CV/LinkedIn inputs with quality issues
+  const upsellAlert = document.getElementById('upsell-alert');
+  const planSelector = document.getElementById('plan-selector');
+  const isInputMethod = state.method === 'cv' || state.method === 'linkedin';
+  const hasIssues     = state.cvQualityIssues && state.cvQualityIssues.length > 0;
+
+  if (upsellAlert) {
+    if (isInputMethod && hasIssues) {
+      upsellAlert.style.display = 'block';
+      if (planSelector) planSelector.style.display = 'none';
+
+      // Populate alert title based on method
+      const title = document.getElementById('upsell-alert-title');
+      if (title) title.textContent = state.method === 'cv'
+        ? '⚠️  Your CV could be significantly improved'
+        : '⚠️  Your LinkedIn profile could be significantly improved';
+
+      // Populate issues
+      const list = document.getElementById('upsell-issues-list');
+      if (list && state.cvQualityIssues.length) {
+        list.innerHTML = state.cvQualityIssues.slice(0, 3).map(issue =>
+          `<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#6B4C0A">
+            <span style="flex-shrink:0;color:var(--amber)">→</span>${issue}
+          </div>`
+        ).join('');
+      }
+
+      // Default to bundle for CV/LinkedIn users
+      selectPlan('bundle');
+    } else {
+      upsellAlert.style.display = 'none';
+      if (planSelector) planSelector.style.display = 'flex';
+      selectPlan('brief');
+    }
+  }
+
+  const btn = document.getElementById('checkout-btn');
+  if (btn) btn.textContent = state.plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
 }
 
 async function completePurchase() {
@@ -1805,42 +2071,36 @@ async function completePurchase() {
   const btn   = document.getElementById('checkout-btn');
 
   errEl.style.display = 'none';
+  if (!name)  { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; errEl.style.display = 'block'; return; }
 
-  if (!name) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
-  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
-
-  btn.textContent = 'Redirecting to secure checkout...';
-  btn.style.opacity = '0.7';
-  btn.disabled = true;
+  btn.textContent = 'Redirecting to secure checkout…';
+  btn.style.opacity = '0.7'; btn.disabled = true;
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/create-checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name,
-        email,
-        answers:    state.answers,
-        scores:     state.scores,
-        archetype:  state.archetype,
-        profession: state.profession,
+        name, email,
+        answers:         state.answers,
+        scores:          state.scores,
+        archetype:       state.archetype,
+        profession:      state.profession,
+        plan:            state.plan,
+        inputMethod:     state.method || 'quiz',
+        cvQualityIssues: state.cvQualityIssues || [],
       }),
     });
-
     const data = await res.json();
-
     if (!res.ok || !data.url) throw new Error(data.error || 'Checkout failed');
-
-    // Redirect to Stripe hosted checkout page
     window.location.href = data.url;
-
   } catch (err) {
     console.error(err);
     errEl.textContent = 'Something went wrong. Please try again or contact us at hello@theplanitearth.com';
     errEl.style.display = 'block';
-    btn.textContent = 'Continue to Payment — £12 →';
-    btn.style.opacity = '1';
-    btn.disabled = false;
+    btn.textContent = state.plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+    btn.style.opacity = '1'; btn.disabled = false;
   }
 }
 
