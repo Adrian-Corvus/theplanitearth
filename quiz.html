@@ -1818,6 +1818,26 @@ async function extractTextFromFile(file) {
 }
 
 // ── DEBUG HELPERS ──
+function startLoadingMessages() {
+  // Cycle through loading status messages
+  const stages = [
+    'Analysing your profile…',
+    'Calculating AI exposure…',
+    'Mapping skill landscape…',
+    'Generating your intelligence brief…',
+    'Almost ready…'
+  ];
+  let i = 0;
+  const el = document.getElementById('loading-stage');
+  const interval = setInterval(() => {
+    if (!document.getElementById('screen-loading').classList.contains('active')) {
+      clearInterval(interval); return;
+    }
+    i = (i + 1) % stages.length;
+    if (el) el.textContent = stages[i];
+  }, 2500);
+}
+
 function debugLog(msg) {
   const el = document.getElementById('debug-log');
   const sk = document.getElementById('debug-skip');
