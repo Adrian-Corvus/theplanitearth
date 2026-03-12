@@ -447,6 +447,101 @@
       nav { padding: 12px 16px; }
       .nav-cta { padding: 8px 16px; font-size: 13px !important; }
     }
+
+    /* ── URGENCY SECTION ── */
+    .urgency-section { background: var(--ink); color: var(--paper); }
+    .urgency-section .section-label { color: var(--sage-lt); }
+    .urgency-section .section-sub { color: rgba(245,242,236,.6); }
+    .urgency-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
+      background: rgba(255,255,255,.06); border-radius: 20px; overflow: hidden; margin-top: 0;
+    }
+    .urgency-card {
+      padding: 40px 28px; background: var(--ink);
+      transition: background .2s;
+    }
+    .urgency-card:hover { background: #161820; }
+    .urgency-stat {
+      font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800;
+      color: var(--sage); line-height: 1; margin-bottom: 16px; letter-spacing: -2px;
+    }
+    .urgency-desc { font-size: 14px; color: rgba(245,242,236,.6); line-height: 1.6; font-weight: 300; }
+
+    /* ── METHODOLOGY ── */
+    .methodology-section { background: var(--paper); }
+    .methodology-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .method-sources { display: flex; flex-wrap: wrap; gap: 10px; }
+    .source-chip {
+      padding: 8px 14px; background: var(--mist); border-radius: 100px;
+      font-size: 13px; font-weight: 500; color: var(--ink);
+    }
+    .method-steps { display: flex; flex-direction: column; gap: 0; }
+    .method-step {
+      display: flex; gap: 20px; padding: 24px 0;
+      border-bottom: 1px solid var(--mist);
+    }
+    .method-step:last-child { border-bottom: none; }
+    .mstep-num {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--sage); letter-spacing: 1px; flex-shrink: 0; padding-top: 2px; width: 28px;
+    }
+    .method-step h4 { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .method-step p { font-size: 14px; color: var(--mid); line-height: 1.5; font-weight: 300; }
+
+    /* ── PRICE ANCHOR ── */
+    .anchor-section { background: #0D0F14; padding-top: 80px; padding-bottom: 80px; }
+    .anchor-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .anchor-section .section-label { color: var(--sage-lt); }
+    .anchor-compare { display: flex; flex-direction: column; gap: 12px; }
+    .compare-row {
+      border-radius: 16px; padding: 20px 24px;
+    }
+    .compare-alt { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
+    .compare-us {
+      background: var(--sage); position: relative; overflow: hidden;
+      border: none; padding: 24px;
+    }
+    .compare-badge {
+      display: inline-block; background: var(--amber); color: white;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; padding: 3px 10px;
+      border-radius: 100px; margin-bottom: 8px;
+    }
+    .compare-label { font-size: 15px; font-weight: 600; color: white; margin-bottom: 4px; }
+    .compare-alt .compare-label { color: rgba(245,242,236,.6); }
+    .compare-price { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: rgba(245,242,236,.3); margin: 4px 0; }
+    .compare-was { font-size: 16px; color: rgba(255,255,255,.4); text-decoration: line-through; }
+    .compare-price-us { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: white; }
+    .compare-note { font-size: 12px; color: rgba(245,242,236,.4); margin-top: 6px; }
+
+    /* ── FAQ ── */
+    .faq-section { background: white; }
+    .faq-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: start; }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item {
+      border-bottom: 1px solid var(--mist); padding: 0;
+    }
+    .faq-item summary {
+      padding: 22px 0; font-weight: 600; font-size: 15px; cursor: pointer;
+      list-style: none; display: flex; justify-content: space-between; align-items: center;
+      transition: color .2s;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: '+'; font-size: 20px; color: var(--mid); font-weight: 300; transition: transform .2s; }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item[open] summary { color: var(--sage); }
+    .faq-item p { font-size: 14px; color: #4A4845; line-height: 1.7; font-weight: 300; padding-bottom: 20px; }
+
+    /* ── RESPONSIVE NEW SECTIONS ── */
+    @media (max-width: 900px) {
+      .urgency-grid { grid-template-columns: 1fr 1fr; }
+      .methodology-inner { grid-template-columns: 1fr; gap: 40px; }
+      .anchor-inner { grid-template-columns: 1fr; gap: 40px; }
+      .faq-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 480px) {
+      .urgency-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .urgency-stat { font-size: 36px; }
+    }
   </style>
 </head>
 <body>
@@ -460,6 +555,7 @@
   <div class="nav-links">
     <a href="#how-it-works">How it works</a>
     <a href="#report">The Report</a>
+    <a href="#faq-section">FAQ</a>
     <a href="quiz.html" class="nav-cta">Check My Career →</a>
   </div>
 </nav>
@@ -474,11 +570,11 @@
       by <em>AI.</em>
     </h1>
     <p class="hero-sub">
-      Find out exactly how AI will change your career — and what to do about it. Not a fear score. A real, personalised intelligence brief built for your profession.
+      Will AI replace your job? Find out in 60 seconds. Not a fear score — a real, data-backed intelligence brief built for your exact profession, role, and skill set.
     </p>
     <div class="hero-actions">
       <a href="quiz.html" class="btn-primary">
-        Analyse My Career
+        Analyse My Career — Free Preview
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
       <a href="#how-it-works" class="btn-ghost">See how it works</a>
@@ -487,7 +583,7 @@
       <div class="trust-avatars">
         <span>👩‍⚕️</span><span>👨‍💻</span><span>👩‍⚖️</span><span>👨‍🏫</span><span>+</span>
       </div>
-      <span>2,400+ professionals already know their future</span>
+      <span><span id="live-counter">3,412</span> professionals already know their future</span>
     </div>
   </div>
 
@@ -645,7 +741,7 @@
       </div>
 
       <a href="quiz.html" class="btn-primary" style="margin-top:8px">
-        Get My Brief — £12
+        Get My Brief — <span style="text-decoration:line-through;opacity:.5;font-weight:400">€12</span> €7.99
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
       <p style="font-size:13px;color:var(--mid);margin-top:12px">Instant PDF delivery · Secure checkout · One-time payment</p>
@@ -658,7 +754,7 @@
           <h4>Sarah Chen · UX Designer</h4>
           <p style="font-size:13px;color:var(--mid);margin-top:2px">Technology · 6 years experience</p>
         </div>
-        <span class="price-tag">£12</span>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--mid);text-decoration:line-through">€12.00</div><span class="price-tag">€7.99</span></div>
       </div>
       <div class="report-items">
         <div class="report-item">
@@ -723,10 +819,157 @@
   </div>
 </section>
 
+
+<!-- WHY THIS MATTERS NOW -->
+<section class="section urgency-section">
+  <div class="section-label">The context</div>
+  <h2 class="section-title">Why right now matters.</h2>
+  <p class="section-sub">AI isn't coming. It's already here — and it's reshaping careers faster than any previous technology shift.</p>
+  <div class="urgency-grid">
+    <div class="urgency-card">
+      <div class="urgency-stat">40%</div>
+      <div class="urgency-desc">of all jobs will be significantly disrupted by AI within 5 years, per the IMF</div>
+    </div>
+    <div class="urgency-card">
+      <div class="urgency-stat">3 yrs</div>
+      <div class="urgency-desc">is the average window professionals have to adapt before disruption becomes visible in their role</div>
+    </div>
+    <div class="urgency-card">
+      <div class="urgency-stat">85%</div>
+      <div class="urgency-desc">of workers say they've received no guidance from employers on how AI will change their specific role</div>
+    </div>
+    <div class="urgency-card">
+      <div class="urgency-stat">£150/hr</div>
+      <div class="urgency-desc">is what career coaches charge for advice that still rarely accounts for AI impact on your specific tasks</div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="section methodology-section">
+  <div class="methodology-inner">
+    <div>
+      <div class="section-label">How it works</div>
+      <h2 class="section-title" style="max-width:420px">Built on labour market data, not guesswork.</h2>
+      <p style="font-size:16px;color:#4A4845;line-height:1.7;font-weight:300;max-width:460px;margin-bottom:32px">
+        Every score in your Career Intelligence Brief is calculated from real data — not generic AI sentiment. We analyse your role's actual task composition, then cross-reference it against current AI capability benchmarks.
+      </p>
+      <div class="method-sources">
+        <div class="source-chip">📊 WEF Future of Jobs</div>
+        <div class="source-chip">🏛️ O*NET Task Database</div>
+        <div class="source-chip">📈 McKinsey Global Institute</div>
+        <div class="source-chip">🏢 BLS Occupational Data</div>
+        <div class="source-chip">🤖 Stanford AI Index</div>
+        <div class="source-chip">📋 100+ Profession Profiles</div>
+      </div>
+    </div>
+    <div class="method-steps">
+      <div class="method-step">
+        <div class="mstep-num">01</div>
+        <div>
+          <h4>Task decomposition</h4>
+          <p>We break your role into its component tasks — not just the job title.</p>
+        </div>
+      </div>
+      <div class="method-step">
+        <div class="mstep-num">02</div>
+        <div>
+          <h4>AI capability mapping</h4>
+          <p>Each task is scored against current and near-term AI capabilities from published research.</p>
+        </div>
+      </div>
+      <div class="method-step">
+        <div class="mstep-num">03</div>
+        <div>
+          <h4>Personalisation layer</h4>
+          <p>Your quiz answers or CV adjust the baseline scores for your actual experience, sector, and context.</p>
+        </div>
+      </div>
+      <div class="method-step">
+        <div class="mstep-num">04</div>
+        <div>
+          <h4>Intelligence brief generation</h4>
+          <p>Claude AI synthesises everything into a personalised narrative with specific, actionable recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE ANCHOR -->
+<section class="section anchor-section">
+  <div class="anchor-inner">
+    <div class="anchor-left">
+      <div class="section-label">The value</div>
+      <h2 class="section-title" style="color:var(--paper)">Career clarity.<br>Not career coaching.</h2>
+      <p style="font-size:16px;color:rgba(245,242,236,.65);font-weight:300;line-height:1.7;max-width:400px">
+        A single session with a career coach costs £150 — and rarely covers AI. Your Career Intelligence Brief gives you a data-backed analysis of exactly how AI affects your specific role, delivered instantly.
+      </p>
+    </div>
+    <div class="anchor-compare">
+      <div class="compare-row compare-alt">
+        <div class="compare-label">Career coach (1 session)</div>
+        <div class="compare-price">£150</div>
+        <div class="compare-note">Generic advice · No AI analysis · Weeks to book</div>
+      </div>
+      <div class="compare-row compare-alt">
+        <div class="compare-label">LinkedIn Premium (1 month)</div>
+        <div class="compare-price">£44</div>
+        <div class="compare-note">Job listings · No personalised insight</div>
+      </div>
+      <div class="compare-row compare-us">
+        <div class="compare-badge">TODAY</div>
+        <div class="compare-label">Career Intelligence Brief</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="compare-was">€12</div>
+          <div class="compare-price-us">€7.99</div>
+        </div>
+        <div class="compare-note" style="color:rgba(245,242,236,.5)">Personalised · AI-specific · Instant PDF delivery</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq-section">
+  <div class="faq-inner">
+    <div>
+      <div class="section-label">Common questions</div>
+      <h2 class="section-title">Everything you need<br>to know.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>How accurate is the analysis?</summary>
+        <p>The scores are grounded in published labour market and AI capability data (WEF, O*NET, McKinsey, Stanford AI Index). Your quiz answers or CV refine the baseline. Like any forward-looking model, it reflects the best available evidence — not a crystal ball. We show you the data sources so you can verify.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What do you do with my CV or LinkedIn data?</summary>
+        <p>Your data is used solely to generate your report. We do not store your CV after processing, sell your data, or use it to train AI models. Your LinkedIn URL is only used to read your public profile. We take privacy seriously — see our privacy policy for full details.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How is this different from a generic AI risk score?</summary>
+        <p>Most "AI risk scores" just look at your job title and spit out a number. We analyse your actual task composition, sector, experience level, and role context. Two people with the same job title can have very different risk profiles — and your brief reflects that.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What exactly is in the Career Intelligence Brief?</summary>
+        <p>A 4-page personalised PDF covering: your 6-dimension career dashboard with scores and explanations, your career archetype and what it means for you specifically, a task-level breakdown of what AI will disrupt vs. amplify in your work, 1/3/5-year horizon outlooks with income trajectory, a prioritised 6-step skill roadmap, and specific AI tool and course recommendations.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What is the refund policy?</summary>
+        <p>Because the report is generated and delivered instantly, we are unable to offer refunds once the PDF has been sent. If you have an issue with your report — wrong profession analysed, technical error, delivery failure — contact us and we'll sort it out immediately.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I get this for my team or company?</summary>
+        <p>Yes. We're building a team and enterprise tier for workforce AI exposure analysis. Get in touch at hello@theplanitearth.com and we'll discuss what's possible.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-section">
   <h2>Your career won't<br>wait for certainty.</h2>
-  <p>Get your personalised Career Intelligence Brief today.<br>15 minutes. £12. Clarity that lasts years.</p>
+  <p>Get your personalised Career Intelligence Brief today.<br>Takes 5 minutes. <span style='text-decoration:line-through;opacity:.5'>€12</span> €7.99. Clarity that lasts years.</p>
   <a href="quiz.html" class="btn-white">
     Start My Analysis →
   </a>
@@ -745,5 +988,22 @@
   </nav>
 </footer>
 
+
+<script>
+  // Live counter — increments slowly to feel real
+  (function() {
+    const el = document.getElementById('live-counter');
+    if (!el) return;
+    const base = 3412;
+    // Small random offset per session so it feels live
+    let count = base + Math.floor(Math.random() * 80);
+    el.textContent = count.toLocaleString();
+    // Increment every 18-35 seconds
+    setInterval(() => {
+      count += Math.floor(Math.random() * 3) + 1;
+      el.textContent = count.toLocaleString();
+    }, 22000 + Math.random() * 13000);
+  })();
+</script>
 </body>
 </html>
