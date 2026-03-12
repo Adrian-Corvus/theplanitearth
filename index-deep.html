@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Risk Deep Index — Country × Sector × Profession · ThePlanItEarth</title>
+  <meta name="description" content="The most detailed AI automation risk database available. Filter by country, sector, and profession simultaneously. Unlock for €4.99." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0D0F14;--paper:#F5F2EC;--sage:#3D6B4F;--sage-lt:#C8DDD0;--amber:#D4841A;--amber-lt:#FAE8C8;--red:#C0392B;--red-lt:#FDECEA;--mist:#E8E4DC;--mid:#8A8880;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--paper);border-bottom:1px solid var(--mist);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .logo img{width:36px;height:36px;object-fit:contain;border-radius:6px;}
+    .logo span{color:var(--sage);}
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
+    .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:10px 22px;border-radius:100px;font-size:13px!important;}
+
+    /* GATE SCREEN */
+    #gate-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;}
+    .gate-card{background:white;border-radius:24px;padding:52px 48px;max-width:560px;width:100%;box-shadow:0 24px 80px rgba(13,15,20,.10);text-align:center;}
+    .gate-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--ink),#2A3A6A);color:white;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:28px;}
+    .gate-card h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:16px;line-height:1.15;}
+    .gate-card p{font-size:15px;color:#4A4845;font-weight:300;line-height:1.65;margin-bottom:32px;}
+    .gate-features{display:flex;flex-direction:column;gap:10px;margin-bottom:36px;text-align:left;}
+    .gate-feature{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--paper);border-radius:12px;}
+    .gate-feature-icon{font-size:18px;flex-shrink:0;}
+    .gate-feature-text strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px;}
+    .gate-feature-text span{font-size:13px;color:var(--mid);}
+    .gate-price-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;}
+    .gate-was{font-size:18px;color:var(--mid);text-decoration:line-through;}
+    .gate-price{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--ink);}
+    .gate-price-note{font-size:13px;color:var(--mid);margin-bottom:24px;}
+    .gate-btn{display:block;width:100%;padding:18px;background:var(--ink);color:white;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;text-align:center;}
+    .gate-btn:hover{background:var(--sage);transform:translateY(-2px);}
+    .gate-trust{font-size:12px;color:var(--mid);margin-top:14px;}
+    .gate-free-note{margin-top:20px;font-size:13px;color:var(--mid);}
+    .gate-free-note a{color:var(--sage);text-decoration:none;}
+
+    /* DEEP INDEX APP (unlocked) */
+    #deep-screen{display:none;padding-top:80px;}
+    .deep-hero{padding:40px 48px 32px;background:var(--ink);color:white;}
+    .deep-hero h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;}
+    .deep-hero p{font-size:15px;color:rgba(245,242,236,.6);font-weight:300;}
+    .deep-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sage);color:white;padding:5px 14px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:20px;}
+
+    /* FILTER BAR */
+    .filter-bar{padding:24px 48px;background:white;border-bottom:1px solid var(--mist);display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;position:sticky;top:80px;z-index:50;}
+    .filter-col{display:flex;flex-direction:column;gap:6px;flex:1;min-width:160px;}
+    .filter-col label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);}
+    .filter-col select{padding:10px 14px;border:1.5px solid var(--mist);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--paper);outline:none;cursor:pointer;transition:border .2s;}
+    .filter-col select:focus{border-color:var(--sage);}
+    .filter-col input{padding:10px 14px;border:1.5px solid var(--mist);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--paper);outline:none;transition:border .2s;}
+    .filter-col input:focus{border-color:var(--sage);}
+    .filter-reset{padding:10px 20px;border:1.5px solid var(--mist);border-radius:12px;background:none;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:var(--mid);align-self:flex-end;}
+    .filter-reset:hover{border-color:var(--ink);color:var(--ink);}
+    .result-pill{background:var(--sage-lt);color:var(--sage);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;align-self:flex-end;white-space:nowrap;}
+
+    /* RESULTS */
+    .deep-results{padding:24px 48px 64px;}
+    .results-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+    .results-meta h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+    .results-meta p{font-size:13px;color:var(--mid);}
+    .deep-table{width:100%;border-collapse:collapse;}
+    .deep-table thead th{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--mist);white-space:nowrap;}
+    .deep-table tbody tr{border-bottom:1px solid var(--mist);transition:background .15s;}
+    .deep-table tbody tr:hover{background:white;}
+    .deep-table td{padding:14px 16px;font-size:14px;vertical-align:middle;}
+    .deep-table .country-col{display:flex;align-items:center;gap:8px;}
+    .mini-bars{display:flex;flex-direction:column;gap:4px;min-width:140px;}
+    .mb-row{display:flex;align-items:center;gap:6px;}
+    .mb-label{font-size:10px;color:var(--mid);width:28px;flex-shrink:0;}
+    .mb-track{flex:1;height:5px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .mb-fill{height:100%;border-radius:100px;}
+    .mb-val{font-size:11px;font-weight:700;min-width:32px;text-align:right;}
+    .risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+    .risk-badge.high{background:var(--red-lt);color:var(--red);}
+    .risk-badge.med{background:var(--amber-lt);color:var(--amber);}
+    .risk-badge.low{background:var(--sage-lt);color:var(--sage);}
+    .country-modifier{font-size:11px;color:var(--mid);}
+
+    /* COUNTRY MODIFIER LEGEND */
+    .legend-box{background:white;border:1.5px solid var(--mist);border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+    .legend-box p{font-size:12px;color:var(--mid);font-weight:500;}
+    .legend-chip{padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;}
+    .lc-high{background:var(--red-lt);color:var(--red);}
+    .lc-med{background:var(--amber-lt);color:var(--amber);}
+    .lc-low{background:var(--sage-lt);color:var(--sage);}
+
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+    footer a{color:rgba(245,242,236,.4);font-size:13px;text-decoration:none;}
+    footer a:hover{color:var(--paper);}
+    .footer-links{display:flex;gap:24px;}
+
+    @media(max-width:900px){
+      nav{padding:14px 20px;}
+      .nav-links a:not(.nav-cta){display:none;}
+      #gate-screen{padding:80px 16px;}
+      .gate-card{padding:32px 24px;}
+      .deep-hero,.filter-bar,.deep-results{padding-left:20px;padding-right:20px;}
+      .filter-bar{position:static;}
+      .deep-table{font-size:13px;}
+    }
+    @media(max-width:600px){
+      .filter-col{min-width:100%;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png" />The PlanIt<span>Earth</span></a>
+  <div class="nav-links">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html">Countries</a>
+    <a href="index-deep.html" class="active">Deep Index</a>
+    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
+  </div>
+</nav>
+
+<!-- ── GATE SCREEN ── -->
+<div id="gate-screen">
+  <div class="gate-card">
+    <div class="gate-badge">✦ DEEP INDEX</div>
+    <h1>The full cross-referenced<br>AI Risk Database</h1>
+    <p>See exactly how automation risk differs for your profession, in your sector, in your country. The only index that combines all three dimensions simultaneously.</p>
+
+    <div class="gate-features">
+      <div class="gate-feature">
+        <div class="gate-feature-icon">🌍</div>
+        <div class="gate-feature-text">
+          <strong>10 countries, side by side</strong>
+          <span>Filter by UK, US, France, Germany, Singapore, UAE and more</span>
+        </div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-icon">🏭</div>
+        <div class="gate-feature-text">
+          <strong>11 sectors, all comparable</strong>
+          <span>Finance, Tech, Healthcare, Legal, Education, and more</span>
+        </div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-icon">👤</div>
+        <div class="gate-feature-text">
+          <strong>69 professions, country-adjusted</strong>
+          <span>Scores shift based on local labour market and AI adoption rates</span>
+        </div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-icon">🔍</div>
+        <div class="gate-feature-text">
+          <strong>Filter, search, sort freely</strong>
+          <span>Drill down to exactly the combination you care about</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-price-row">
+      <span class="gate-was">€8</span>
+      <span class="gate-price">€4.99</span>
+    </div>
+    <div class="gate-price-note">One-time payment · Instant access · No subscription</div>
+
+    <button class="gate-btn" onclick="startCheckout()">Unlock the Deep Index →</button>
+    <div class="gate-trust">🔒 Secure checkout via Stripe · Instant access after payment</div>
+    <div class="gate-free-note">
+      Want the free version? Browse <a href="index-professions.html">professions</a>, <a href="index-sectors.html">sectors</a>, or <a href="index-countries.html">countries</a> separately.
+    </div>
+  </div>
+</div>
+
+<!-- ── DEEP INDEX APP (shown after payment) ── -->
+<div id="deep-screen">
+  <div class="deep-hero">
+    <div class="deep-badge">✦ DEEP INDEX · UNLOCKED</div>
+    <h1>AI Risk: Country × Sector × Profession</h1>
+    <p>Cross-referenced automation scores. Country modifiers applied. Filter freely.</p>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-col">
+      <label>Country</label>
+      <select id="f-country" onchange="renderDeep()">
+        <option value="all">All countries</option>
+      </select>
+    </div>
+    <div class="filter-col">
+      <label>Sector</label>
+      <select id="f-sector" onchange="renderDeep()">
+        <option value="all">All sectors</option>
+      </select>
+    </div>
+    <div class="filter-col">
+      <label>Risk level</label>
+      <select id="f-risk" onchange="renderDeep()">
+        <option value="all">Any risk level</option>
+        <option value="high">High risk (65+)</option>
+        <option value="med">Medium (35–64)</option>
+        <option value="low">Low risk (&lt;35)</option>
+      </select>
+    </div>
+    <div class="filter-col">
+      <label>Search profession</label>
+      <input type="text" id="f-search" placeholder="e.g. Accountant…" oninput="renderDeep()" />
+    </div>
+    <button class="filter-reset" onclick="resetFilters()">Reset</button>
+    <div class="result-pill" id="result-count">— results</div>
+  </div>
+
+  <div class="deep-results">
+    <div class="legend-box">
+      <p>Country modifier applied to base score:</p>
+      <span class="legend-chip lc-high">+3 to +5 higher risk</span>
+      <span class="legend-chip lc-med">±0–2 neutral</span>
+      <span class="legend-chip lc-low">−2 to −5 lower risk</span>
+      <p style="margin-left:8px;font-size:12px;color:var(--mid)">Reflects local AI adoption pace, labour market structure, and regulatory environment.</p>
+    </div>
+
+    <div class="results-meta">
+      <h2 id="results-headline">All professions · All countries</h2>
+      <p>Sorted by automation risk · <span id="results-sub"></span></p>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="deep-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Profession</th>
+            <th>Sector</th>
+            <th>Country</th>
+            <th>Adjusted Risk Score</th>
+            <th>Augmentation</th>
+            <th>Risk Level</th>
+          </tr>
+        </thead>
+        <tbody id="deep-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:13px">Country-adjusted scores are modelled estimates grounded in published AI adoption and labour market research.</p>
+  <div class="footer-links">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html">Countries</a>
+    <a href="index.html">Home</a>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
+
+// Country-level modifiers: how much they shift the base profession score
+// Positive = higher risk in that country, negative = lower
+const COUNTRY_MODIFIERS = {
+  uk: 0, us: +3, fr: -2, de: -3, nl: -1, ca: +1, au: 0, sg: +4, ae: +5, in: +6
+};
+
+// ── GATE LOGIC ──
+// Check URL param ?unlocked=true (set after Stripe success redirect)
+function checkAccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('unlocked') === 'true' || sessionStorage.getItem('deep_unlocked') === 'true') {
+    sessionStorage.setItem('deep_unlocked', 'true');
+    showDeepIndex();
+  }
+}
+
+async function startCheckout() {
+  const btn = document.querySelector('.gate-btn');
+  btn.textContent = 'Redirecting to checkout…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan: 'deep-index',
+        email: '',   // Stripe will collect
+        name: '',
+        answers: {}, scores: {}, archetype: { name: '' },
+        profession: '',
+        inputMethod: 'deep-index',
+        cvQualityIssues: [],
+      }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else throw new Error(data.error || 'Checkout failed');
+  } catch (err) {
+    btn.textContent = 'Unlock the Deep Index →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+function showDeepIndex() {
+  document.getElementById('gate-screen').style.display = 'none';
+  document.getElementById('deep-screen').style.display = 'block';
+  buildFilters();
+  renderDeep();
+}
+
+// ── FILTER SETUP ──
+function buildFilters() {
+  const cSel = document.getElementById('f-country');
+  COUNTRIES.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = c.flag + ' ' + c.name;
+    cSel.appendChild(o);
+  });
+  // Pre-select from URL param
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('country')) cSel.value = params.get('country');
+
+  const sSel = document.getElementById('f-sector');
+  const sectors = [...new Set(PROFESSIONS.map(p => p.sector))].sort();
+  sectors.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sSel.appendChild(o);
+  });
+}
+
+function resetFilters() {
+  document.getElementById('f-country').value = 'all';
+  document.getElementById('f-sector').value = 'all';
+  document.getElementById('f-risk').value = 'all';
+  document.getElementById('f-search').value = '';
+  renderDeep();
+}
+
+// ── RENDER ──
+function riskLevel(s){return s>=65?'high':s>=35?'med':'low';}
+function riskLabel(s){return s>=65?'High Risk':s>=35?'Medium Risk':'Low Risk';}
+function riskColor(s){return s>=65?'#C0392B':s>=35?'#D4841A':'#3D6B4F';}
+
+function adjustedScore(baseScore, countryId) {
+  const mod = COUNTRY_MODIFIERS[countryId] || 0;
+  return Math.max(5, Math.min(98, baseScore + mod));
+}
+
+function renderDeep() {
+  const filterCountry = document.getElementById('f-country').value;
+  const filterSector  = document.getElementById('f-sector').value;
+  const filterRisk    = document.getElementById('f-risk').value;
+  const filterSearch  = document.getElementById('f-search').value.toLowerCase();
+
+  // Build rows: cross-product of professions × countries (filtered)
+  const countries = filterCountry === 'all' ? COUNTRIES : COUNTRIES.filter(c => c.id === filterCountry);
+  let rows = [];
+
+  PROFESSIONS.forEach(p => {
+    if (filterSector !== 'all' && p.sector !== filterSector) return;
+    if (filterSearch && !p.name.toLowerCase().includes(filterSearch)) return;
+    countries.forEach(c => {
+      const adj = adjustedScore(p.automation, c.id);
+      if (filterRisk !== 'all' && riskLevel(adj) !== filterRisk) return;
+      rows.push({ profession: p, country: c, adjustedRisk: adj });
+    });
+  });
+
+  rows.sort((a, b) => b.adjustedRisk - a.adjustedRisk);
+
+  document.getElementById('result-count').textContent = rows.length + ' results';
+  document.getElementById('results-sub').textContent = rows.length + ' combinations';
+
+  const countryLabel = filterCountry === 'all' ? 'All countries' : COUNTRIES.find(c=>c.id===filterCountry)?.name;
+  const sectorLabel  = filterSector  === 'all' ? 'All sectors'  : filterSector;
+  document.getElementById('results-headline').textContent = sectorLabel + ' · ' + countryLabel;
+
+  const tbody = document.getElementById('deep-tbody');
+  tbody.innerHTML = rows.slice(0, 300).map((r, i) => {
+    const rc  = riskColor(r.adjustedRisk);
+    const rl  = riskLevel(r.adjustedRisk);
+    const mod = COUNTRY_MODIFIERS[r.country.id] || 0;
+    const modStr = mod > 0 ? `+${mod}` : mod < 0 ? `${mod}` : '±0';
+    const modColor = mod > 2 ? '#C0392B' : mod < -1 ? '#3D6B4F' : '#8A8880';
+    return `<tr>
+      <td style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--mid)">${i+1}</td>
+      <td>
+        <div style="font-weight:600;font-size:14px">${r.profession.name}</div>
+      </td>
+      <td style="font-size:13px;color:var(--mid)">${r.profession.sector}</td>
+      <td>
+        <div class="country-col">
+          <span style="font-size:18px">${r.country.flag}</span>
+          <div>
+            <div style="font-size:13px;font-weight:500">${r.country.name}</div>
+            <div class="country-modifier" style="color:${modColor}">modifier ${modStr}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="mini-bars">
+          <div class="mb-row">
+            <span class="mb-label">Risk</span>
+            <div class="mb-track"><div class="mb-fill" style="width:${r.adjustedRisk}%;background:${rc}"></div></div>
+            <span class="mb-val" style="color:${rc}">${r.adjustedRisk}</span>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="mini-bars">
+          <div class="mb-row">
+            <span class="mb-label">Aug</span>
+            <div class="mb-track"><div class="mb-fill" style="width:${r.profession.augmentation}%;background:var(--sage)"></div></div>
+            <span class="mb-val" style="color:var(--sage)">${r.profession.augmentation}</span>
+          </div>
+        </div>
+      </td>
+      <td><span class="risk-badge ${rl}">${riskLabel(r.adjustedRisk)}</span></td>
+    </tr>`;
+  }).join('');
+
+  if (rows.length > 300) {
+    tbody.innerHTML += `<tr><td colspan="7" style="text-align:center;padding:20px;font-size:13px;color:var(--mid)">
+      Showing top 300 of ${rows.length} results. Narrow your filters to see more.
+    </td></tr>`;
+  }
+}
+
+checkAccess();
+</script>
+</body>
+</html>

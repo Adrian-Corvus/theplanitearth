@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Job Automation Risk by Country 2025 — ThePlanItEarth</title>
+  <meta name="description" content="Which countries face the highest AI automation risk to jobs in 2025? See country-level scores for UK, US, France, Germany, Singapore, UAE and more." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0D0F14;--paper:#F5F2EC;--sage:#3D6B4F;--sage-lt:#C8DDD0;--amber:#D4841A;--amber-lt:#FAE8C8;--red:#C0392B;--red-lt:#FDECEA;--mist:#E8E4DC;--mid:#8A8880;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--paper);border-bottom:1px solid var(--mist);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .logo img{width:36px;height:36px;object-fit:contain;border-radius:6px;}
+    .logo span{color:var(--sage);}
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:10px 22px;border-radius:100px;font-size:13px!important;}
+
+    .page-hero{padding:120px 48px 48px;max-width:800px;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--sage-lt);color:var(--sage);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:24px;}
+    .page-hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
+    .page-hero h1 em{font-style:normal;color:var(--sage);}
+    .page-hero p{font-size:17px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:32px;}
+    .index-nav{display:flex;gap:12px;flex-wrap:wrap;}
+    .index-link{padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
+    .index-link:hover{border-color:var(--ink);color:var(--ink);}
+    .index-link.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+    /* COUNTRY CARDS */
+    .countries-wrap{padding:0 48px 64px;}
+    .countries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+    .country-card{background:white;border-radius:20px;padding:28px;border:1.5px solid var(--mist);transition:all .2s;cursor:pointer;display:block;text-decoration:none;color:inherit;}
+    .country-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(13,15,20,.08);border-color:transparent;}
+    .country-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .country-flag{font-size:40px;line-height:1;}
+    .country-name-wrap h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;}
+    .country-name-wrap p{font-size:12px;color:var(--mid);margin-top:2px;}
+    .country-scores{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+    .score-row{display:flex;flex-direction:column;gap:4px;}
+    .score-top{display:flex;justify-content:space-between;font-size:12px;}
+    .score-top .label{font-weight:600;color:var(--mid);}
+    .score-top .val{font-weight:700;}
+    .bar-track{height:7px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:100px;}
+    .country-detail{border-top:1px solid var(--mist);padding-top:16px;display:flex;flex-direction:column;gap:8px;}
+    .detail-row{font-size:12px;line-height:1.5;}
+    .detail-row strong{color:var(--red);font-weight:600;}
+    .detail-row.safe strong{color:var(--sage);}
+    .risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+    .risk-badge.high{background:var(--red-lt);color:var(--red);}
+    .risk-badge.med{background:var(--amber-lt);color:var(--amber);}
+    .risk-badge.low{background:var(--sage-lt);color:var(--sage);}
+
+    /* RANKED BAR CHART */
+    .chart-wrap{padding:0 48px 64px;}
+    .chart-wrap h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:32px;}
+    .chart-bars{display:flex;flex-direction:column;gap:12px;}
+    .chart-row{display:flex;align-items:center;gap:16px;}
+    .chart-label{min-width:140px;font-size:14px;font-weight:500;text-align:right;}
+    .chart-bar-wrap{flex:1;position:relative;}
+    .chart-bar-track{height:32px;background:var(--mist);border-radius:8px;overflow:hidden;}
+    .chart-bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:12px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+    .chart-bar-fill span{font-size:13px;font-weight:700;color:white;white-space:nowrap;}
+    .chart-flag{font-size:20px;min-width:28px;}
+
+    .upsell-banner{margin:0 48px 48px;background:var(--ink);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .upsell-banner h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;margin-bottom:6px;}
+    .upsell-banner p{font-size:14px;color:rgba(245,242,236,.6);font-weight:300;}
+    .upsell-banner a{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:white;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;}
+
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+    footer a{color:rgba(245,242,236,.4);font-size:13px;text-decoration:none;}
+    footer a:hover{color:var(--paper);}
+    .footer-links{display:flex;gap:24px;}
+
+    @media(max-width:900px){
+      nav{padding:14px 20px;}
+      .nav-links a:not(.nav-cta){display:none;}
+      .page-hero{padding:100px 20px 40px;}
+      .countries-wrap,.chart-wrap{padding:0 20px 40px;}
+      .upsell-banner{margin:0 20px 40px;}
+      .countries-grid{grid-template-columns:1fr;}
+      .chart-label{min-width:80px;font-size:12px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png" />The PlanIt<span>Earth</span></a>
+  <div class="nav-links">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html" class="active">Countries</a>
+    <a href="index-deep.html">Deep Index</a>
+    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">2025 Country Risk Index</div>
+  <h1>AI job exposure<br>by <em>country.</em></h1>
+  <p>Country-level automation risk benchmarks — reflecting labour market composition, regulatory environment, AI adoption pace, and sector mix.</p>
+  <div class="index-nav">
+    <a href="index-professions.html" class="index-link">By Profession</a>
+    <a href="index-sectors.html" class="index-link">By Sector</a>
+    <a href="index-countries.html" class="index-link active">By Country</a>
+    <a href="index-deep.html" class="index-link">Deep Index ✦</a>
+  </div>
+</div>
+
+<div class="chart-wrap">
+  <h2>Automation risk ranking</h2>
+  <div class="chart-bars" id="chart-bars"></div>
+</div>
+
+<div class="countries-wrap">
+  <div class="countries-grid" id="countries-grid"></div>
+</div>
+
+<div class="upsell-banner">
+  <div>
+    <h3>Your profession, in your country</h3>
+    <p>See exactly how an accountant's risk differs between France and Singapore. Unlock the full Deep Index.</p>
+  </div>
+  <a href="index-deep.html">Unlock Deep Index · <s style="opacity:.4">€8</s> €4.99 →</a>
+</div>
+
+<footer>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:13px">Country scores reflect weighted sector mix and published AI adoption research. Estimates only.</p>
+  <div class="footer-links">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index.html">Home</a>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+function riskLevel(s){return s>=65?'high':s>=35?'med':'low';}
+function riskLabel(s){return s>=65?'High Risk':s>=35?'Medium Risk':'Low Risk';}
+function riskColor(s){return s>=65?'#C0392B':s>=35?'#D4841A':'#3D6B4F';}
+
+const sorted=[...COUNTRIES].sort((a,b)=>b.automation-a.automation);
+
+// Bar chart
+const chartEl=document.getElementById('chart-bars');
+chartEl.innerHTML=sorted.map(c=>{
+  const rc=riskColor(c.automation);
+  return `<div class="chart-row">
+    <div class="chart-flag">${c.flag}</div>
+    <div class="chart-label">${c.name}</div>
+    <div class="chart-bar-wrap">
+      <div class="chart-bar-track">
+        <div class="chart-bar-fill" style="width:${c.automation}%;background:${rc}">
+          <span>${c.automation}/100</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}).join('');
+
+// Cards
+const grid=document.getElementById('countries-grid');
+grid.innerHTML=sorted.map(c=>{
+  const rl=riskLevel(c.automation),rc=riskColor(c.automation);
+  return `<a class="country-card" href="index-deep.html?country=${c.id}">
+    <div class="country-header">
+      <div class="country-flag">${c.flag}</div>
+      <div class="country-name-wrap">
+        <h3>${c.name}</h3>
+        <p><span class="risk-badge ${rl}">${riskLabel(c.automation)}</span></p>
+      </div>
+    </div>
+    <div class="country-scores">
+      <div class="score-row">
+        <div class="score-top"><span class="label">Automation Risk</span><span class="val" style="color:${rc}">${c.automation}/100</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${c.automation}%;background:${rc}"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-top"><span class="label">Augmentation Potential</span><span class="val" style="color:var(--sage)">${c.augmentation}/100</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${c.augmentation}%;background:var(--sage)"></div></div>
+      </div>
+    </div>
+    <div class="country-detail">
+      <div class="detail-row"><strong>Most at risk:</strong> ${c.topRisk}</div>
+      <div class="detail-row safe"><strong>Most protected:</strong> ${c.topSafe}</div>
+    </div>
+  </a>`;
+}).join('');
+</script>
+</body>
+</html>
