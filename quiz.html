@@ -159,6 +159,21 @@
     .btn-next.enabled:hover { background: var(--sage); transform: translateY(-1px); }
 
     /* ── LINKEDIN ── */
+    #screen-context {
+      align-items: center; justify-content: center; flex-direction: column;
+      padding: 100px 24px 60px;
+    }
+    .country-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      width: 100%; max-width: 480px; margin: 16px 0;
+    }
+    .country-btn {
+      padding: 12px 10px; border: 2px solid var(--mist); border-radius: 12px;
+      background: white; cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--ink); text-align: center; transition: all .15s;
+    }
+    .country-btn:hover { border-color: var(--sage); background: #F0F7F3; }
+    .country-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--sage); font-weight: 700; }
     #screen-linkedin {
       align-items: center; justify-content: center;
       flex-direction: column; padding: 100px 24px 60px;
@@ -775,6 +790,48 @@
   </div>
 </div>
 
+<!-- ── SCREEN 2D: COUNTRY + TARGET COMPANY ── -->
+<div class="screen" id="screen-context">
+  <div class="input-card" style="max-width:520px">
+    <div style="font-size:12px;font-weight:700;color:var(--sage);letter-spacing:1.5px;margin-bottom:12px">STEP 2 OF 4 — CONTEXT</div>
+    <h2 style="font-size:24px;margin-bottom:8px">Where are you applying?</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+      CV formats and hiring expectations vary significantly by country. This helps us tailor the optimisation report to local standards.
+    </p>
+
+    <label class="field-label">Target country</label>
+    <div class="country-grid" id="country-grid">
+      <button class="country-btn" onclick="selectCountry('United Kingdom', this)">🇬🇧 UK</button>
+      <button class="country-btn" onclick="selectCountry('United States', this)">🇺🇸 USA</button>
+      <button class="country-btn" onclick="selectCountry('France', this)">🇫🇷 France</button>
+      <button class="country-btn" onclick="selectCountry('Germany', this)">🇩🇪 Germany</button>
+      <button class="country-btn" onclick="selectCountry('Netherlands', this)">🇳🇱 Netherlands</button>
+      <button class="country-btn" onclick="selectCountry('Canada', this)">🇨🇦 Canada</button>
+      <button class="country-btn" onclick="selectCountry('Australia', this)">🇦🇺 Australia</button>
+      <button class="country-btn" onclick="selectCountry('UAE', this)">🇦🇪 UAE</button>
+      <button class="country-btn" onclick="selectCountry('other', this)">🌍 Other</button>
+    </div>
+    <div id="country-other-wrap" style="display:none;margin-top:8px">
+      <input class="text-input" id="country-other-input" type="text" placeholder="Type your country…"
+        oninput="state.targetCountry = this.value.trim(); updateContextNext()" />
+    </div>
+
+    <label class="field-label" style="margin-top:20px">Target company <span style="font-weight:300;color:var(--mid)">(optional)</span></label>
+    <input class="text-input" id="target-company" type="text"
+      placeholder="e.g. Spotify, HSBC, McKinsey — or leave blank"
+      oninput="state.targetCompany = this.value.trim()" />
+
+    <label class="field-label" style="margin-top:16px">Target role <span style="font-weight:300;color:var(--mid)">(optional)</span></label>
+    <input class="text-input" id="target-role" type="text"
+      placeholder="e.g. Senior Product Manager, Data Analyst"
+      oninput="state.targetRole = this.value.trim()" />
+
+    <button class="btn-analyse" id="context-next" onclick="goFromContext()" style="opacity:.4;pointer-events:none;margin-top:24px">
+      Continue →
+    </button>
+  </div>
+</div>
+
 <!-- ── SCREEN 3: ANALYSING ── -->
 <div class="screen" id="screen-loading">
   <div class="loader-orbit">
@@ -1042,6 +1099,9 @@ const state = {
   cvQualityIssues: [],
   optimisationUrgency: 'medium',
   rawInput: '',
+  targetCountry: '',
+  targetCompany: '',
+  targetRole: '',
 };
 
 // ── QUESTIONS ──
@@ -1593,7 +1653,7 @@ function selectMethod(method, el) {
       showScreen('screen-quiz');
       renderQuestion(0);
     } else if (method === 'linkedin') {
-      setProgress(20, 'LinkedIn analysis', 'Step 2 of 4');
+      setProgress(20, 'LinkedIn profile', 'Step 2 of 4');
       showScreen('screen-linkedin');
     } else {
       setProgress(20, 'CV upload', 'Step 2 of 4');
@@ -1817,6 +1877,37 @@ async function extractTextFromFile(file) {
   });
 }
 
+// ── CONTEXT SCREEN (country / company / role) ──
+function selectCountry(val, el) {
+  state.targetCountry = val;
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  const otherWrap = document.getElementById('country-other-wrap');
+  if (otherWrap) otherWrap.style.display = val === 'other' ? 'block' : 'none';
+  if (val !== 'other') updateContextNext();
+}
+
+function updateContextNext() {
+  const btn = document.getElementById('context-next');
+  if (!btn) return;
+  const ok = state.targetCountry && state.targetCountry !== 'other'
+             || (state.targetCountry === 'other' && document.getElementById('country-other-input')?.value.trim());
+  btn.style.opacity      = ok ? '1' : '0.4';
+  btn.style.pointerEvents = ok ? 'all' : 'none';
+}
+
+function goFromContext() {
+  // Populate target company/role from inputs
+  state.targetCompany = document.getElementById('target-company')?.value.trim() || '';
+  state.targetRole    = document.getElementById('target-role')?.value.trim() || '';
+  if (state.targetCountry === 'other') {
+    state.targetCountry = document.getElementById('country-other-input')?.value.trim() || '';
+  }
+  // Resume whichever analysis was pending
+  if (state.pendingAnalysis === 'linkedin') _runLinkedInAnalysis();
+  else if (state.pendingAnalysis === 'cv')  _runCVAnalysis();
+}
+
 // ── DEBUG HELPERS ──
 function startLoadingMessages() {
   // Cycle through loading status messages
@@ -1872,8 +1963,20 @@ async function startLinkedInAnalysis() {
 
   state.name   = name;
   state.method = 'linkedin';
+  state._liUrl = url;   // stash for after context screen
 
-  setProgress(40, 'Fetching your LinkedIn profile…', 'Step 2 of 4');
+  // Go to context screen first, then analyse after
+  state.pendingAnalysis = 'linkedin';
+  setProgress(30, 'Almost ready…', 'Step 2 of 4');
+  showScreen('screen-context');
+  updateContextNext();
+  return; // Will resume via goFromContext()
+}
+
+async function _runLinkedInAnalysis() {
+  const url  = state._liUrl;
+  const name = state.name;
+  setProgress(40, 'Fetching your LinkedIn profile…', 'Step 3 of 4');
   showScreen('screen-loading');
   startLoadingMessages();
 
@@ -1929,7 +2032,18 @@ async function startCVAnalysis() {
   state.name   = name;
   state.method = 'cv';
 
-  setProgress(35, 'Reading your CV…', 'Step 2 of 4');
+  // Go to context screen first, then analyse after
+  state.pendingAnalysis = 'cv';
+  setProgress(30, 'Almost ready…', 'Step 2 of 4');
+  showScreen('screen-context');
+  updateContextNext();
+  return; // Will resume via goFromContext()
+}
+
+async function _runCVAnalysis() {
+  const file = state.cvFile;
+  const name = state.name || '';
+  setProgress(35, 'Reading your CV…', 'Step 3 of 4');
   showScreen('screen-loading');
   startLoadingMessages();
 
@@ -2232,6 +2346,9 @@ async function completePurchase() {
         plan:            state.plan,
         inputMethod:     state.method || 'quiz',
         cvQualityIssues: state.cvQualityIssues || [],
+        targetCountry:   state.targetCountry || '',
+        targetCompany:   state.targetCompany || '',
+        targetRole:      state.targetRole    || '',
       }),
     });
     const data = await res.json();
