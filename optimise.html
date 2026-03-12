@@ -3,456 +3,2392 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile Optimisation Report · ThePlanItEarth</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Career Analysis · PlanItEarth</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --ink: #0D0F14; --sage: #3D6B4F; --amber: #D4841A; --red: #C0392B;
-      --mid: #8A8880; --mist: #E8E4DC; --paper: #F5F2EC; --white: #FFFFFF;
-      --bg2: #FAFAF8;
+      --ink:     #0D0F14;
+      --paper:   #F5F2EC;
+      --sage:    #3D6B4F;
+      --sage-lt: #C8DDD0;
+      --amber:   #D4841A;
+      --amber-lt:#FAE8C8;
+      --red:     #C0392B;
+      --mist:    #E8E4DC;
+      --mid:     #8A8880;
+      --purple:  #7B5EA7;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper); color: var(--ink);
+      overflow-x: hidden;
+    }
 
-    /* NAV */
-    nav {
+    /* ── TOP BAR ── */
+    .topbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px; background: var(--paper); border-bottom: 1px solid var(--mist);
+      padding: 18px 40px;
+      background: var(--paper); border-bottom: 1px solid var(--mist);
     }
-    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
-      color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .logo img { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; }
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+      color: var(--ink); text-decoration: none;
+    }
     .logo span { color: var(--sage); }
-    nav a.back { font-size: 13px; color: var(--mid); text-decoration: none; }
-    nav a.back:hover { color: var(--ink); }
+    .progress-wrap {
+      flex: 1; max-width: 320px; margin: 0 40px;
+    }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--mid); margin-bottom: 6px;
+    }
+    .progress-track {
+      height: 4px; background: var(--mist); border-radius: 100px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--sage); border-radius: 100px;
+      transition: width .4s cubic-bezier(.4,0,.2,1);
+    }
+    .topbar-right { font-size: 13px; color: var(--mid); }
 
-    /* SCREENS */
-    .screen { display: none; min-height: 100vh; padding-top: 80px; }
+    /* ── SCREENS ── */
+    .screen {
+      display: none; min-height: 100vh; padding-top: 80px;
+    }
     .screen.active { display: flex; }
-    .screen-center { align-items: center; justify-content: center; flex-direction: column; padding: 100px 24px 60px; }
 
-    /* CARDS */
-    .input-card {
-      background: white; border-radius: 20px; padding: 40px 36px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.06); width: 100%; max-width: 520px;
+    /* ── METHOD PICKER ── */
+    #screen-method {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
     }
-    .input-card h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
-      text-transform: uppercase; color: var(--mid); margin-bottom: 8px; margin-top: 18px; }
-    .text-input {
-      width: 100%; padding: 14px 16px; border: 2px solid var(--mist); border-radius: 12px;
-      font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--paper);
-      color: var(--ink); outline: none; transition: border .2s;
+    .screen-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 16px;
     }
-    .text-input:focus { border-color: var(--sage); background: white; }
-    .btn-go {
-      display: block; width: 100%; margin-top: 24px; padding: 16px;
-      background: var(--ink); color: white; border: none; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: background .2s, transform .15s; text-align: center;
+    .screen-title {
+      font-family: 'Syne', sans-serif; font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -1.5px; text-align: center;
+      margin-bottom: 12px; line-height: 1.1;
     }
-    .btn-go:hover { background: var(--sage); transform: translateY(-1px); }
-    .btn-go:disabled { opacity: .4; pointer-events: none; }
-    .privacy-note { font-size: 12px; color: var(--mid); margin-top: 12px; text-align: center; }
-    .error-msg { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
+    .screen-sub {
+      font-size: 16px; color: var(--mid); text-align: center;
+      font-weight: 300; margin-bottom: 48px;
+    }
+    .method-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 760px; width: 100%;
+    }
+    .method-btn {
+      background: white; border: 2px solid var(--mist);
+      border-radius: 20px; padding: 32px 24px;
+      cursor: pointer; text-align: center;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .method-btn:hover {
+      border-color: var(--sage); transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(61,107,79,.15);
+    }
+    .method-btn.selected { border-color: var(--sage); background: #F0F7F3; }
+    .method-btn .icon { font-size: 36px; }
+    .method-btn h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+    .method-btn p { font-size: 13px; color: var(--mid); font-weight: 300; line-height: 1.5; }
 
-    /* UPLOAD ZONE */
-    .upload-zone {
-      border: 2px dashed var(--mist); border-radius: 16px; padding: 32px 24px;
-      text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 4px;
+    /* ── QUIZ ── */
+    #screen-quiz {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
     }
-    .upload-zone:hover, .upload-zone.drag { border-color: var(--sage); background: #F0F7F3; }
-    .upload-zone .up-icon { font-size: 40px; margin-bottom: 10px; }
-    .upload-zone h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-    .upload-zone p { font-size: 13px; color: var(--mid); }
-    #cv-file { display: none; }
+    .quiz-wrap { max-width: 640px; width: 100%; }
+    .question-num {
+      font-size: 12px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--mid); margin-bottom: 16px;
+    }
+    .question-text {
+      font-family: 'Syne', sans-serif; font-size: clamp(22px, 3vw, 32px);
+      font-weight: 700; letter-spacing: -1px; margin-bottom: 32px;
+      line-height: 1.2;
+    }
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn {
+      display: flex; align-items: center; gap: 16px;
+      background: white; border: 2px solid var(--mist);
+      border-radius: 14px; padding: 18px 22px;
+      cursor: pointer; text-align: left;
+      transition: border-color .15s, background .15s, transform .15s;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400;
+      color: var(--ink);
+    }
+    .option-btn:hover { border-color: var(--sage); background: #F0F7F3; transform: translateX(4px); }
+    .option-btn.selected { border-color: var(--sage); background: #F0F7F3; }
+    .option-btn.selected .opt-letter { background: var(--sage); color: white; }
+    .opt-letter {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--mist); display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+      transition: background .15s, color .15s;
+    }
+    .quiz-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 32px;
+    }
+    .btn-back {
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--mid);
+      display: flex; align-items: center; gap: 6px; padding: 0;
+    }
+    .btn-back:hover { color: var(--ink); }
+    .btn-next {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--ink); color: var(--paper);
+      padding: 14px 28px; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+      border: none; cursor: pointer;
+      transition: background .2s, transform .15s;
+      opacity: .4; pointer-events: none;
+    }
+    .btn-next.enabled { opacity: 1; pointer-events: all; }
+    .btn-next.enabled:hover { background: var(--sage); transform: translateY(-1px); }
 
-    /* COUNTRY GRID */
-    .country-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+    /* ── LINKEDIN ── */
+    #screen-context {
+      align-items: center; justify-content: center; flex-direction: column;
+      padding: 100px 24px 60px;
+    }
+    .country-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      width: 100%; max-width: 480px; margin: 16px 0;
+    }
     .country-btn {
-      padding: 12px 8px; border: 2px solid var(--mist); border-radius: 12px;
+      padding: 12px 10px; border: 2px solid var(--mist); border-radius: 12px;
       background: white; cursor: pointer; font-size: 13px; font-weight: 500;
-      color: var(--ink); text-align: center; transition: all .15s; font-family: 'DM Sans', sans-serif;
+      color: var(--ink); text-align: center; transition: all .15s;
     }
     .country-btn:hover { border-color: var(--sage); background: #F0F7F3; }
     .country-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--sage); font-weight: 700; }
-
-    /* METHOD TOGGLE */
-    .method-toggle { display: flex; gap: 8px; margin-bottom: 20px; background: var(--mist); border-radius: 100px; padding: 4px; }
-    .method-tab {
-      flex: 1; padding: 10px; text-align: center; border: none; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer;
-      background: none; color: var(--mid); transition: all .2s;
+    #screen-linkedin {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
     }
-    .method-tab.active { background: white; color: var(--ink); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-
-    /* PLAN CARDS */
-    .plan-cards { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
-    .plan-card {
-      flex: 1; min-width: 160px; padding: 18px 16px; border: 2px solid var(--mist);
-      border-radius: 16px; cursor: pointer; background: white; transition: all .15s; text-align: left;
+    .input-card {
+      background: white; border-radius: 24px; padding: 48px 40px;
+      box-shadow: 0 8px 40px rgba(13,15,20,.08);
+      max-width: 520px; width: 100%;
     }
-    .plan-card:hover { border-color: var(--sage); }
-    .plan-card.selected { border-color: var(--sage); background: #F0F7F3; }
-    .plan-card .plan-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
-    .plan-card.bundle .plan-label { color: var(--amber); }
-    .plan-card.bundle.selected { border-color: var(--amber); background: #FFF8F0; }
-    .plan-card .plan-price { font-size: 22px; font-weight: 700; color: var(--ink); }
-    .plan-card .plan-desc { font-size: 11px; color: var(--mid); margin-top: 3px; }
-    .plan-card .plan-badge { display: inline-block; font-size: 10px; background: var(--amber); color: white; padding: 2px 8px; border-radius: 100px; margin-top: 6px; }
-
-    /* LOADING */
-    #screen-loading { align-items: center; justify-content: center; flex-direction: column; }
-    .orbit { position: relative; width: 90px; height: 90px; margin-bottom: 32px; }
-    .orbit-ring { position: absolute; border-radius: 50%; border: 2px solid transparent; top: 50%; left: 50%; transform: translate(-50%,-50%); }
-    .orbit-ring-1 { width: 90px; height: 90px; border-top-color: var(--sage); animation: spin 1.2s linear infinite; }
-    .orbit-ring-2 { width: 66px; height: 66px; border-right-color: var(--amber); animation: spin 1.8s linear infinite reverse; }
-    .orbit-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 24px; }
-    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
-    .load-stage { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-    .load-sub { font-size: 14px; color: var(--mid); }
-
-    /* STEP INDICATOR */
-    .step-bar { display: flex; gap: 6px; margin-bottom: 28px; }
-    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mist); transition: background .3s; }
-    .step-dot.active { background: var(--sage); }
-    .step-dot.done { background: var(--sage); opacity: .4; }
-
-    @media (max-width: 600px) {
-      nav { padding: 14px 20px; }
-      .input-card { padding: 28px 20px; border-radius: 16px; }
-      .country-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .plan-cards { flex-direction: column; }
+    .input-card h2 {
+      font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700;
+      letter-spacing: -1px; margin-bottom: 8px;
     }
+    .input-card p { font-size: 14px; color: var(--mid); font-weight: 300; margin-bottom: 28px; line-height: 1.6; }
+    .field-label { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; }
+    .text-input {
+      width: 100%; padding: 14px 18px; border-radius: 12px;
+      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
+      font-size: 15px; color: var(--ink); background: var(--paper);
+      outline: none; transition: border-color .2s;
+    }
+    .text-input:focus { border-color: var(--sage); }
+    .text-input::placeholder { color: var(--mid); }
+    .btn-analyse {
+      width: 100%; margin-top: 20px; padding: 16px;
+      background: var(--ink); color: var(--paper);
+      border: none; border-radius: 100px; font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 500; cursor: pointer;
+      transition: background .2s; display: flex; align-items: center;
+      justify-content: center; gap: 10px;
+    }
+    .btn-analyse:hover { background: var(--sage); }
+    .privacy-note {
+      margin-top: 14px; font-size: 12px; color: var(--mid);
+      text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    /* ── CV UPLOAD ── */
+    #screen-cv {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
+    }
+    .upload-zone {
+      width: 100%; border: 2px dashed var(--mist); border-radius: 20px;
+      padding: 48px 24px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s; margin-bottom: 20px;
+      background: white;
+    }
+    .upload-zone:hover, .upload-zone.drag { border-color: var(--sage); background: #F0F7F3; }
+    .upload-zone .upload-icon { font-size: 48px; margin-bottom: 16px; }
+    .upload-zone h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .upload-zone p { font-size: 14px; color: var(--mid); font-weight: 300; }
+    #cv-file { display: none; }
+
+    /* ── ANALYSING LOADER ── */
+    #screen-loading {
+      align-items: center; justify-content: center; flex-direction: column;
+      text-align: center; padding: 100px 24px;
+    }
+    .loader-orbit {
+      position: relative; width: 120px; height: 120px; margin: 0 auto 48px;
+    }
+    .orbit-ring {
+      position: absolute; border-radius: 50%; border: 2px solid transparent;
+      animation: spin linear infinite;
+    }
+    .orbit-1 { inset: 0; border-top-color: var(--sage); animation-duration: 2s; }
+    .orbit-2 { inset: 16px; border-top-color: var(--amber); animation-duration: 3s; animation-direction: reverse; }
+    .orbit-3 { inset: 32px; border-top-color: var(--purple); animation-duration: 1.5s; }
+    .orbit-core {
+      position: absolute; inset: 44px; border-radius: 50%;
+      background: var(--sage); display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-stage {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 12px; min-height: 32px;
+      transition: opacity .3s;
+    }
+    .loading-sub { font-size: 15px; color: var(--mid); font-weight: 300; }
+    .loading-dots { letter-spacing: 4px; }
+
+    /* ── RESULTS ── */
+    #screen-results {
+      flex-direction: column; padding: 100px 0 0;
+      align-items: stretch;
+    }
+
+    .results-hero {
+      background: var(--ink); color: var(--paper);
+      padding: 60px 48px 80px;
+      position: relative; overflow: hidden;
+    }
+    .results-hero::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(61,107,79,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .results-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 12px;
+    }
+    .results-name {
+      font-family: 'Syne', sans-serif; font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800; letter-spacing: -2px; margin-bottom: 4px;
+      line-height: 1.05;
+    }
+    .results-profession {
+      font-size: 18px; color: rgba(245,242,236,.6); font-weight: 300; margin-bottom: 40px;
+    }
+
+    .archetype-display {
+      display: inline-flex; align-items: center; gap: 20px;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px; padding: 20px 28px;
+    }
+    .archetype-display .arch-emoji { font-size: 48px; }
+    .archetype-display .arch-label { font-size: 11px; color: var(--sage-lt); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+    .archetype-display .arch-name { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; }
+    .archetype-display .arch-desc { font-size: 14px; color: rgba(245,242,236,.6); font-weight: 300; margin-top: 4px; max-width: 300px; }
+
+    .results-body {
+      padding: 60px 48px;
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 40px; align-items: start;
+    }
+
+    /* Metrics */
+    .metrics-card {
+      background: white; border-radius: 20px; padding: 36px;
+      box-shadow: 0 4px 24px rgba(13,15,20,.06);
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+      margin-bottom: 24px; letter-spacing: -0.3px;
+    }
+    .metric-item {
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px;
+    }
+    .metric-item:last-child { margin-bottom: 0; }
+    .metric-header { display: flex; justify-content: space-between; align-items: center; }
+    .metric-label { font-size: 14px; font-weight: 500; }
+    .metric-score { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+    .metric-context { font-size: 12px; color: var(--mid); font-weight: 300; }
+    .bar-track { height: 10px; background: var(--mist); border-radius: 100px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 100px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+    /* Tasks preview */
+    .tasks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .task-group { border-radius: 14px; padding: 20px; }
+    .task-group.risk { background: #FDF0EE; }
+    .task-group.safe { background: #EEF5F1; }
+    .task-group-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 14px;
+    }
+    .task-group.risk .task-group-label { color: var(--red); }
+    .task-group.safe .task-group-label { color: var(--sage); }
+    .task-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; font-weight: 400; margin-bottom: 10px;
+      color: var(--ink);
+    }
+    .task-item:last-child { margin-bottom: 0; }
+
+    /* Blurred paid content */
+    .paid-preview {
+      position: relative; border-radius: 14px; overflow: hidden; margin-top: 12px;
+    }
+    .paid-preview-inner {
+      filter: blur(6px); pointer-events: none;
+      padding: 20px; background: var(--paper);
+      user-select: none;
+    }
+    .paid-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(245,242,236,.85);
+      backdrop-filter: blur(2px);
+      text-align: center; padding: 24px;
+    }
+    .paid-overlay .lock { font-size: 32px; margin-bottom: 12px; }
+    .paid-overlay h4 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .paid-overlay p { font-size: 13px; color: var(--mid); font-weight: 300; margin-bottom: 20px; line-height: 1.5; }
+
+    /* Payment sidebar */
+    .payment-sidebar { position: sticky; top: 100px; }
+    .payment-card {
+      background: var(--ink); color: var(--paper);
+      border-radius: 24px; padding: 36px; margin-bottom: 16px;
+    }
+    .payment-card .eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 16px;
+    }
+    .payment-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2;
+    }
+    .payment-card .price-display {
+      font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800;
+      color: white; margin: 20px 0 4px;
+    }
+    .payment-card .price-note { font-size: 13px; color: rgba(245,242,236,.5); margin-bottom: 24px; }
+    .payment-includes {
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px;
+    }
+    .pay-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: rgba(245,242,236,.8);
+    }
+    .pay-item .pay-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--sage); display: flex; align-items: center;
+      justify-content: center; font-size: 10px; flex-shrink: 0;
+    }
+    .btn-buy {
+      width: 100%; padding: 18px; background: var(--sage);
+      color: white; border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: background .2s, transform .15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-buy:hover { background: #4d8862; transform: translateY(-1px); }
+    .secure-note {
+      text-align: center; font-size: 12px; color: rgba(245,242,236,.4);
+      margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    .share-card {
+      background: white; border-radius: 20px; padding: 24px;
+      border: 1.5px solid var(--mist);
+    }
+    .share-card h4 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .share-card p { font-size: 13px; color: var(--mid); font-weight: 300; margin-bottom: 16px; line-height: 1.5; }
+    .share-btn {
+      width: 100%; padding: 12px; border-radius: 100px;
+      border: 1.5px solid var(--mist); background: var(--paper);
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      cursor: pointer; transition: border-color .2s, background .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .share-btn:hover { border-color: var(--ink); background: var(--mist); }
+
+    /* ── PAYMENT SCREEN ── */
+    #screen-payment {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
+    }
+    .payment-form-card {
+      background: white; border-radius: 24px; padding: 48px 40px;
+      box-shadow: 0 8px 40px rgba(13,15,20,.08);
+      max-width: 480px; width: 100%;
+    }
+    .payment-form-card h2 {
+      font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700;
+      letter-spacing: -1px; margin-bottom: 6px;
+    }
+    .payment-form-card .sub { font-size: 14px; color: var(--mid); font-weight: 300; margin-bottom: 32px; }
+    .form-row { margin-bottom: 18px; }
+    .form-row label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
+    .form-row input {
+      width: 100%; padding: 14px 18px; border-radius: 12px;
+      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
+      font-size: 15px; color: var(--ink); background: var(--paper); outline: none;
+      transition: border-color .2s;
+    }
+    .form-row input:focus { border-color: var(--sage); }
+    .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0; border-top: 1px solid var(--mist); margin-top: 8px; margin-bottom: 20px;
+    }
+    .total-row span:first-child { font-size: 15px; font-weight: 500; }
+    .total-row span:last-child { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; }
+    .btn-pay {
+      width: 100%; padding: 18px; background: var(--sage);
+      color: white; border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: background .2s, transform .15s;
+    }
+    .btn-pay:hover { background: #4d8862; transform: translateY(-1px); }
+    .stripe-note {
+      text-align: center; font-size: 12px; color: var(--mid); margin-top: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    /* ── DELIVERY SCREEN ── */
+    #screen-delivery {
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 100px 24px 60px;
+      text-align: center;
+    }
+    .delivery-icon { font-size: 72px; margin-bottom: 32px; animation: bounce .8s ease-out; }
+    @keyframes bounce { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+    .delivery-title {
+      font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,44px);
+      font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+    .delivery-sub { font-size: 17px; color: var(--mid); font-weight: 300; max-width: 440px; margin: 0 auto 40px; line-height: 1.6; }
+    .delivery-email-box {
+      display: flex; gap: 12px; max-width: 400px; width: 100%; margin: 0 auto 48px;
+    }
+    .delivery-email-box input {
+      flex: 1; padding: 14px 18px; border-radius: 100px;
+      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
+      font-size: 15px; outline: none; transition: border-color .2s;
+      background: var(--paper);
+    }
+    .delivery-email-box input:focus { border-color: var(--sage); }
+    .btn-send {
+      padding: 14px 24px; background: var(--sage); color: white;
+      border: none; border-radius: 100px; font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 500; cursor: pointer; white-space: nowrap;
+      transition: background .2s;
+    }
+    .btn-send:hover { background: #4d8862; }
+    .next-steps {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    }
+    .next-step-btn {
+      padding: 12px 24px; border-radius: 100px; text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: background .2s;
+    }
+    .ns-primary { background: var(--ink); color: white; }
+    .ns-primary:hover { background: var(--sage); }
+    .ns-ghost { border: 1.5px solid var(--mist); color: var(--ink); }
+    .ns-ghost:hover { border-color: var(--ink); background: var(--mist); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      /* Topbar */
+      .topbar { padding: 14px 16px; }
+      .progress-wrap { max-width: 140px; margin: 0 10px; }
+      .topbar-right { display: none; }
+
+      /* Method picker */
+      #screen-method { padding: 90px 20px 40px; }
+      .method-cards { grid-template-columns: 1fr; max-width: 100%; gap: 12px; }
+      .method-btn { padding: 24px 20px; flex-direction: row; text-align: left; gap: 16px; }
+      .method-btn .icon { font-size: 28px; flex-shrink: 0; }
+
+      /* Quiz */
+      #screen-quiz { padding: 90px 16px 40px; }
+      .quiz-wrap { max-width: 100%; }
+      .question-text { font-size: clamp(18px, 5vw, 26px); margin-bottom: 24px; }
+      .option-btn { padding: 14px 16px; font-size: 14px; gap: 12px; }
+      .option-btn:hover { transform: none; }
+      .opt-letter { width: 28px; height: 28px; font-size: 12px; }
+      .quiz-nav { margin-top: 24px; }
+      .btn-next { padding: 13px 22px; font-size: 14px; }
+      .screen-eyebrow { font-size: 11px; }
+
+      /* Input screens */
+      #screen-linkedin, #screen-cv, #screen-payment { padding: 90px 16px 40px; }
+      .input-card { padding: 32px 24px; border-radius: 20px; }
+
+      /* Loading */
+      #screen-loading { padding: 90px 20px 40px; }
+
+      /* Results */
+      #screen-results { padding: 80px 0 0; }
+      .results-hero { padding: 32px 20px 48px; }
+      .results-name { font-size: clamp(26px, 7vw, 40px); }
+      .results-profession { font-size: 15px; margin-bottom: 28px; }
+      .archetype-display { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 20px; }
+      .archetype-display .arch-emoji { font-size: 36px; }
+      .archetype-display .arch-name { font-size: 20px; }
+      .results-body { grid-template-columns: 1fr; padding: 24px 16px 40px; gap: 20px; }
+      .metrics-card { padding: 24px 20px; border-radius: 16px; }
+      .tasks-grid { grid-template-columns: 1fr; gap: 12px; }
+      .payment-sidebar { position: static; }
+
+      /* Brief hook card */
+      .brief-hook { margin: 0 16px 20px; }
+      .hook-preview-grid { grid-template-columns: 1fr; gap: 8px; }
+
+      /* Payment */
+      .payment-card { padding: 28px 20px; }
+    }
+
+    @media (max-width: 400px) {
+      .method-btn { padding: 18px 16px; }
+      .question-text { font-size: 17px; }
+      .results-name { font-size: 24px; }
+    }
+
+    /* ── BRIEF HOOK (results preview) ── */
+    .brief-hook {
+      background: var(--ink); border-radius: 20px;
+      overflow: hidden; margin-bottom: 24px;
+      box-shadow: 0 8px 40px rgba(13,15,20,.18);
+    }
+    .hook-header {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hook-header-left { flex: 1; }
+    .hook-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 6px;
+    }
+    .hook-title {
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
+      color: white; letter-spacing: -0.5px; line-height: 1.2;
+    }
+    .hook-badge {
+      background: var(--sage); color: white; font-size: 10px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 100px; white-space: nowrap;
+      margin-left: 16px;
+    }
+    .hook-preview-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 20px 28px;
+    }
+    .hook-stat {
+      background: rgba(255,255,255,.05); border-radius: 12px;
+      padding: 16px 18px; border: 1px solid rgba(255,255,255,.07);
+    }
+    .hook-stat-val {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .hook-stat-label {
+      font-size: 11px; color: rgba(255,255,255,.45); font-weight: 400; line-height: 1.3;
+    }
+    .hook-teaser {
+      padding: 0 28px 20px;
+      font-size: 13px; color: rgba(255,255,255,.5);
+      font-weight: 300; line-height: 1.6;
+    }
+    .hook-blurred-section {
+      margin: 0 28px 28px;
+      border-radius: 12px; overflow: hidden;
+      position: relative;
+    }
+    .hook-blurred-inner {
+      padding: 18px 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      filter: blur(5px);
+      user-select: none; pointer-events: none;
+    }
+    .hook-blurred-inner p {
+      font-size: 12px; color: rgba(255,255,255,.6);
+      margin-bottom: 8px; line-height: 1.5;
+    }
+    .hook-blurred-inner p:last-child { margin-bottom: 0; }
+    .hook-lock-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(13,15,20,.6);
+      border-radius: 12px;
+      backdrop-filter: blur(2px);
+    }
+    .hook-lock-icon { font-size: 22px; margin-bottom: 6px; }
+    .hook-lock-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,.5);
+    }
+    .hook-cta-bar {
+      padding: 20px 28px;
+      background: rgba(61,107,79,.15);
+      border-top: 1px solid rgba(61,107,79,.2);
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hook-cta-text { color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.4; }
+    .hook-cta-text strong { color: white; display: block; font-size: 14px; margin-bottom: 2px; }
+    .btn-hook-buy {
+      background: var(--sage); color: white;
+      padding: 12px 24px; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; white-space: nowrap;
+      transition: background .2s, transform .15s;
+    }
+    .btn-hook-buy:hover { background: #2d5239; transform: translateY(-1px); }
+
+    /* Trust strip */
+    .trust-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; padding: 16px 24px;
+      background: white; border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(13,15,20,.05);
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500; color: var(--mid);
+    }
+    .trust-item span { font-size: 16px; }
   </style>
 </head>
 <body>
 
-<nav>
-  <a href="/" class="logo">
-    <img src="ThePlanItEarthLogoB.png" alt="ThePlanItEarth" />
-    The PlanIt<span>Earth</span>
-  </a>
-  <a href="index.html" class="back">← Back to home</a>
-</nav>
-
-<!-- ── SCREEN 1: INPUT METHOD ── -->
-<div class="screen screen-center active" id="screen-input">
-  <div class="input-card">
-    <div style="display:flex;gap:6px;margin-bottom:20px" id="step-bar">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-      <div class="step-dot" id="dot-3"></div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="index.html" class="logo">The PlanIt<span>Earth</span></a>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-text">Getting started</span>
+      <span id="progress-pct">0%</span>
     </div>
-
-    <h2>Profile Optimisation Report</h2>
-    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 24px;line-height:1.6">
-      We'll analyse your CV or LinkedIn and generate a personalised report with a headline rewrite, CV bullet transformations, ATS keywords, and a positioning strategy — tailored to your target country.
-    </p>
-
-    <!-- Method toggle -->
-    <div class="method-toggle">
-      <button class="method-tab active" id="tab-cv" onclick="switchMethod('cv')">Upload CV</button>
-      <button class="method-tab" id="tab-li" onclick="switchMethod('linkedin')">LinkedIn URL</button>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
+  </div>
+  <div class="topbar-right" id="step-counter">Step 1 of 4</div>
+</div>
 
-    <!-- CV upload -->
-    <div id="cv-section">
-      <div class="upload-zone" id="upload-zone"
-        onclick="document.getElementById('cv-file').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="handleDrop(event)">
-        <div class="up-icon" id="up-icon">📎</div>
-        <h3 id="up-title">Drop your CV here</h3>
-        <p id="up-sub">or click to browse · PDF, Word, or TXT · Max 5MB</p>
-      </div>
-      <input type="file" id="cv-file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile(this)" />
+<!-- ── SCREEN 1: METHOD PICKER ── -->
+<div class="screen active" id="screen-method">
+  <div class="screen-eyebrow">Career Analysis</div>
+  <h1 class="screen-title">How do you want<br>to start?</h1>
+  <p class="screen-sub">All three paths lead to the same place — your personalised Career Intelligence Brief.</p>
+
+  <div class="method-cards">
+    <div class="method-btn" onclick="selectMethod('quiz', this)">
+      <div class="icon">🎯</div>
+      <h3>Quick Quiz</h3>
+      <p>30 questions, 5 minutes max. No login needed.</p>
     </div>
-
-    <!-- LinkedIn URL -->
-    <div id="li-section" style="display:none">
-      <input class="text-input" id="li-url" type="url"
-        placeholder="https://linkedin.com/in/yourname"
-        oninput="onLiInput(this.value)" />
-      <div id="li-hint" style="display:none;font-size:12px;color:var(--amber);margin-top:6px">
-        URL should look like: linkedin.com/in/your-name
-      </div>
-      <div style="margin-top:14px;padding:12px 14px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
-        <strong style="color:var(--ink)">Set profile to public first:</strong>
-        LinkedIn → Me → Settings &amp; Privacy → Visibility → Public
-      </div>
+    <div class="method-btn" onclick="selectMethod('linkedin', this)">
+      <div class="icon">💼</div>
+      <h3>LinkedIn URL</h3>
+      <p>Paste your profile link for a richer analysis.</p>
     </div>
-
-    <label class="field-label" for="user-name">Your name</label>
-    <input class="text-input" id="user-name" type="text" placeholder="Your name"
-      oninput="checkInputReady()" />
-
-    <button class="btn-go" id="btn-input-next" disabled onclick="goToContext()">
-      Continue →
-    </button>
-    <div class="privacy-note">🔒 Your data is only used to generate your report. Never stored.</div>
-    <div class="error-msg" id="input-error"></div>
+    <div class="method-btn" onclick="selectMethod('cv', this)">
+      <div class="icon">📄</div>
+      <h3>Upload CV</h3>
+      <p>Most accurate. Upload your CV file.</p>
+    </div>
   </div>
 </div>
 
-<!-- ── SCREEN 2: COUNTRY + TARGET ── -->
-<div class="screen screen-center" id="screen-context">
-  <div class="input-card">
-    <div style="display:flex;gap:6px;margin-bottom:20px">
-      <div class="step-dot done"></div>
-      <div class="step-dot active"></div>
-      <div class="step-dot"></div>
+<!-- ── SCREEN 2A: QUIZ ── -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-wrap">
+    <div class="screen-eyebrow" id="q-section" style="display:none;margin-bottom:8px"></div>
+    <div class="question-num" id="q-num">Question 1 of 30</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="options-grid" id="q-options"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="quiz-back" onclick="quizBack()">← Back</button>
+      <button class="btn-next" id="quiz-next" onclick="quizNext()">
+        Continue →
+      </button>
     </div>
+  </div>
+</div>
 
-    <h2>Where are you applying?</h2>
-    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 20px;line-height:1.6">
-      CV norms vary significantly by country — length, photos, personal info, format. We tailor the report to local hiring expectations.
+<!-- ── SCREEN 2B: LINKEDIN ── -->
+<div class="screen" id="screen-linkedin">
+  <div class="input-card" style="max-width:520px">
+    <h2>Your LinkedIn Profile</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+      Paste your LinkedIn profile URL below. Make sure your profile is set to <strong style="color:var(--ink)">public</strong> in your LinkedIn privacy settings.
+    </p>
+    <label class="field-label" for="li-url">LinkedIn Profile URL</label>
+    <input class="text-input" id="li-url" type="url"
+      placeholder="https://linkedin.com/in/yourname"
+      oninput="onLiUrlInput(this.value)" />
+    <div id="li-url-hint" style="display:none;font-size:12px;color:var(--amber);margin-top:6px">
+      URL should look like: linkedin.com/in/your-name
+    </div>
+    <label class="field-label" style="margin-top:18px" for="li-name">Your name (for the brief)</label>
+    <input class="text-input" id="li-name" type="text" placeholder="Your name" />
+    <div style="margin-top:18px;padding:14px 16px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
+      <strong style="color:var(--ink)">Make your profile public first:</strong><br>
+      LinkedIn → Me → Settings &amp; Privacy → Visibility → Profile visibility → <em>Public</em>
+    </div>
+    <button class="btn-analyse" id="li-next" onclick="startLinkedInAnalysis()" style="opacity:.4;pointer-events:none;margin-top:20px">
+      Analyse My LinkedIn →
+    </button>
+    <div class="privacy-note" style="margin-top:12px">🔒 We only read your public profile. Nothing is stored.</div>
+    <div id="li-error" style="display:none;margin-top:10px;font-size:13px;color:var(--red)"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2C: CV UPLOAD ── -->
+<div class="screen" id="screen-cv">
+  <div class="input-card">
+    <h2>Upload Your CV</h2>
+    <p>We'll extract your roles, skills, and experience from your CV to build the most precise Career Intelligence Brief possible.</p>
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('cv-file').click()"
+      ondragover="event.preventDefault();this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="handleDrop(event)">
+      <div class="upload-icon" id="upload-icon">📎</div>
+      <h3 id="upload-title">Drop your CV here</h3>
+      <p id="upload-sub">or click to browse · PDF, Word, or TXT · Max 5MB</p>
+    </div>
+    <input type="file" id="cv-file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile(this)" />
+    <label class="field-label" for="cv-name">Your name (for the brief)</label>
+    <input class="text-input" id="cv-name" type="text" placeholder="Your name" />
+    <div id="cv-parse-status" style="display:none;margin-top:12px;padding:12px 16px;background:#F0F7F3;border-radius:10px;font-size:13px;color:var(--sage)">
+      ✓ CV ready — click below to analyse
+    </div>
+    <button class="btn-analyse" id="cv-next" onclick="startCVAnalysis()" style="opacity:.4;pointer-events:none" disabled>
+      Analyse My CV →
+    </button>
+    <div class="privacy-note" style="margin-top:12px">🔒 Your file is processed securely. Never stored after analysis.</div>
+    <div id="cv-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2D: COUNTRY + TARGET COMPANY ── -->
+<div class="screen" id="screen-context">
+  <div class="input-card" style="max-width:520px">
+    <div style="font-size:12px;font-weight:700;color:var(--sage);letter-spacing:1.5px;margin-bottom:12px">STEP 2 OF 4 — CONTEXT</div>
+    <h2 style="font-size:24px;margin-bottom:8px">Where are you applying?</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+      CV formats and hiring expectations vary significantly by country. This helps us tailor the optimisation report to local standards.
     </p>
 
     <label class="field-label">Target country</label>
-    <div class="country-grid">
-      <button class="country-btn" onclick="pickCountry('United Kingdom', this)">🇬🇧 UK</button>
-      <button class="country-btn" onclick="pickCountry('United States', this)">🇺🇸 USA</button>
-      <button class="country-btn" onclick="pickCountry('France', this)">🇫🇷 France</button>
-      <button class="country-btn" onclick="pickCountry('Germany', this)">🇩🇪 Germany</button>
-      <button class="country-btn" onclick="pickCountry('Netherlands', this)">🇳🇱 Netherlands</button>
-      <button class="country-btn" onclick="pickCountry('Canada', this)">🇨🇦 Canada</button>
-      <button class="country-btn" onclick="pickCountry('Australia', this)">🇦🇺 Australia</button>
-      <button class="country-btn" onclick="pickCountry('UAE', this)">🇦🇪 UAE</button>
-      <button class="country-btn" onclick="pickCountry('other', this)">🌍 Other</button>
+    <div class="country-grid" id="country-grid">
+      <button class="country-btn" onclick="selectCountry('United Kingdom', this)">🇬🇧 UK</button>
+      <button class="country-btn" onclick="selectCountry('United States', this)">🇺🇸 USA</button>
+      <button class="country-btn" onclick="selectCountry('France', this)">🇫🇷 France</button>
+      <button class="country-btn" onclick="selectCountry('Germany', this)">🇩🇪 Germany</button>
+      <button class="country-btn" onclick="selectCountry('Netherlands', this)">🇳🇱 Netherlands</button>
+      <button class="country-btn" onclick="selectCountry('Canada', this)">🇨🇦 Canada</button>
+      <button class="country-btn" onclick="selectCountry('Australia', this)">🇦🇺 Australia</button>
+      <button class="country-btn" onclick="selectCountry('UAE', this)">🇦🇪 UAE</button>
+      <button class="country-btn" onclick="selectCountry('other', this)">🌍 Other</button>
     </div>
-    <div id="other-country-wrap" style="display:none;margin-top:8px">
-      <input class="text-input" id="other-country-input" type="text" placeholder="Type your country…"
-        oninput="state.targetCountry = this.value.trim(); checkContextReady()" />
+    <div id="country-other-wrap" style="display:none;margin-top:8px">
+      <input class="text-input" id="country-other-input" type="text" placeholder="Type your country…"
+        oninput="state.targetCountry = this.value.trim(); updateContextNext()" />
     </div>
 
-    <label class="field-label" style="margin-top:20px">
-      Target company <span style="font-weight:300;color:var(--mid)">(optional)</span>
-    </label>
-    <input class="text-input" id="ctx-company" type="text"
-      placeholder="e.g. Spotify, HSBC, McKinsey — or leave blank" />
+    <label class="field-label" style="margin-top:20px">Target company <span style="font-weight:300;color:var(--mid)">(optional)</span></label>
+    <input class="text-input" id="target-company" type="text"
+      placeholder="e.g. Spotify, HSBC, McKinsey — or leave blank"
+      oninput="state.targetCompany = this.value.trim()" />
 
-    <label class="field-label" style="margin-top:14px">
-      Target role <span style="font-weight:300;color:var(--mid)">(optional)</span>
-    </label>
-    <input class="text-input" id="ctx-role" type="text"
-      placeholder="e.g. Senior Product Manager, Data Analyst" />
+    <label class="field-label" style="margin-top:16px">Target role <span style="font-weight:300;color:var(--mid)">(optional)</span></label>
+    <input class="text-input" id="target-role" type="text"
+      placeholder="e.g. Senior Product Manager, Data Analyst"
+      oninput="state.targetRole = this.value.trim()" />
 
-    <button class="btn-go" id="btn-context-next" disabled onclick="goToPayment()">
-      Continue to Payment →
+    <button class="btn-analyse" id="context-next" onclick="goFromContext()" style="opacity:.4;pointer-events:none;margin-top:24px">
+      Continue →
     </button>
   </div>
 </div>
 
-<!-- ── SCREEN 3: PAYMENT ── -->
-<div class="screen screen-center" id="screen-payment">
-  <div class="input-card">
-    <div style="display:flex;gap:6px;margin-bottom:20px">
-      <div class="step-dot done"></div>
-      <div class="step-dot done"></div>
-      <div class="step-dot active"></div>
+<!-- ── SCREEN 3: ANALYSING ── -->
+<div class="screen" id="screen-loading">
+  <div class="loader-orbit">
+    <div class="orbit-ring orbit-1"></div>
+    <div class="orbit-ring orbit-2"></div>
+    <div class="orbit-ring orbit-3"></div>
+    <div class="orbit-core">🔍</div>
+  </div>
+  <div class="loading-stage" id="loading-stage">Analysing your profile</div>
+  <div class="loading-sub">Please wait a moment<span class="loading-dots" id="loading-dots">...</span></div>
+  <div id="debug-log" style="margin-top:24px;max-width:480px;width:90%;font-size:11px;font-family:monospace;color:#888;text-align:left;line-height:1.8;background:#f5f5f5;padding:12px 16px;border-radius:8px;display:none"></div>
+  <button id="debug-skip" onclick="debugSkip()" style="display:none;margin-top:16px;padding:10px 24px;background:var(--sage);color:white;border:none;border-radius:100px;font-size:13px;cursor:pointer">
+    Skip — Show My Results Anyway →
+  </button>
+</div>
+
+<!-- ── SCREEN 4: RESULTS ── -->
+<div class="screen" id="screen-results">
+
+  <!-- Dark hero -->
+  <div class="results-hero">
+    <div class="results-eyebrow">Your Career Intelligence Report</div>
+    <div class="results-name" id="r-name">Your Analysis</div>
+    <div class="results-profession" id="r-profession">Loading...</div>
+    <div class="archetype-display">
+      <div class="arch-emoji" id="r-arch-emoji">🧭</div>
+      <div>
+        <div class="arch-label">Your Career Archetype</div>
+        <div class="arch-name" id="r-arch-name">Strategic Adapter</div>
+        <div class="arch-desc" id="r-arch-desc">Your role is evolving. Not disappearing — shifting.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-body">
+    <div>
+
+      <!-- Trust strip -->
+      <div class="trust-strip">
+        <div class="trust-item"><span>🔬</span> Based on WEF & McKinsey data</div>
+        <div class="trust-item"><span>🎯</span> Specific to your job title</div>
+        <div class="trust-item"><span>⚡</span> AI-generated in real time</div>
+        <div class="trust-item"><span>🔒</span> Stripe secured</div>
+      </div>
+
+      <!-- Metrics card -->
+      <div class="metrics-card">
+        <div class="card-title">Your Career Dashboard</div>
+        <div id="metrics-list"></div>
+      </div>
+
+      <!-- Task preview -->
+      <div class="metrics-card">
+        <div class="card-title">Task-Level Preview</div>
+        <div class="tasks-grid">
+          <div class="task-group risk">
+            <div class="task-group-label">⚠ Under Pressure</div>
+            <div id="tasks-risk"></div>
+          </div>
+          <div class="task-group safe">
+            <div class="task-group-label">✦ AI Will Amplify</div>
+            <div id="tasks-safe"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRIEF HOOK — dark card, no API call -->
+      <div class="brief-hook">
+        <div class="hook-header">
+          <div class="hook-header-left">
+            <div class="hook-eyebrow">Inside Your Full Brief</div>
+            <div class="hook-title" id="hook-title">Your complete Career<br>Intelligence Brief</div>
+          </div>
+          <div class="hook-badge">4 Pages</div>
+        </div>
+
+        <!-- Live score teasers (populated from quiz answers, no LLM) -->
+        <div class="hook-preview-grid">
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-1" style="color:#C8DDD0">—</div>
+            <div class="hook-stat-label">Augmentation Potential</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-2" style="color:#D4841A">—</div>
+            <div class="hook-stat-label">Income Protection Score</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-3" style="color:#7B5EA7">—</div>
+            <div class="hook-stat-label">Skill Evolution Pressure</div>
+          </div>
+          <div class="hook-stat">
+            <div class="hook-stat-val" id="hook-score-4" style="color:#C0392B">—</div>
+            <div class="hook-stat-label">Automation Exposure</div>
+          </div>
+        </div>
+
+        <div class="hook-teaser" id="hook-teaser">
+          Your brief includes a full task-level breakdown, a 6-step skill roadmap
+          specific to your role, and 1, 3 &amp; 5-year horizon forecasts — all generated
+          by AI trained on WEF, McKinsey, and O*NET labour data.
+        </div>
+
+        <!-- Blurred locked section -->
+        <div class="hook-blurred-section">
+          <div class="hook-blurred-inner">
+            <p>→ Your 6-step prioritised skill roadmap with timelines</p>
+            <p>→ 12-month, 3-year, and 5-year income trajectory</p>
+            <p>→ The specific AI tools your profession should learn first</p>
+            <p>→ Executive summary written for your exact job title</p>
+          </div>
+          <div class="hook-lock-overlay">
+            <div class="hook-lock-icon">🔒</div>
+            <div class="hook-lock-label">Unlocked in your brief</div>
+          </div>
+        </div>
+
+        <div class="hook-cta-bar">
+          <div class="hook-cta-text">
+            <strong>Get the full Career Intelligence Brief</strong>
+            Personalised PDF · Delivered instantly to your inbox
+          </div>
+          <button class="btn-hook-buy" onclick="goToPayment()">Get My Brief — €7.99 →</button>
+        </div>
+      </div>
+
     </div>
 
-    <h2>Get your report</h2>
-    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 20px;line-height:1.6">
-      Your personalised Profile Optimisation Report will be emailed as a PDF immediately after payment.
-    </p>
-
-    <!-- Plan selector -->
-    <div class="plan-cards">
-      <div class="plan-card selected" id="plan-opt" onclick="setPlan('opt-only')">
-        <div class="plan-label">Profile Optimisation</div>
-        <div class="plan-price">€4.99</div>
-        <div class="plan-desc">LinkedIn rewrite · CV bullets · ATS keywords · Quick wins</div>
+    <!-- Sidebar -->
+    <div class="payment-sidebar">
+      <div class="payment-card">
+        <div class="eyebrow">Career Intelligence Brief</div>
+        <h3>Your complete personalised report</h3>
+        <div class="price-display"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€12</span>€7.99</div>
+        <div class="price-note">One-time · or €9.99 with Profile Optimisation</div>
+        <div class="payment-includes">
+          <div class="pay-item"><div class="pay-check">✓</div>Full 6-dimension dashboard</div>
+          <div class="pay-item"><div class="pay-check">✓</div>Complete task-level breakdown</div>
+          <div class="pay-item"><div class="pay-check">✓</div>6-step prioritised skill roadmap</div>
+          <div class="pay-item"><div class="pay-check">✓</div>1, 3 &amp; 5-year horizon outlook</div>
+          <div class="pay-item"><div class="pay-check">✓</div>Income trajectory estimate</div>
+          <div class="pay-item"><div class="pay-check">✓</div>AI-written for your exact role</div>
+        </div>
+        <button class="btn-buy" onclick="goToPayment()">Get My Brief →</button>
+        <div class="secure-note">🔒 Secure checkout · Instant delivery</div>
       </div>
-      <div class="plan-card bundle" id="plan-bundle" onclick="setPlan('opt-bundle')">
-        <div class="plan-label">+ Career Brief</div>
-        <div class="plan-price">€9.99</div>
-        <div class="plan-desc">Everything above + full AI career analysis PDF</div>
-        <div class="plan-badge">Best value</div>
+
+      <div class="share-card">
+        <h4>Know someone who should see this?</h4>
+        <p>Share the free preview. Help them plan ahead too.</p>
+        <button class="share-btn" onclick="shareResult()">📤 Share my archetype</button>
       </div>
     </div>
-
-    <label class="field-label" for="pay-email">Email address</label>
-    <input class="text-input" id="pay-email" type="email" placeholder="you@example.com" />
-
-    <button class="btn-go" id="btn-pay" onclick="completePurchase()">
-      Continue to Payment →
-    </button>
-    <div class="privacy-note">🔒 Secure checkout via Stripe · PDF delivered instantly</div>
-    <div class="error-msg" id="pay-error"></div>
   </div>
 </div>
 
-<!-- ── SCREEN: LOADING ── -->
-<div class="screen screen-center" id="screen-loading">
-  <div class="orbit">
-    <div class="orbit-ring orbit-ring-1"></div>
-    <div class="orbit-ring orbit-ring-2"></div>
-    <div class="orbit-core">✏️</div>
+<!-- ── SCREEN 5: PAYMENT ── -->
+<div class="screen" id="screen-payment">
+  <div style="max-width:520px;width:100%;padding:0 16px">
+
+    <!-- Upsell alert (shown only for CV/LinkedIn inputs) -->
+    <div id="upsell-alert" style="display:none;margin-bottom:20px;border-radius:16px;overflow:hidden;border:2px solid var(--amber)">
+      <div style="background:var(--amber);padding:14px 20px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">⚠️</span>
+        <strong style="color:white;font-size:14px" id="upsell-alert-title">Your profile could be significantly improved</strong>
+      </div>
+      <div style="background:#FFF8F0;padding:18px 20px">
+        <p style="font-size:13px;color:#6B4C0A;margin-bottom:14px;line-height:1.5" id="upsell-alert-body">
+          Based on your CV, we identified several areas that could improve your visibility with recruiters and ATS systems in the AI job market.
+        </p>
+        <div id="upsell-issues-list" style="margin-bottom:16px"></div>
+        <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid #F5D9A0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <strong style="font-size:13px;color:var(--ink)">Add Profile Optimisation Report</strong>
+            <span style="font-size:15px;font-weight:700;color:var(--sage)">+€2.00</span>
+          </div>
+          <p style="font-size:12px;color:var(--mid);margin-bottom:12px">LinkedIn headline rewrite · CV bullet transformations · ATS keywords · Quick wins · Total: <strong><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€14</span>€9.99</strong></p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button onclick="selectPlan('bundle')" id="btn-bundle"
+              style="flex:1;min-width:140px;padding:10px 16px;background:var(--sage);color:white;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer">
+              Yes — add it (€9.99)
+            </button>
+            <button onclick="selectPlan('brief')" id="btn-brief-only"
+              style="flex:1;min-width:120px;padding:10px 16px;background:none;color:var(--mid);border:1px solid var(--mist);border-radius:100px;font-size:13px;cursor:pointer">
+              Brief only (€7.99)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main form -->
+    <div class="input-card" style="padding:32px 28px">
+      <h2 style="font-size:22px;margin-bottom:6px">Almost there</h2>
+      <p style="font-size:13px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
+        We'll send your brief to your inbox instantly after payment.
+      </p>
+
+      <div style="margin-bottom:16px">
+        <label class="field-label" for="p-name">Your name</label>
+        <input class="text-input" type="text" id="p-name" placeholder="Your full name" />
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="field-label" for="p-email">Email address</label>
+        <input class="text-input" type="email" id="p-email" placeholder="you@example.com" />
+      </div>
+
+      <!-- Plan selector (visible when no upsell alert) -->
+      <div id="plan-selector" style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <button onclick="selectPlan('brief')" id="plan-btn-brief"
+          class="plan-btn selected-plan"
+          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--sage);background:#F0F7F3;cursor:pointer;text-align:left">
+          <div style="font-size:11px;font-weight:700;color:var(--sage);letter-spacing:1px;margin-bottom:3px">CAREER BRIEF</div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink)"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€12</span>€7.99</div>
+          <div style="font-size:11px;color:var(--mid)">Personalised PDF</div>
+        </button>
+        <button onclick="selectPlan('bundle')" id="plan-btn-bundle"
+          class="plan-btn"
+          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--mist);background:white;cursor:pointer;text-align:left">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:3px">BRIEF + PROFILE OPT.</div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink)"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€14</span>€9.99</div>
+          <div style="font-size:11px;color:var(--mid)">Most popular</div>
+        </button>
+      </div>
+
+      <button class="btn-analyse" id="checkout-btn" onclick="completePurchase()">
+        Continue to Payment →
+      </button>
+      <div class="privacy-note" style="margin-top:10px">🔒 Secure checkout via Stripe · Instant delivery</div>
+      <div id="checkout-error" style="margin-top:10px;font-size:13px;color:var(--red);display:none"></div>
+    </div>
   </div>
-  <div class="load-stage" id="load-stage">Analysing your profile…</div>
-  <div class="load-sub">This takes about 20 seconds</div>
 </div>
+
+<!-- ── SCREEN 6: DELIVERY ── -->
+<div class="screen" id="screen-delivery">
+  <div class="delivery-icon">🎉</div>
+  <h2 class="delivery-title">Your brief is on its way.</h2>
+  <p class="delivery-sub">We're generating your personalised Career Intelligence Brief now. It will land in your inbox within 60 seconds.</p>
+
+  <div class="delivery-email-box">
+    <input type="email" id="d-email" placeholder="Confirm your email" />
+    <button class="btn-send" onclick="confirmDelivery()">Send →</button>
+  </div>
+
+  <div class="next-steps">
+    <a href="index.html" class="next-step-btn ns-primary">← Back to PlanItEarth</a>
+    <a href="#" class="next-step-btn ns-ghost" onclick="shareResult()">📤 Share my archetype</a>
+  </div>
+</div>
+
 
 <script>
-const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
-
+// ── STATE ──
 const state = {
-  method: 'cv',
-  cvFile: null,
-  liUrl: '',
+  method: null,
+  answers: {},
+  currentQ: 0,
   name: '',
-  email: '',
-  plan: 'opt-only',
+  profession: '',
+  sector: '',
+  scores: {},
+  archetype: {},
+  plan: 'brief',            // 'brief' or 'bundle'
+  cvFile: null,
+  cvQualityIssues: [],
+  optimisationUrgency: 'medium',
+  rawInput: '',
   targetCountry: '',
   targetCompany: '',
   targetRole: '',
 };
 
-// ── METHOD SWITCH ──
-function switchMethod(m) {
-  state.method = m;
-  document.getElementById('tab-cv').classList.toggle('active', m === 'cv');
-  document.getElementById('tab-li').classList.toggle('active', m === 'linkedin');
-  document.getElementById('cv-section').style.display  = m === 'cv' ? 'block' : 'none';
-  document.getElementById('li-section').style.display  = m === 'linkedin' ? 'block' : 'none';
-  checkInputReady();
+// ── QUESTIONS ──
+const questions = [
+  // ── SECTION 1: WHO ARE YOU ──
+  {
+    id: 'profession_cat',
+    section: 'About You',
+    text: 'Which sector best describes your profession?',
+    options: [
+      { label: 'Healthcare & Medicine', value: 'healthcare' },
+      { label: 'Finance, Banking & Accounting', value: 'finance' },
+      { label: 'Technology & Engineering', value: 'tech' },
+      { label: 'Legal & Compliance', value: 'legal' },
+      { label: 'Creative, Media & Marketing', value: 'creative' },
+      { label: 'Education & Training', value: 'education' },
+      { label: 'Other profession', value: 'other' },
+    ]
+  },
+  {
+    id: 'job_title',
+    section: 'About You',
+    text: 'What is your specific job title or role?',
+    type: 'text',
+    placeholder: 'e.g. Senior Financial Analyst, UX Designer, GP...',
+  },
+  {
+    id: 'industry',
+    section: 'About You',
+    text: 'Which industry do you work in?',
+    options: [
+      { label: 'Public sector / Government / NHS', value: 'public' },
+      { label: 'Private sector corporation', value: 'private' },
+      { label: 'Startup or scale-up', value: 'startup' },
+      { label: 'Freelance or self-employed', value: 'freelance' },
+      { label: 'Non-profit or charity', value: 'nonprofit' },
+      { label: 'Academic or research institution', value: 'academic' },
+    ]
+  },
+  {
+    id: 'experience',
+    section: 'About You',
+    text: 'How long have you been working in your field?',
+    options: [
+      { label: '0–2 years — building foundations', value: 'junior' },
+      { label: '3–7 years — established professional', value: 'mid' },
+      { label: '8–15 years — senior practitioner', value: 'senior' },
+      { label: '15+ years — deep expertise, possible leadership', value: 'expert' },
+    ]
+  },
+  {
+    id: 'education',
+    section: 'About You',
+    text: 'What is your highest level of formal education?',
+    options: [
+      { label: 'Secondary / A-levels / equivalent', value: 'secondary' },
+      { label: "Bachelor's degree", value: 'bachelors' },
+      { label: "Master's degree or MBA", value: 'masters' },
+      { label: 'Doctorate / PhD', value: 'phd' },
+      { label: 'Professional qualification (CFA, Bar, ACCA, etc.)', value: 'professional' },
+      { label: 'Vocational / trade qualification', value: 'vocational' },
+    ]
+  },
+
+  // ── SECTION 2: YOUR WORK ──
+  {
+    id: 'tasks',
+    section: 'Your Work',
+    text: 'Which best describes the core of your daily work?',
+    options: [
+      { label: 'Structured, repeatable tasks with defined rules', value: 'structured' },
+      { label: 'Complex problem-solving requiring judgment', value: 'judgment' },
+      { label: 'Relationships, communication, people management', value: 'people' },
+      { label: 'Creative work — ideas, content, design, strategy', value: 'creative' },
+    ]
+  },
+  {
+    id: 'decision_level',
+    section: 'Your Work',
+    text: 'How much independent decision-making does your role require?',
+    options: [
+      { label: 'Very little — I follow well-defined processes', value: 'low' },
+      { label: 'Moderate — I make decisions within guidelines', value: 'mid' },
+      { label: 'High — I regularly make complex judgment calls', value: 'high' },
+      { label: 'Very high — I define strategy and direction', value: 'strategic' },
+    ]
+  },
+  {
+    id: 'client_facing',
+    section: 'Your Work',
+    text: 'How much of your work involves direct human interaction?',
+    options: [
+      { label: 'Mostly independent — I work alone on tasks', value: 'solo' },
+      { label: 'Some collaboration with colleagues', value: 'internal' },
+      { label: 'Regular client or customer interaction', value: 'client' },
+      { label: 'Heavy people focus — my work is mostly relational', value: 'relational' },
+    ]
+  },
+  {
+    id: 'data_work',
+    section: 'Your Work',
+    text: 'How much of your work involves processing or analysing data?',
+    options: [
+      { label: 'Very little — minimal data involvement', value: 'none' },
+      { label: 'Some — I work with reports or spreadsheets occasionally', value: 'some' },
+      { label: 'Significant — data is a core part of my job', value: 'significant' },
+      { label: 'Heavy — I am primarily a data or analytical role', value: 'heavy' },
+    ]
+  },
+  {
+    id: 'writing_work',
+    section: 'Your Work',
+    text: 'How much of your role involves writing (reports, content, documents)?',
+    options: [
+      { label: 'Very little', value: 'none' },
+      { label: 'Occasional — emails and basic reports', value: 'some' },
+      { label: 'Regular — writing is a meaningful part of my job', value: 'regular' },
+      { label: 'Central — my output is primarily written', value: 'central' },
+    ]
+  },
+  {
+    id: 'team_size',
+    section: 'Your Work',
+    text: 'What size organisation or team do you work in?',
+    options: [
+      { label: 'Solo / freelance', value: 'solo' },
+      { label: 'Small team (2–15 people)', value: 'small' },
+      { label: 'Mid-size company (15–200 people)', value: 'mid' },
+      { label: 'Large organisation (200+ people)', value: 'large' },
+    ]
+  },
+  {
+    id: 'work_location',
+    section: 'Your Work',
+    text: 'Where do you primarily work?',
+    options: [
+      { label: 'Fully remote', value: 'remote' },
+      { label: 'Hybrid — mix of office and home', value: 'hybrid' },
+      { label: 'Fully in-office or on-site', value: 'onsite' },
+      { label: 'Field-based or location-dependent', value: 'field' },
+    ]
+  },
+
+  // ── SECTION 3: AI & TECHNOLOGY ──
+  {
+    id: 'ai_exposure',
+    section: 'AI & Technology',
+    text: 'How much have AI tools entered your current workplace?',
+    options: [
+      { label: 'Not at all — no AI tools in use', value: 'none' },
+      { label: 'Early stages — a few experiments', value: 'aware' },
+      { label: 'Growing — several tools in regular use', value: 'using' },
+      { label: 'Widespread — AI is core to our workflows', value: 'deep' },
+    ]
+  },
+  {
+    id: 'ai_personal_use',
+    section: 'AI & Technology',
+    text: 'Do you personally use AI tools in your own work?',
+    options: [
+      { label: 'No — I have not tried any AI tools', value: 'none' },
+      { label: 'Occasionally — I have experimented a little', value: 'occasional' },
+      { label: 'Yes — I use AI tools regularly', value: 'regular' },
+      { label: 'Yes — AI tools are central to how I work', value: 'central' },
+    ]
+  },
+  {
+    id: 'tech_comfort',
+    section: 'AI & Technology',
+    text: 'How would you describe your comfort with new technology?',
+    options: [
+      { label: 'Low — I prefer established tools and methods', value: 'low' },
+      { label: 'Moderate — I can adapt but prefer stability', value: 'mid' },
+      { label: 'High — I pick up new tools quickly', value: 'high' },
+      { label: 'Very high — I am usually an early adopter', value: 'pioneer' },
+    ]
+  },
+  {
+    id: 'automation_awareness',
+    section: 'AI & Technology',
+    text: 'Which statement best matches your view of AI in your field?',
+    options: [
+      { label: 'AI will not significantly affect my profession', value: 'dismissive' },
+      { label: 'AI will change some tasks but not my core role', value: 'cautious' },
+      { label: 'AI will significantly reshape how I work', value: 'aware' },
+      { label: 'AI could replace many roles in my field, including parts of mine', value: 'concerned' },
+    ]
+  },
+  {
+    id: 'digital_skills',
+    section: 'AI & Technology',
+    text: 'How would you rate your current digital and data skills?',
+    options: [
+      { label: 'Basic — email, documents, standard software', value: 'basic' },
+      { label: 'Intermediate — spreadsheets, some data tools', value: 'intermediate' },
+      { label: 'Advanced — coding, data analysis, or specialist tech', value: 'advanced' },
+      { label: 'Expert — deep technical background', value: 'expert' },
+    ]
+  },
+
+  // ── SECTION 4: CAREER & FINANCES ──
+  {
+    id: 'income_band',
+    section: 'Career & Finances',
+    text: 'What is your approximate annual income?',
+    options: [
+      { label: 'Under £25,000 / $30,000', value: 'low' },
+      { label: '£25k–£50k / $30k–$65k', value: 'mid_low' },
+      { label: '£50k–£90k / $65k–$120k', value: 'mid_high' },
+      { label: '£90k+ / $120k+', value: 'high' },
+    ]
+  },
+  {
+    id: 'job_security_feel',
+    section: 'Career & Finances',
+    text: 'How secure do you currently feel in your job?',
+    options: [
+      { label: 'Very insecure — I am worried about my position', value: 'very_insecure' },
+      { label: 'Somewhat uncertain — things feel unstable', value: 'uncertain' },
+      { label: 'Fairly secure — I feel reasonably safe', value: 'secure' },
+      { label: 'Very secure — I have strong job protection', value: 'very_secure' },
+    ]
+  },
+  {
+    id: 'career_trajectory',
+    section: 'Career & Finances',
+    text: 'How would you describe your career trajectory right now?',
+    options: [
+      { label: 'Stagnant — not progressing as I would like', value: 'stagnant' },
+      { label: 'Steady — stable but modest growth', value: 'steady' },
+      { label: 'Growing — clear progression upward', value: 'growing' },
+      { label: 'Accelerating — strong momentum and opportunity', value: 'accelerating' },
+    ]
+  },
+  {
+    id: 'specialisation',
+    section: 'Career & Finances',
+    text: 'How specialised is your expertise within your field?',
+    options: [
+      { label: 'Generalist — broad skills across many areas', value: 'generalist' },
+      { label: 'Moderate specialist — focused area with some breadth', value: 'moderate' },
+      { label: 'Strong specialist — deep expertise in a niche', value: 'specialist' },
+      { label: 'Rare specialist — skills very few people have', value: 'rare' },
+    ]
+  },
+  {
+    id: 'regulatory',
+    section: 'Career & Finances',
+    text: 'Does your profession require a licence, accreditation, or professional registration?',
+    options: [
+      { label: 'No — anyone can do my job without formal credentials', value: 'none' },
+      { label: 'Helpful but not required', value: 'optional' },
+      { label: 'Yes — a degree or certification is expected', value: 'required' },
+      { label: 'Yes — strict licensing with legal requirements', value: 'strict' },
+    ]
+  },
+
+  // ── SECTION 5: FUTURE ORIENTATION ──
+  {
+    id: 'learning_habit',
+    section: 'Future Orientation',
+    text: 'How often do you actively invest in developing new skills?',
+    options: [
+      { label: 'Rarely — I focus on the job I have', value: 'rarely' },
+      { label: 'Occasionally — when my employer organises it', value: 'occasional' },
+      { label: 'Regularly — I self-direct some learning each month', value: 'regular' },
+      { label: 'Consistently — continuous learning is a habit', value: 'consistent' },
+    ]
+  },
+  {
+    id: 'adaptability',
+    section: 'Future Orientation',
+    text: 'How have you responded to major changes in your industry before?',
+    options: [
+      { label: 'I have found it difficult and resisted change', value: 'resistant' },
+      { label: 'I adapted eventually but it was challenging', value: 'slow' },
+      { label: 'I adapted reasonably well', value: 'adapted' },
+      { label: 'I tend to embrace change and move quickly', value: 'proactive' },
+    ]
+  },
+  {
+    id: 'mobility',
+    section: 'Future Orientation',
+    text: 'How open are you to changing your role or career path?',
+    options: [
+      { label: 'Not open — I want to stay in my current role', value: 'closed' },
+      { label: 'Slightly open — only if necessary', value: 'reluctant' },
+      { label: 'Open — I would consider adjacent moves', value: 'open' },
+      { label: 'Very open — I am actively thinking about pivoting', value: 'active' },
+    ]
+  },
+  {
+    id: 'network',
+    section: 'Future Orientation',
+    text: 'How strong is your professional network?',
+    options: [
+      { label: 'Weak — I do not have many professional connections', value: 'weak' },
+      { label: 'Moderate — I have some but rarely engage with them', value: 'moderate' },
+      { label: 'Strong — I have a good network I maintain', value: 'strong' },
+      { label: 'Very strong — my network is a significant career asset', value: 'very_strong' },
+    ]
+  },
+  {
+    id: 'geographic_flexibility',
+    section: 'Future Orientation',
+    text: 'How geographically flexible are you?',
+    options: [
+      { label: 'Not flexible — tied to my current location', value: 'fixed' },
+      { label: 'Slightly — could consider nearby areas', value: 'low' },
+      { label: 'Moderately — open to moving for the right opportunity', value: 'moderate' },
+      { label: 'Very flexible — I could work anywhere', value: 'high' },
+    ]
+  },
+
+  // ── SECTION 6: PRIORITIES ──
+  {
+    id: 'biggest_worry',
+    section: 'Your Priorities',
+    text: 'What is your biggest career worry right now?',
+    options: [
+      { label: 'Being made redundant or replaced by AI', value: 'redundancy' },
+      { label: 'My skills becoming outdated too quickly', value: 'obsolescence' },
+      { label: 'Not earning enough relative to my potential', value: 'income' },
+      { label: 'Missing out on new opportunities I am not aware of', value: 'opportunity' },
+    ]
+  },
+  {
+    id: 'top_priority',
+    section: 'Your Priorities',
+    text: 'What matters most to you in your career right now?',
+    options: [
+      { label: 'Job security and stability', value: 'security' },
+      { label: 'Career growth and advancement', value: 'growth' },
+      { label: 'Higher income and financial freedom', value: 'income' },
+      { label: 'Meaningful, fulfilling work', value: 'meaning' },
+    ]
+  },
+  {
+    id: 'timeline',
+    section: 'Your Priorities',
+    text: 'Over what timeframe are you most concerned about AI impact?',
+    options: [
+      { label: 'Immediately — I am worried about the next 12 months', value: 'immediate' },
+      { label: 'Near-term — next 1–3 years', value: 'near' },
+      { label: 'Medium-term — next 3–5 years', value: 'medium' },
+      { label: 'Long-term — 5+ years out', value: 'long' },
+    ]
+  },
+  {
+    id: 'concern',
+    section: 'Your Priorities',
+    text: 'What do you most want from this analysis?',
+    options: [
+      { label: 'Know honestly — am I at risk of being replaced?', value: 'risk' },
+      { label: 'Understand how to grow my career in an AI world', value: 'growth' },
+      { label: 'Find out if I should be considering a career pivot', value: 'pivot' },
+      { label: 'Get a clear, prioritised list of skills to build', value: 'skills' },
+    ]
+  },
+];
+
+// ── ARCHETYPE ENGINE ──
+function computeArchetype(answers) {
+  const archetypes = {
+    augmented: {
+      emoji: '🌿', name: 'The Augmented Expert',
+      desc: 'AI makes you more powerful. Your expertise compounds with the right tools.',
+      color: '#3D6B4F'
+    },
+    adapter: {
+      emoji: '🧭', name: 'The Strategic Adapter',
+      desc: 'Your role is evolving. Not disappearing — shifting. Here\'s your roadmap.',
+      color: '#D4841A'
+    },
+    transition: {
+      emoji: '🔄', name: 'The Transition Candidate',
+      desc: 'Adjacent moves exist that protect your income and leverage your experience.',
+      color: '#7B5EA7'
+    },
+    urgent: {
+      emoji: '⚡', name: 'The Urgent Reskiller',
+      desc: 'Specific tasks in your role are under pressure now. Your action plan is ready.',
+      color: '#C0392B'
+    }
+  };
+
+  // Simple scoring logic
+  let score = 0;
+  if (answers.tasks === 'structured') score += 3;
+  if (answers.tasks === 'creative') score += 1;
+  if (answers.ai_exposure === 'none') score += 2;
+  if (answers.ai_exposure === 'deep') score -= 2;
+  if (answers.experience === 'junior') score += 1;
+  if (answers.experience === 'expert') score -= 1;
+  if (['finance', 'legal'].includes(answers.profession_cat)) score += 1;
+  if (['healthcare', 'education'].includes(answers.profession_cat)) score -= 1;
+
+  if (score <= -1) return archetypes.augmented;
+  if (score <= 1)  return archetypes.adapter;
+  if (score <= 3)  return archetypes.transition;
+  return archetypes.urgent;
 }
 
-// ── FILE HANDLING ──
-function handleFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  state.cvFile = file;
-  document.getElementById('up-icon').textContent  = '✅';
-  document.getElementById('up-title').textContent = file.name;
-  document.getElementById('up-sub').textContent   = `${(file.size/1024).toFixed(0)} KB · Ready`;
-  checkInputReady();
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('upload-zone').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file) {
-    const dt = new DataTransfer(); dt.items.add(file);
-    document.getElementById('cv-file').files = dt.files;
-    handleFile({ files: [file] });
-  }
-}
-function onLiInput(val) {
-  state.liUrl = val.trim();
-  const ok = val.includes('linkedin.com/in/');
-  document.getElementById('li-hint').style.display = val && !ok ? 'block' : 'none';
-  checkInputReady();
-}
-function checkInputReady() {
-  const name = document.getElementById('user-name').value.trim();
-  const cvOk  = state.method === 'cv'       && !!state.cvFile;
-  const liOk  = state.method === 'linkedin' && state.liUrl.includes('linkedin.com/in/');
-  const ok    = name && (cvOk || liOk);
-  const btn   = document.getElementById('btn-input-next');
-  btn.disabled = !ok;
+function computeScores(answers) {
+  const base = {
+    healthcare: { auto: 45, aug: 82, income: 70, reg: 85, skill: 65, adoption: 60 },
+    finance:    { auto: 68, aug: 74, income: 52, reg: 60, skill: 78, adoption: 72 },
+    tech:       { auto: 55, aug: 88, income: 58, reg: 30, skill: 85, adoption: 80 },
+    legal:      { auto: 60, aug: 70, income: 58, reg: 75, skill: 72, adoption: 55 },
+    creative:   { auto: 70, aug: 72, income: 45, reg: 20, skill: 80, adoption: 65 },
+    education:  { auto: 38, aug: 75, income: 60, reg: 65, skill: 68, adoption: 45 },
+    other:      { auto: 55, aug: 70, income: 55, reg: 50, skill: 70, adoption: 55 },
+  };
+  const b = base[answers.profession_cat] || base.other;
+  let { auto, aug, income, reg, skill, adoption } = { ...b };
+
+  // Task type
+  if (answers.tasks === 'structured')  { auto += 15; aug -= 8; }
+  if (answers.tasks === 'judgment')    { auto -= 8;  aug += 5; }
+  if (answers.tasks === 'people')      { auto -= 14; aug += 3; }
+  if (answers.tasks === 'creative')    { auto += 5;  aug += 8; }
+
+  // Experience
+  if (answers.experience === 'junior') { auto += 6; income -= 5; }
+  if (answers.experience === 'senior') { auto -= 5; reg += 5; }
+  if (answers.experience === 'expert') { auto -= 10; reg += 10; income += 8; }
+
+  // AI personal use
+  if (answers.ai_personal_use === 'none')    { skill += 12; aug -= 10; }
+  if (answers.ai_personal_use === 'regular') { aug += 8; skill -= 5; }
+  if (answers.ai_personal_use === 'central') { aug += 14; skill -= 8; auto -= 8; }
+
+  // Decision level
+  if (answers.decision_level === 'low')       { auto += 12; }
+  if (answers.decision_level === 'strategic') { auto -= 12; income += 8; }
+
+  // Regulatory
+  if (answers.regulatory === 'strict')    { reg += 20; auto -= 8; }
+  if (answers.regulatory === 'required')  { reg += 10; }
+  if (answers.regulatory === 'none')      { reg -= 15; auto += 8; }
+
+  // Specialisation
+  if (answers.specialisation === 'rare')       { auto -= 12; income += 10; }
+  if (answers.specialisation === 'specialist') { auto -= 6; income += 5; }
+  if (answers.specialisation === 'generalist') { auto += 6; }
+
+  // Data work
+  if (answers.data_work === 'heavy')       { auto += 8; adoption += 10; }
+  if (answers.data_work === 'none')        { auto -= 5; }
+
+  // Writing work
+  if (answers.writing_work === 'central')  { auto += 10; }
+
+  // Tech comfort
+  if (answers.tech_comfort === 'pioneer')  { aug += 8; skill -= 6; }
+  if (answers.tech_comfort === 'low')      { skill += 8; aug -= 6; }
+
+  // Industry
+  if (answers.industry === 'startup')      { adoption += 12; skill += 5; }
+  if (answers.industry === 'public')       { reg += 8; adoption -= 8; }
+  if (answers.industry === 'academic')     { auto -= 5; }
+
+  // Client facing
+  if (answers.client_facing === 'relational') { auto -= 10; aug += 5; }
+
+  // Learning habit
+  if (answers.learning_habit === 'consistent') { skill -= 8; aug += 6; }
+  if (answers.learning_habit === 'rarely')     { skill += 10; }
+
+  return {
+    automation:     Math.min(100, Math.max(5, Math.round(auto))),
+    augmentation:   Math.min(100, Math.max(5, Math.round(aug))),
+    income:         Math.min(100, Math.max(5, Math.round(income))),
+    regulatory:     Math.min(100, Math.max(5, Math.round(reg))),
+    skill_pressure: Math.min(100, Math.max(5, Math.round(skill))),
+    ai_adoption:    Math.min(100, Math.max(5, Math.round(adoption))),
+  };
 }
 
-// ── COUNTRY SELECTION ──
-function pickCountry(val, el) {
-  state.targetCountry = val;
-  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  document.getElementById('other-country-wrap').style.display = val === 'other' ? 'block' : 'none';
-  if (val !== 'other') checkContextReady();
-}
-function checkContextReady() {
-  const hasCountry = state.targetCountry && state.targetCountry !== 'other'
-    || (state.targetCountry === 'other' && document.getElementById('other-country-input').value.trim());
-  const btn = document.getElementById('btn-context-next');
-  btn.disabled = !hasCountry;
+function getProfessionLabel(answers) {
+  // Use the actual typed job title if available
+  if (answers.job_title && answers.job_title.length > 2) return answers.job_title;
+  const map = {
+    healthcare: 'Healthcare Professional', finance: 'Finance Professional',
+    tech: 'Technology Professional', legal: 'Legal Professional',
+    creative: 'Creative Professional', education: 'Education Professional', other: 'Professional'
+  };
+  const exp = { junior: 'Early Career', mid: 'Mid-Level', senior: 'Senior', expert: 'Expert' };
+  return `${exp[answers.experience] || ''} ${map[answers.profession_cat] || 'Professional'}`.trim();
 }
 
-// ── PLAN SELECTION ──
-function setPlan(plan) {
-  state.plan = plan;
-  document.getElementById('plan-opt').classList.toggle('selected',    plan === 'opt-only');
-  document.getElementById('plan-bundle').classList.toggle('selected', plan === 'opt-bundle');
-  const btn = document.getElementById('btn-pay');
-  btn.textContent = plan === 'opt-bundle'
-    ? 'Continue to Payment — €9.99 →'
-    : 'Continue to Payment — €4.99 →';
+function getTasksForSector(sector) {
+  const tasks = {
+    healthcare: {
+      risk: ['Routine diagnostic screening', 'Basic clinical documentation', 'Standard report drafting'],
+      safe: ['Complex patient consultation', 'Interdisciplinary care coordination', 'Rare case diagnosis', 'Ethical judgement calls']
+    },
+    finance: {
+      risk: ['Rule-based data entry & reconciliation', 'Standard report generation', 'Basic client portfolio rebalancing'],
+      safe: ['Complex deal structuring', 'Client relationship management', 'Strategic financial planning', 'Regulatory interpretation']
+    },
+    tech: {
+      risk: ['Boilerplate code generation', 'Standard QA testing scripts', 'Basic UI component building'],
+      safe: ['System architecture design', 'Complex debugging & optimisation', 'Stakeholder requirement translation', 'Technical leadership']
+    },
+    legal: {
+      risk: ['Contract template review', 'Legal research & citation', 'Standard clause drafting'],
+      safe: ['Courtroom advocacy', 'Complex negotiation strategy', 'Novel legal interpretation', 'Client trust & counsel']
+    },
+    creative: {
+      risk: ['Basic copywriting from briefs', 'Template-based design work', 'Stock image curation'],
+      safe: ['Brand strategy direction', 'Original concept development', 'Client creative direction', 'Cultural insight application']
+    },
+    education: {
+      risk: ['Content delivery (lecture-style)', 'Basic assessment marking', 'Standard lesson planning'],
+      safe: ['Mentoring & pastoral care', 'Personalised learning design', 'Complex student support', 'Critical thinking facilitation']
+    },
+    other: {
+      risk: ['Repetitive administrative tasks', 'Standard data processing', 'Template-based outputs'],
+      safe: ['Strategic decision-making', 'Human relationship management', 'Creative problem-solving', 'Complex judgement calls']
+    }
+  };
+  return tasks[sector] || tasks.other;
 }
 
-// ── NAVIGATION ──
+// ── NAVIGATION HELPERS ──
+function setProgress(pct, label, step) {
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = label;
+  document.getElementById('step-counter').textContent = step;
+}
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-function goToContext() {
-  state.name = document.getElementById('user-name').value.trim();
-  showScreen('screen-context');
+// ── METHOD SELECTION ──
+function selectMethod(method, el) {
+  state.method = method;
+  document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+
+  setTimeout(() => {
+    if (method === 'quiz') {
+      setProgress(20, 'Taking the quiz', 'Step 2 of 4');
+      showScreen('screen-quiz');
+      renderQuestion(0);
+    } else if (method === 'linkedin') {
+      setProgress(20, 'LinkedIn profile', 'Step 2 of 4');
+      showScreen('screen-linkedin');
+    } else {
+      setProgress(20, 'CV upload', 'Step 2 of 4');
+      showScreen('screen-cv');
+    }
+  }, 200);
 }
 
-function goToPayment() {
-  if (state.targetCountry === 'other') {
-    state.targetCountry = document.getElementById('other-country-input').value.trim();
+// ── QUIZ ──
+function renderQuestion(idx) {
+  const q = questions[idx];
+  const container = document.getElementById('q-options');
+  container.innerHTML = '';
+
+  // Section label
+  const prevSection = idx > 0 ? questions[idx-1].section : null;
+  const sectionEl = document.getElementById('q-section');
+  if (q.section && q.section !== prevSection) {
+    sectionEl.textContent = q.section.toUpperCase();
+    sectionEl.style.display = 'block';
+  } else {
+    sectionEl.style.display = 'none';
   }
-  state.targetCompany = document.getElementById('ctx-company').value.trim();
-  state.targetRole    = document.getElementById('ctx-role').value.trim();
-  showScreen('screen-payment');
+
+  document.getElementById('q-num').textContent = `Question ${idx+1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const nextBtn = document.getElementById('quiz-next');
+  nextBtn.textContent = idx === questions.length - 1 ? 'See My Results →' : 'Continue →';
+
+  // Text input question
+  if (q.type === 'text') {
+    const wrap = document.createElement('div');
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'text-input';
+    inp.placeholder = q.placeholder || '';
+    inp.value = state.answers[q.id] || '';
+    inp.style.fontSize = '16px';
+    inp.oninput = () => {
+      state.answers[q.id] = inp.value.trim();
+      nextBtn.className = 'btn-next' + (inp.value.trim() ? ' enabled' : '');
+    };
+    // Allow Enter to advance
+    inp.onkeydown = (e) => { if (e.key === 'Enter' && inp.value.trim()) quizNext(); };
+    wrap.appendChild(inp);
+    container.appendChild(wrap);
+    nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
+    setTimeout(() => inp.focus(), 100);
+  } else {
+    // Multiple choice
+    const letters = ['A','B','C','D','E','F','G','H'];
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      if (state.answers[q.id] === opt.value) btn.classList.add('selected');
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt.label}`;
+      btn.onclick = () => selectOption(q.id, opt.value, btn);
+      container.appendChild(btn);
+    });
+
+    // Add "Other" option to questions that benefit from it (not already having one)
+    const noOther = ['profession_cat','industry','concern','top_priority','timeline','biggest_worry'];
+    if (!noOther.includes(q.id)) {
+      const otherBtn = document.createElement('button');
+      otherBtn.className = 'option-btn' + (state.answers[q.id] === 'other_typed' ? ' selected' : '');
+      otherBtn.innerHTML = `<span class="opt-letter">${letters[q.options.length]}</span>Other — I'll describe it`;
+      otherBtn.onclick = () => selectOption(q.id, 'other_typed', otherBtn);
+      container.appendChild(otherBtn);
+
+      // Hidden text input for "other"
+      const otherBox = document.createElement('div');
+      otherBox.id = 'other-input-box';
+      otherBox.style.cssText = 'display:none;margin-top:8px';
+      const otherInp = document.createElement('input');
+      otherInp.type = 'text';
+      otherInp.className = 'text-input';
+      otherInp.placeholder = 'Describe your answer…';
+      otherInp.value = (state.answers[q.id] === 'other_typed' ? '' : '');
+      otherInp.oninput = () => { state.answers[q.id] = otherInp.value.trim() || 'other_typed'; };
+      if (state.answers[q.id] === 'other_typed') otherBox.style.display = 'block';
+      otherBox.appendChild(otherInp);
+      container.appendChild(otherBox);
+    }
+
+    nextBtn.className = 'btn-next' + (state.answers[q.id] ? ' enabled' : '');
+  }
+
+  document.getElementById('quiz-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  state.currentQ = idx;
 }
 
-// ── CHECKOUT ──
-async function completePurchase() {
-  const email = document.getElementById('pay-email').value.trim();
-  const errEl = document.getElementById('pay-error');
-  const btn   = document.getElementById('btn-pay');
+function selectOption(qId, value, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
 
-  errEl.style.display = 'none';
-  if (!email || !email.includes('@')) {
-    errEl.textContent = 'Please enter a valid email address.';
+  // Handle "other" — show inline text input instead of auto-advancing
+  const otherBox = document.getElementById('other-input-box');
+  if (value === 'other_typed') {
+    state.answers[qId] = '';
+    if (otherBox) { otherBox.style.display = 'block'; otherBox.querySelector('input').focus(); }
+    document.getElementById('quiz-next').classList.add('enabled');
+    return;
+  } else {
+    if (otherBox) otherBox.style.display = 'none';
+  }
+
+  state.answers[qId] = value;
+  document.getElementById('quiz-next').classList.add('enabled');
+  // Auto-advance after short delay for multiple choice
+  setTimeout(() => quizNext(), 300);
+}
+
+function quizNext() {
+  const q = questions[state.currentQ];
+  const ans = state.answers[q.id];
+  if (!ans) return;
+  const pct = Math.round(((state.currentQ + 1) / questions.length) * 60) + 20;
+  setProgress(pct, `${q.section || 'Quiz'} · ${state.currentQ + 1}/${questions.length}`, 'Step 2 of 4');
+  if (state.currentQ < questions.length - 1) {
+    renderQuestion(state.currentQ + 1);
+  } else {
+    startAnalysis();
+  }
+}
+
+function quizBack() {
+  if (state.currentQ > 0) renderQuestion(state.currentQ - 1);
+  else { showScreen('screen-method'); setProgress(0, 'Getting started', 'Step 1 of 4'); }
+}
+
+// ── FILE UPLOAD ──
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  state.cvFile = file;
+  document.getElementById('upload-icon').textContent = '✅';
+  document.getElementById('upload-title').textContent = file.name;
+  document.getElementById('upload-sub').textContent = `${(file.size/1024).toFixed(0)} KB · Ready to analyse`;
+  document.getElementById('cv-parse-status').style.display = 'block';
+  const btn = document.getElementById('cv-next');
+  btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; btn.disabled = false;
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('cv-file').files = dt.files;
+    handleFile({ files: [file] });
+  }
+}
+
+// ── READ FILE AS TEXT ──
+function onLiUrlInput(val) {
+  const ok = val.trim().includes('linkedin.com/in/');
+  const btn = document.getElementById('li-next');
+  btn.style.opacity = ok ? '1' : '0.4';
+  btn.style.pointerEvents = ok ? 'all' : 'none';
+  const hint = document.getElementById('li-url-hint');
+  if (hint) hint.style.display = val && !ok ? 'block' : 'none';
+}
+
+// ── EXTRACT TEXT FROM CV FILE ──
+async function extractTextFromFile(file) {
+  // TXT — read directly
+  if (file.type === 'text/plain') {
+    return new Promise((resolve) => {
+      const r = new FileReader();
+      r.onload = e => resolve(e.target.result.slice(0, 8000));
+      r.onerror = () => resolve('');
+      r.readAsText(file);
+    });
+  }
+
+  // PDF — use PDF.js to extract text client-side
+  if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      // Dynamically load PDF.js from CDN
+      if (!window.pdfjsLib) {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          s.onload = resolve; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+      const pdf  = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = '';
+      for (let i = 1; i <= Math.min(pdf.numPages, 5); i++) {
+        const page    = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(s => s.str).join(' ') + '\n';
+      }
+      return text.slice(0, 8000);
+    } catch (err) {
+      console.error('PDF.js error:', err);
+      return '';
+    }
+  }
+
+  // DOCX / other — read as text and hope for the best
+  return new Promise((resolve) => {
+    const r = new FileReader();
+    r.onload = e => {
+      // Strip binary noise, keep printable ASCII
+      const raw = e.target.result || '';
+      const clean = typeof raw === 'string'
+        ? raw.replace(/[^\x20-\x7E\r\n]/g, ' ').replace(/\s+/g, ' ').slice(0, 8000)
+        : '';
+      resolve(clean);
+    };
+    r.onerror = () => resolve('');
+    r.readAsText(file, 'utf-8');
+  });
+}
+
+// ── CONTEXT SCREEN (country / company / role) ──
+function selectCountry(val, el) {
+  state.targetCountry = val;
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  const otherWrap = document.getElementById('country-other-wrap');
+  if (otherWrap) otherWrap.style.display = val === 'other' ? 'block' : 'none';
+  if (val !== 'other') updateContextNext();
+}
+
+function updateContextNext() {
+  const btn = document.getElementById('context-next');
+  if (!btn) return;
+  const ok = state.targetCountry && state.targetCountry !== 'other'
+             || (state.targetCountry === 'other' && document.getElementById('country-other-input')?.value.trim());
+  btn.style.opacity      = ok ? '1' : '0.4';
+  btn.style.pointerEvents = ok ? 'all' : 'none';
+}
+
+function goFromContext() {
+  // Populate target company/role from inputs
+  state.targetCompany = document.getElementById('target-company')?.value.trim() || '';
+  state.targetRole    = document.getElementById('target-role')?.value.trim() || '';
+  if (state.targetCountry === 'other') {
+    state.targetCountry = document.getElementById('country-other-input')?.value.trim() || '';
+  }
+  // Resume whichever analysis was pending
+  if (state.pendingAnalysis === 'linkedin') _runLinkedInAnalysis();
+  else if (state.pendingAnalysis === 'cv')  _runCVAnalysis();
+}
+
+// ── DEBUG HELPERS ──
+function startLoadingMessages() {
+  // Cycle through loading status messages
+  const stages = [
+    'Analysing your profile…',
+    'Calculating AI exposure…',
+    'Mapping skill landscape…',
+    'Generating your intelligence brief…',
+    'Almost ready…'
+  ];
+  let i = 0;
+  const el = document.getElementById('loading-stage');
+  const interval = setInterval(() => {
+    if (!document.getElementById('screen-loading').classList.contains('active')) {
+      clearInterval(interval); return;
+    }
+    i = (i + 1) % stages.length;
+    if (el) el.textContent = stages[i];
+  }, 2500);
+}
+
+function debugLog(msg) {
+  const el = document.getElementById('debug-log');
+  const sk = document.getElementById('debug-skip');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML += new Date().toISOString().slice(11,19) + '  ' + msg + '<br>';
+  // Show skip button after 5s of being on the loading screen
+  if (sk) setTimeout(() => { sk.style.display = 'inline-block'; }, 5000);
+}
+
+function debugSkip() {
+  if (!state.answers.profession_cat) {
+    state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+  }
+  showResults();
+}
+
+// ── LINKEDIN ANALYSIS (URL-based) ──
+async function startLinkedInAnalysis() {
+  const url   = document.getElementById('li-url').value.trim();
+  const name  = document.getElementById('li-name').value.trim();
+  const errEl = document.getElementById('li-error');
+  const btn   = document.getElementById('li-next');
+
+  if (!url.includes('linkedin.com/in/')) {
+    errEl.textContent = 'Please enter a valid LinkedIn profile URL.';
     errEl.style.display = 'block'; return;
   }
 
-  btn.textContent = 'Redirecting…'; btn.disabled = true;
+  errEl.style.display = 'none';
+  btn.textContent = 'Analysing…'; btn.style.opacity = '0.7'; btn.disabled = true;
+
+  state.name   = name;
+  state.method = 'linkedin';
+  state._liUrl = url;   // stash for after context screen
+
+  // Go to context screen first, then analyse after
+  state.pendingAnalysis = 'linkedin';
+  setProgress(30, 'Almost ready…', 'Step 2 of 4');
+  showScreen('screen-context');
+  updateContextNext();
+  return; // Will resume via goFromContext()
+}
+
+async function _runLinkedInAnalysis() {
+  const url  = state._liUrl;
+  const name = state.name;
+  setProgress(40, 'Fetching your LinkedIn profile…', 'Step 3 of 4');
+  showScreen('screen-loading');
+  startLoadingMessages();
+
+  debugLog('Starting LinkedIn analysis for: ' + url);
+
+  const liFallback = (reason) => {
+    debugLog('FALLBACK: ' + (reason || 'unknown'));
+    if (!state.answers.profession_cat) {
+      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    }
+    state.cvQualityIssues = ['LinkedIn profile could not be read — brief will use general defaults'];
+    showResults();
+  };
+  const liTimer = setTimeout(() => liFallback('12s timeout hit'), 12000);
+
+  try {
+    debugLog('Calling backend /api/parse-input...');
+    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'linkedin', url, name }),
+      signal: AbortSignal.timeout(11000),
+    });
+    debugLog('Backend responded: HTTP ' + res.status);
+    clearTimeout(liTimer);
+    const data = await res.json();
+    debugLog('Parsed JSON: ' + JSON.stringify(data).slice(0, 120));
+    if (!res.ok) throw new Error(data.error || 'Could not read profile');
+    applyParsedData(data.data);
+    state.cvQualityIssues     = data.data.cv_quality_issues || [];
+    state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
+    debugLog('Success — showing results');
+    showResults();
+  } catch (err) {
+    clearTimeout(liTimer);
+    debugLog('ERROR: ' + err.message);
+    liFallback(err.message);
+  }
+}
+
+// ── CV ANALYSIS ──
+async function startCVAnalysis() {
+  const file  = state.cvFile;
+  const name  = document.getElementById('cv-name').value.trim();
+  const errEl = document.getElementById('cv-error');
+  const btn   = document.getElementById('cv-next');
+
+  if (!file) { errEl.textContent = 'Please upload a CV file first.'; errEl.style.display = 'block'; return; }
+
+  errEl.style.display = 'none';
+  btn.textContent = 'Extracting text…'; btn.style.opacity = '0.7'; btn.disabled = true;
+
+  state.name   = name;
+  state.method = 'cv';
+
+  // Go to context screen first, then analyse after
+  state.pendingAnalysis = 'cv';
+  setProgress(30, 'Almost ready…', 'Step 2 of 4');
+  showScreen('screen-context');
+  updateContextNext();
+  return; // Will resume via goFromContext()
+}
+
+async function _runCVAnalysis() {
+  const file = state.cvFile;
+  const name = state.name || '';
+  setProgress(35, 'Reading your CV…', 'Step 3 of 4');
+  showScreen('screen-loading');
+  startLoadingMessages();
+
+  const cvFallback = () => {
+    if (!state.answers.profession_cat) {
+      state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+    }
+    state.cvQualityIssues = ['CV could not be fully parsed — brief will use general defaults'];
+    showResults();
+  };
+  const cvTimer = setTimeout(() => cvFallback('15s timeout hit'), 15000);
+
+  try {
+    debugLog('Extracting text from file: ' + file.name + ' (' + file.type + ')');
+    const cvText = await extractTextFromFile(file);
+    debugLog('Extracted ' + (cvText ? cvText.length : 0) + ' chars');
+
+    if (!cvText || cvText.trim().length < 50) {
+      debugLog('Text too short — fallback');
+      clearTimeout(cvTimer);
+      cvFallback('text too short'); return;
+    }
+
+    setProgress(50, 'Analysing your CV…', 'Step 2 of 4');
+    debugLog('Calling backend /api/parse-input...');
+
+    const res = await fetch(`${BACKEND_URL}/api/parse-input`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'cv', content: cvText, name, filename: file.name }),
+      signal: AbortSignal.timeout(14000),
+    });
+    debugLog('Backend responded: HTTP ' + res.status);
+    clearTimeout(cvTimer);
+    const data = await res.json();
+    debugLog('Parsed JSON: ' + JSON.stringify(data).slice(0, 120));
+    if (!res.ok) throw new Error(data.error || 'Analysis failed');
+
+    applyParsedData(data.data);
+    state.cvQualityIssues     = data.data.cv_quality_issues || [];
+    state.optimisationUrgency = data.data.optimisation_urgency || 'medium';
+    debugLog('Success — showing results');
+    showResults();
+  } catch (err) {
+    clearTimeout(cvTimer);
+    debugLog('ERROR: ' + err.message);
+    setTimeout(() => {
+      if (!state.answers.profession_cat) {
+        state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+      }
+      state.cvQualityIssues = ['CV could not be fully parsed — the brief will use your file name and general defaults'];
+      showResults();
+    }, 2000);
+  }
+}
+
+// ── APPLY PARSED DATA ──
+function applyParsedData(d) {
+  state.answers = {
+    profession_cat:  d.profession_cat  || 'other',
+    job_title:       d.job_title        || '',
+    experience:      d.experience       || 'mid',
+    tasks:           d.tasks            || 'judgment',
+    ai_exposure:     d.ai_exposure      || 'aware',
+    ai_personal_use: 'occasional',
+    industry:        d.industry         || 'private',
+    decision_level:  d.decision_level   || 'mid',
+    regulatory:      d.regulatory       || 'optional',
+    specialisation:  d.specialisation   || 'moderate',
+    data_work:       d.data_work        || 'some',
+    writing_work:    d.writing_work     || 'some',
+    tech_comfort:    d.tech_comfort     || 'mid',
+    client_facing:   'internal',
+    learning_habit:  'occasional',
+    concern:         'growth',
+    biggest_worry:   'obsolescence',
+    key_skills:      d.key_skills       || '',
+    career_summary:  d.career_summary   || '',
+  };
+  if (d.job_title) state.profession = d.job_title;
+}
+
+// ── START ANALYSIS (quiz path) ──
+function startAnalysis() {
+  if (!state.answers.profession_cat) {
+    state.answers = { profession_cat: 'other', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' };
+  }
+  // Get name
+  state.name = document.getElementById('li-name')?.value ||
+               document.getElementById('cv-name')?.value ||
+               'Your';
+
+  setProgress(70, 'Analysing your profile', 'Step 3 of 4');
+  showScreen('screen-loading');
+
+  const stages = [
+    'Mapping your profession profile',
+    'Analysing task-level automation risk',
+    'Benchmarking against sector data',
+    'Computing augmentation potential',
+    'Generating your career archetype',
+    'Building your Intelligence Brief',
+  ];
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < stages.length) {
+      document.getElementById('loading-stage').style.opacity = 0;
+      setTimeout(() => {
+        document.getElementById('loading-stage').textContent = stages[i++];
+        document.getElementById('loading-stage').style.opacity = 1;
+      }, 150);
+    } else {
+      clearInterval(iv);
+      showResults();
+    }
+  }, 700);
+}
+
+// ── SHOW RESULTS ──
+function showResults() {
+  const scores   = computeScores(state.answers);
+  const archetype = computeArchetype(state.answers);
+  const profLabel = getProfessionLabel(state.answers);
+  const taskData  = getTasksForSector(state.answers.profession_cat);
+
+  state.scores    = scores;
+  state.archetype = archetype;
+  state.profession = profLabel;
+
+  const displayName = state.name && state.name !== 'Your' ? state.name : 'Your';
+
+  document.getElementById('r-name').textContent = displayName === 'Your' ? 'Your Career Analysis' : `${displayName}'s Career Analysis`;
+  document.getElementById('r-profession').textContent = profLabel + ' · PlanItEarth Analysis';
+  document.getElementById('r-arch-emoji').textContent = archetype.emoji;
+  document.getElementById('r-arch-name').textContent  = archetype.name;
+  document.getElementById('r-arch-desc').textContent  = archetype.desc;
+
+  // Metrics
+  const metricDefs = [
+    { label: 'Automation Exposure',    key: 'automation',     color: '#C0392B', note: 'How much of your work AI can currently automate' },
+    { label: 'Augmentation Potential', key: 'augmentation',   color: '#3D6B4F', note: 'How much AI could amplify your productivity' },
+    { label: 'Income Protection',      key: 'income',         color: '#D4841A', note: 'Structural resilience of your earnings over 5 years' },
+    { label: 'Regulatory Protection',  key: 'regulatory',     color: '#7B5EA7', note: 'Licensing and legal barriers protecting your role' },
+    { label: 'Skill Evolution Pressure', key: 'skill_pressure', color: '#1A7A9D', note: 'Urgency to develop new capabilities now' },
+    { label: 'AI Adoption in Your Field', key: 'ai_adoption', color: '#3D6B4F', note: 'Current penetration of AI tools in your sector' },
+  ];
+
+  const ml = document.getElementById('metrics-list');
+  ml.innerHTML = '';
+  metricDefs.forEach(m => {
+    const val = Math.round(scores[m.key]);
+    ml.innerHTML += `
+      <div class="metric-item">
+        <div class="metric-header">
+          <span class="metric-label">${m.label}</span>
+          <span class="metric-score" style="color:${m.color}">${val}<span style="font-size:14px;color:var(--mid)">/100</span></span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${val}%;background:${m.color}"></div>
+        </div>
+        <div class="metric-context">${m.note}</div>
+      </div>`;
+  });
+
+  // Tasks
+  const tr = document.getElementById('tasks-risk');
+  const ts = document.getElementById('tasks-safe');
+  tr.innerHTML = taskData.risk.slice(0,3).map(t =>
+    `<div class="task-item"><span>⚠</span>${t}</div>`).join('');
+  ts.innerHTML = taskData.safe.slice(0,3).map(t =>
+    `<div class="task-item"><span>✦</span>${t}</div>`).join('');
+
+  // ── Populate hook card (no API call) ──
+  document.getElementById('hook-score-1').textContent = Math.round(scores.augmentation) + '/100';
+  document.getElementById('hook-score-2').textContent = Math.round(scores.income) + '/100';
+  document.getElementById('hook-score-3').textContent = Math.round(scores.skill_pressure) + '/100';
+  document.getElementById('hook-score-4').textContent = Math.round(scores.automation) + '/100';
+  document.getElementById('hook-title').innerHTML =
+    `Your <em style="font-style:normal;color:var(--sage-lt)">${archetype.name}</em><br>Career Intelligence Brief`;
+
+  const jobTitle = state.answers.job_title || profLabel;
+  document.getElementById('hook-teaser').textContent =
+    `As a ${jobTitle}, your brief includes a full task-level breakdown, a 6-step skill roadmap ` +
+    `specific to your role, and 1, 3 & 5-year horizon forecasts — all generated by AI trained on ` +
+    `WEF, McKinsey, and O*NET labour data.`;
+
+  setProgress(100, 'Analysis complete', 'Step 4 of 4');
+  showScreen('screen-results');
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(b => {
+      const w = b.style.width;
+      b.style.width = '0';
+      requestAnimationFrame(() => { b.style.width = w; });
+    });
+  }, 100);
+}
+
+// ── PAYMENT ──
+const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
+
+function selectPlan(plan) {
+  state.plan = plan;
+  // Update plan selector buttons
+  const briefBtn  = document.getElementById('plan-btn-brief');
+  const bundleBtn = document.getElementById('plan-btn-bundle');
+  if (briefBtn && bundleBtn) {
+    if (plan === 'brief') {
+      briefBtn.style.borderColor  = 'var(--sage)';  briefBtn.style.background  = '#F0F7F3';
+      bundleBtn.style.borderColor = 'var(--mist)';  bundleBtn.style.background = 'white';
+    } else {
+      bundleBtn.style.borderColor = 'var(--amber)'; bundleBtn.style.background = '#FFF8F0';
+      briefBtn.style.borderColor  = 'var(--mist)';  briefBtn.style.background  = 'white';
+    }
+  }
+  // Update upsell buttons too
+  const bb = document.getElementById('btn-bundle'), bo = document.getElementById('btn-brief-only');
+  if (bb && bo) {
+    bb.style.background = plan === 'bundle' ? '#2d5239' : 'var(--sage)';
+    bo.style.background = plan === 'brief'  ? 'var(--mist)' : 'none';
+  }
+  // Update checkout button label
+  const btn = document.getElementById('checkout-btn');
+  if (btn) btn.textContent = plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+}
+
+function goToPayment() {
+  setProgress(90, 'Complete your order', 'Step 5 of 5');
+  showScreen('screen-payment');
+
+  if (state.name && state.name !== 'Your') {
+    const pName = document.getElementById('p-name');
+    if (pName) pName.value = state.name;
+  }
+
+  // Show upsell alert for CV/LinkedIn inputs with quality issues
+  const upsellAlert = document.getElementById('upsell-alert');
+  const planSelector = document.getElementById('plan-selector');
+  const isInputMethod = state.method === 'cv' || state.method === 'linkedin';
+  const hasIssues     = state.cvQualityIssues && state.cvQualityIssues.length > 0;
+
+  if (upsellAlert) {
+    if (isInputMethod && hasIssues) {
+      upsellAlert.style.display = 'block';
+      if (planSelector) planSelector.style.display = 'none';
+
+      // Populate alert title based on method
+      const title = document.getElementById('upsell-alert-title');
+      if (title) title.textContent = state.method === 'cv'
+        ? '⚠️  Your CV could be significantly improved'
+        : '⚠️  Your LinkedIn profile could be significantly improved';
+
+      // Populate issues
+      const list = document.getElementById('upsell-issues-list');
+      if (list && state.cvQualityIssues.length) {
+        list.innerHTML = state.cvQualityIssues.slice(0, 3).map(issue =>
+          `<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#6B4C0A">
+            <span style="flex-shrink:0;color:var(--amber)">→</span>${issue}
+          </div>`
+        ).join('');
+      }
+
+      // Default to bundle for CV/LinkedIn users
+      selectPlan('bundle');
+    } else {
+      upsellAlert.style.display = 'none';
+      if (planSelector) planSelector.style.display = 'flex';
+      selectPlan('brief');
+    }
+  }
+
+  const btn = document.getElementById('checkout-btn');
+  if (btn) btn.textContent = state.plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+}
+
+async function completePurchase() {
+  const name  = document.getElementById('p-name').value.trim();
+  const email = document.getElementById('p-email').value.trim();
+  const errEl = document.getElementById('checkout-error');
+  const btn   = document.getElementById('checkout-btn');
+
+  errEl.style.display = 'none';
+  if (!name)  { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = 'Redirecting to secure checkout…';
+  btn.style.opacity = '0.7'; btn.disabled = true;
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/create-checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name:           state.name,
-        email,
-        plan:           state.plan,
-        inputMethod:    state.method,
-        targetCountry:  state.targetCountry,
-        targetCompany:  state.targetCompany,
-        targetRole:     state.targetRole,
-        // Pass minimal answers for the brief (only used if bundle)
-        answers:        { profession_cat: 'other', job_title: '', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' },
-        scores:         { automation: 55, augmentation: 70, income: 60, regulatory: 55, skill_pressure: 65, ai_adoption: 55 },
-        archetype:      { name: 'Strategic Adapter' },
-        profession:     state.targetRole || 'Professional',
-        cvQualityIssues: [],
-        // Pass the CV/LinkedIn content via the parse step at webhook time
-        liUrl:          state.liUrl || '',
-        sourceFromOptimise: true,
+        name, email,
+        answers:         state.answers,
+        scores:          state.scores,
+        archetype:       state.archetype,
+        profession:      state.profession,
+        plan:            state.plan,
+        inputMethod:     state.method || 'quiz',
+        cvQualityIssues: state.cvQualityIssues || [],
+        targetCountry:   state.targetCountry || '',
+        targetCompany:   state.targetCompany || '',
+        targetRole:      state.targetRole    || '',
       }),
     });
     const data = await res.json();
     if (!res.ok || !data.url) throw new Error(data.error || 'Checkout failed');
     window.location.href = data.url;
   } catch (err) {
-    errEl.textContent = 'Something went wrong — please try again.';
+    console.error(err);
+    errEl.textContent = 'Something went wrong. Please try again or contact us at hello@theplanitearth.com';
     errEl.style.display = 'block';
-    btn.textContent = state.plan === 'opt-bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €4.99 →';
-    btn.disabled = false;
+    btn.textContent = state.plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+    btn.style.opacity = '1'; btn.disabled = false;
   }
 }
+
+function confirmDelivery() {
+  const email = document.getElementById('d-email').value;
+  alert(`✅ Brief sent to ${email}. Check your inbox in 60 seconds!`);
+}
+
+// ── SHARE ──
+function shareResult() {
+  const text = `I just found out I'm "${state.archetype.name || 'a Strategic Adapter'}" on PlanItEarth — my personalised AI career analysis. Find out yours:`;
+  const url  = 'https://theplanitearth.com/quiz.html';
+  if (navigator.share) {
+    navigator.share({ title: 'My Career Archetype — PlanItEarth', text, url });
+  } else {
+    navigator.clipboard.writeText(text + ' ' + url)
+      .then(() => alert('Link copied to clipboard! Share it with your network.'));
+  }
+}
+
+// ── INIT ──
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  const mode   = params.get('mode');
+  if (mode === 'linkedin') { setTimeout(() => selectMethod('linkedin', null), 50); }
+  else if (mode === 'cv')  { setTimeout(() => selectMethod('cv', null), 50); }
+  else if (mode === 'quiz'){ setTimeout(() => selectMethod('quiz', null), 50); }
+})();
 </script>
+
 </body>
 </html>
