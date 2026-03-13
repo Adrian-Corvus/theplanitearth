@@ -11,14 +11,14 @@
   <style>
     :root{--ink:#0D0F14;--paper:#F5F2EC;--sage:#3D6B4F;--sage-lt:#C8DDD0;--amber:#D4841A;--amber-lt:#FAE8C8;--red:#C0392B;--red-lt:#FDECEA;--mist:#E8E4DC;--mid:#8A8880;}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--paper);border-bottom:1px solid var(--mist);}
-    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--text);overflow-x:hidden;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,15,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--mist);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:10px;}
     .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
     .logo span{color:var(--sage);}
     .nav-r{display:flex;gap:24px;align-items:center;}
     .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
-    .nav-r a:hover,.nav-r a.active{color:var(--ink);}
+    .nav-r a:hover,.nav-r a.active{color:var(--paper);}
     .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
     @media(max-width:900px){nav{padding:10px 14px;}.nav-r a:not(.nav-cta){display:none;}.nav-cta{padding:8px 14px;font-size:12px!important;white-space:nowrap;}.logo{font-size:15px;}.logo img{width:28px;height:28px;}}
 
@@ -26,11 +26,11 @@
     .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--amber-lt);color:var(--amber);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:22px;}
     h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.06;margin-bottom:18px;}
     h1 em{font-style:normal;color:var(--amber);}
-    .hero-sub{font-size:16px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:28px;}
+    .hero-sub{font-size:16px;color:var(--text-dim);font-weight:300;line-height:1.65;max-width:580px;margin-bottom:28px;}
     .index-tabs{display:flex;gap:10px;flex-wrap:wrap;}
-    .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
-    .itab:hover{border-color:var(--ink);color:var(--ink);}
-    .itab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.08);color:var(--mid);transition:all .2s;}
+    .itab:hover{border-color:var(--paper);color:var(--paper);}
+    .itab.active{background:var(--ink);color:var(--paper);border-color:var(--paper);}
     .itab.premium{border-color:var(--amber);color:var(--amber);}
 
     /* RANKED BAR CHART */
@@ -49,7 +49,7 @@
     .cards-section{padding:24px 48px 48px;}
     .cards-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:20px;}
     .scgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
-    .scard{background:white;border-radius:18px;padding:26px;border:1.5px solid var(--mist);transition:all .2s;text-decoration:none;display:block;color:inherit;}
+    .scard{background:var(--surface2);border-radius:18px;padding:26px;border:1px solid rgba(255,255,255,.08);transition:all .2s;text-decoration:none;display:block;color:inherit;}
     .scard:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(13,15,20,.08);border-color:transparent;}
     .sc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
     .sc-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;}
@@ -79,7 +79,7 @@
     .q-da{background:#FDECEA;border:1.5px solid #F5C6C0;}.q-da h4{color:var(--red);}
     .q-dr{background:#FFF8F0;border:1.5px solid #F5DDB0;}.q-dr h4{color:var(--amber);}
     .q-sa{background:#EEF7F2;border:1.5px solid #BCD8C8;}.q-sa h4{color:var(--sage);}
-    .q-sr{background:#F5F2EC;border:1.5px solid var(--mist);}.q-sr h4{color:var(--mid);}
+    .q-sr{background:#F5F2EC;border:1px solid rgba(255,255,255,.08);}.q-sr h4{color:var(--mid);}
 
     .upsell{margin:0 48px 40px;background:var(--ink);border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
     .upsell h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;margin-bottom:5px;}
@@ -94,7 +94,7 @@
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png"/>The PlanIt<span>Earth</span></a>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span>Earth</span></a>
   <div class="nav-r">
     <a href="index-professions.html">Professions</a>
     <a href="index-sectors.html" class="active">Sectors</a>

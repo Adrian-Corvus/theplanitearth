@@ -1,101 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PlanItEarth — Know Your Career Future</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-  <meta name="description" content="Find out exactly how AI will change your career — and what to do about it. Personalised Career Intelligence Brief for any profession." />
-  <meta property="og:title" content="PlanItEarth — Know Your Career Future" />
-  <meta property="og:description" content="Not a fear score. A real, personalised intelligence brief built for your profession." />
-  <meta property="og:image" content="https://theplanitearth.com/icon-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ThePlanItEarth — AI Career Intelligence & Automation Risk Index</title>
+  <meta name="description" content="Will AI replace your job? See the global AI automation risk map and get your personalised Career Intelligence Brief. Built from Frey & Osborne, Oxford Insights, World Bank and UNDP data."/>
+  <meta property="og:title" content="ThePlanItEarth — AI Career Intelligence"/>
+  <meta property="og:description" content="Interactive world map of AI job automation risk + personalised career briefs for any profession."/>
+  <meta property="og:image" content="https://theplanitearth.com/icon-192.png"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --ink:     #0D0F14;
-      --paper:   #F5F2EC;
-      --sage:    #3D6B4F;
-      --sage-lt: #C8DDD0;
-      --amber:   #D4841A;
-      --amber-lt:#FAE8C8;
-      --red:     #C0392B;
-      --mist:    #E8E4DC;
-      --mid:     #8A8880;
+      --ink:      #0D0F14;
+      --surface:  #131620;
+      --surface2: #1A1F2E;
+      --surface3: #222840;
+      --paper:    #F5F2EC;
+      --sage:     #4A8B62;
+      --sage-lt:  #7EC09A;
+      --sage-dim: rgba(74,139,98,.15);
+      --amber:    #E8922A;
+      --amber-lt: #F5C87A;
+      --amber-dim:rgba(232,146,42,.15);
+      --red:      #D94F3D;
+      --red-lt:   #F5876A;
+      --red-dim:  rgba(217,79,61,.15);
+      --mist:     rgba(255,255,255,.07);
+      --mist2:    rgba(255,255,255,.04);
+      --mid:      #6B7280;
+      --text:     rgba(245,242,236,.85);
+      --text-dim: rgba(245,242,236,.45);
+      --glow-sage: 0 0 40px rgba(74,139,98,.25);
+      --glow-amber:0 0 40px rgba(232,146,42,.25);
+      --glow-red:  0 0 40px rgba(217,79,61,.25);
     }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--paper);
-      color: var(--ink);
+      background: var(--ink);
+      color: var(--text);
       overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: .4;
     }
 
     /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 48px;
-      background: var(--paper);
+      padding: 18px 52px;
+      background: rgba(13,15,20,.85);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--mist);
     }
     .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 20px; letter-spacing: -0.5px;
-      color: var(--ink); text-decoration: none;
-      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+      color: var(--paper); text-decoration: none;
+      display: flex; align-items: center; gap: 10px; letter-spacing: -.3px;
     }
-    .logo span { color: var(--sage); }
-    .logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 6px; }
-    nav a { color: var(--mid); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
-    nav a:hover { color: var(--ink); }
+    .logo img { width: 36px; height: 36px; object-fit: contain; }
+    .logo span { color: var(--sage-lt); }
     .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--paper); }
     .nav-cta {
-      background: var(--ink); color: var(--paper) !important;
-      padding: 10px 22px; border-radius: 100px; font-size: 14px !important;
-      transition: background .2s, transform .15s !important;
+      background: var(--sage); color: white !important;
+      padding: 10px 22px; border-radius: 100px; font-size: 13px !important; font-weight: 600 !important;
+      transition: background .2s, box-shadow .2s, transform .15s !important;
+      box-shadow: var(--glow-sage);
     }
-    .nav-cta:hover { background: var(--sage) !important; transform: translateY(-1px); }
+    .nav-cta:hover { background: #3D7A53 !important; transform: translateY(-1px); }
 
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
-      display: grid; grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 120px 48px 80px;
-      gap: 64px;
+      display: grid;
+      grid-template-rows: auto 1fr;
       position: relative;
       overflow: hidden;
+      padding-top: 80px;
     }
-    .hero::before {
-      content: '';
-      position: absolute; top: -200px; right: -200px;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(61,107,79,.12) 0%, transparent 70%);
-      pointer-events: none;
+
+    /* Animated background mesh */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(74,139,98,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(232,146,42,.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 50% 80%, rgba(217,79,61,.05) 0%, transparent 60%);
     }
+    .hero-bg-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 48px; align-items: center;
+      padding: 60px 52px 40px;
+      max-width: 1400px; margin: 0 auto; width: 100%;
+    }
+
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--sage-lt); color: var(--sage);
+      background: var(--sage-dim); color: var(--sage-lt);
+      border: 1px solid rgba(74,139,98,.3);
       padding: 6px 14px; border-radius: 100px;
-      font-size: 13px; font-weight: 500; letter-spacing: .3px;
-      margin-bottom: 28px;
+      font-size: 12px; font-weight: 600; letter-spacing: .5px;
+      margin-bottom: 24px;
     }
-    .hero-eyebrow::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .hero-eyebrow::before { content: '●'; font-size: 7px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
 
     h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(40px, 5vw, 68px);
-      font-weight: 800; line-height: 1.05;
-      letter-spacing: -2px; margin-bottom: 24px;
+      font-size: clamp(38px,4.5vw,64px);
+      font-weight: 800; line-height: 1.04;
+      letter-spacing: -2.5px; margin-bottom: 22px;
+      color: var(--paper);
     }
-    h1 em { font-style: normal; color: var(--sage); }
+    h1 em { font-style: normal; color: var(--sage-lt); }
     h1 .strike {
       position: relative; color: var(--mid);
       text-decoration: line-through;
@@ -104,446 +143,414 @@
     }
 
     .hero-sub {
-      font-size: 18px; color: #4A4845; line-height: 1.65;
-      max-width: 480px; margin-bottom: 40px;
-      font-weight: 300;
+      font-size: 17px; color: var(--text-dim); line-height: 1.7;
+      max-width: 460px; margin-bottom: 36px; font-weight: 300;
     }
 
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 32px; }
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
-      background: var(--ink); color: var(--paper);
-      padding: 16px 32px; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500;
+      background: var(--sage); color: white;
+      padding: 15px 28px; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
       text-decoration: none; border: none; cursor: pointer;
-      transition: background .2s, transform .15s, box-shadow .2s;
-      box-shadow: 0 4px 20px rgba(13,15,20,.15);
+      transition: all .2s;
+      box-shadow: var(--glow-sage);
     }
-    .btn-primary:hover { background: var(--sage); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(61,107,79,.3); }
-    .btn-primary svg { transition: transform .2s; }
-    .btn-primary:hover svg { transform: translateX(4px); }
+    .btn-primary:hover { background: #3D7A53; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(74,139,98,.4); }
 
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
-      color: var(--ink); padding: 16px 24px; border-radius: 100px;
-      font-size: 15px; text-decoration: none; font-weight: 500;
-      border: 1.5px solid var(--mist); transition: border-color .2s, background .2s;
+      color: var(--text-dim); padding: 15px 22px; border-radius: 100px;
+      font-size: 14px; text-decoration: none; font-weight: 500;
+      border: 1px solid var(--mist); transition: all .2s;
     }
-    .btn-ghost:hover { border-color: var(--ink); background: var(--mist); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.2); color: var(--paper); background: var(--mist); }
 
     .hero-trust {
-      display: flex; align-items: center; gap: 16px;
-      margin-top: 32px; font-size: 13px; color: var(--mid);
+      display: flex; align-items: center; gap: 14px;
+      font-size: 12px; color: var(--text-dim);
     }
     .trust-avatars { display: flex; }
     .trust-avatars span {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 2px solid var(--paper); margin-left: -8px;
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 2px solid var(--surface); margin-left: -8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      background: var(--sage-lt);
+      font-size: 13px; background: var(--surface2);
     }
     .trust-avatars span:first-child { margin-left: 0; }
 
-    /* ── HERO RIGHT: ANIMATED CARD ── */
-    .hero-card {
-      background: white;
-      border-radius: 24px;
-      padding: 36px;
-      box-shadow: 0 24px 80px rgba(13,15,20,.12);
+    /* ── HERO MAP PREVIEW ── */
+    .hero-map-wrap {
       position: relative;
-      animation: float 5s ease-in-out infinite;
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--mist);
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
     }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .hero-map-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--mist);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hero-map-header h3 {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--paper); letter-spacing: .5px;
+    }
+    .hero-map-header span { font-size: 11px; color: var(--text-dim); }
+    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--sage-lt); margin-right: 6px; animation: pulse 2s infinite; }
+    #hero-map-svg { width: 100%; display: block; height: 260px; }
+    .hero-map-footer {
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--mist);
+    }
+    .hm-stat { text-align: center; }
+    .hm-stat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--paper); }
+    .hm-stat-label { font-size: 10px; color: var(--text-dim); font-weight: 500; letter-spacing: .5px; text-transform: uppercase; }
+    .hm-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--amber-dim); color: var(--amber-lt);
+      border: 1px solid rgba(232,146,42,.3);
+      padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 600;
+      text-decoration: none; transition: all .2s;
+    }
+    .hm-cta:hover { background: var(--amber); color: white; }
 
-    .card-profession {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 700; margin-bottom: 6px;
+    /* ── MAP SECTION ── */
+    .map-section {
+      padding: 100px 52px;
+      position: relative; z-index: 10;
+      background: var(--surface);
     }
-    .card-sector {
-      font-size: 13px; color: var(--mid); margin-bottom: 28px;
+    .map-section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
     }
-
-    .metric-row {
-      display: flex; flex-direction: column; gap: 14px;
-    }
-    .metric {
-      display: flex; flex-direction: column; gap: 6px;
-    }
-    .metric-top {
-      display: flex; justify-content: space-between;
-      font-size: 13px; font-weight: 500;
-    }
-    .metric-top span:last-child { color: var(--mid); }
-    .bar-track {
-      height: 8px; background: var(--mist); border-radius: 100px; overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%; border-radius: 100px;
-      animation: growBar 1.5s ease-out forwards;
-      transform-origin: left;
-    }
-    @keyframes growBar { from{width:0} }
-
-    .archetype-badge {
-      margin-top: 24px;
-      background: var(--sage-lt);
-      border-radius: 12px; padding: 14px 18px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .archetype-badge .emoji { font-size: 28px; }
-    .archetype-badge .label { font-size: 11px; color: var(--sage); font-weight: 600; letter-spacing: .8px; text-transform: uppercase; }
-    .archetype-badge .name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
-
-    .floating-pill {
-      position: absolute;
-      background: white; border-radius: 100px;
-      padding: 10px 16px; font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 24px rgba(13,15,20,.12);
-      display: flex; align-items: center; gap: 8px;
-      white-space: nowrap;
-    }
-    .pill-1 { top: -20px; right: -20px; animation: floatPill1 4s ease-in-out infinite; }
-    .pill-2 { bottom: 20px; left: -40px; animation: floatPill2 5s ease-in-out infinite; }
-    @keyframes floatPill1 { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-8px) rotate(-3deg)} }
-    @keyframes floatPill2 { 0%,100%{transform:translateY(0) rotate(2deg)} 50%{transform:translateY(-6px) rotate(2deg)} }
-
-    /* ── HOW IT WORKS ── */
-    .section { padding: 100px 48px; }
-    .section-label {
-      font-size: 12px; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--sage); margin-bottom: 16px;
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 12px;
     }
     .section-title {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(32px, 4vw, 48px);
+      font-size: clamp(28px,3.5vw,44px);
       font-weight: 800; letter-spacing: -1.5px;
-      margin-bottom: 16px; line-height: 1.1;
+      color: var(--paper); line-height: 1.1;
     }
     .section-sub {
-      font-size: 17px; color: #4A4845; font-weight: 300; line-height: 1.6;
-      max-width: 520px; margin-bottom: 64px;
+      font-size: 15px; color: var(--text-dim); font-weight: 300; line-height: 1.65;
+      max-width: 480px; margin-top: 12px;
+    }
+
+    /* THE EPIC MAP DASHBOARD */
+    .map-dashboard {
+      background: var(--surface2);
+      border-radius: 24px;
+      border: 1px solid var(--mist);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.4);
+      position: relative;
+    }
+    .map-dash-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 28px; border-bottom: 1px solid var(--mist);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .map-dash-title {
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--paper);
+    }
+    .map-dash-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mdb { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .mdb-source { background: var(--mist); color: var(--text-dim); border: 1px solid rgba(255,255,255,.08); }
+    .map-dash-body { display: grid; grid-template-columns: 1fr 320px; min-height: 480px; }
+    .map-area {
+      position: relative; border-right: 1px solid var(--mist);
+      background: radial-gradient(ellipse at center, #1A2030 0%, var(--surface2) 100%);
+    }
+    #world-map { width: 100%; height: 100%; display: block; min-height: 480px; }
+
+    /* Map hover tooltip */
+    .map-tt {
+      position: fixed; z-index: 9999;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px; padding: 16px 20px;
+      pointer-events: none; opacity: 0; transition: opacity .15s;
+      min-width: 220px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    }
+    .map-tt.visible { opacity: 1; }
+    .map-tt-flag { font-size: 28px; margin-bottom: 8px; }
+    .map-tt-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--paper); margin-bottom: 12px; }
+    .map-tt-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .map-tt-label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+    .map-tt-val { font-size: 13px; font-weight: 700; }
+    .map-tt-bar { height: 3px; background: rgba(255,255,255,.1); border-radius: 100px; overflow: hidden; margin-bottom: 8px; }
+    .map-tt-bar-fill { height: 100%; border-radius: 100px; }
+    .map-tt-cta {
+      display: block; margin-top: 14px; text-align: center;
+      background: var(--amber-dim); color: var(--amber-lt);
+      border: 1px solid rgba(232,146,42,.25);
+      padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;
+      text-decoration: none; transition: all .2s;
+    }
+    .map-tt-cta:hover { background: var(--amber); color: white; }
+
+    /* Map legend */
+    .map-legend {
+      position: absolute; bottom: 16px; left: 16px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(13,15,20,.8); backdrop-filter: blur(10px);
+      border: 1px solid var(--mist); border-radius: 10px;
+      padding: 8px 14px;
+    }
+    .map-legend span { font-size: 10px; color: var(--text-dim); font-weight: 600; }
+    .legend-ramp { width: 80px; height: 8px; border-radius: 100px; background: linear-gradient(to right,#4A8B62,#E8922A,#D94F3D); }
+
+    /* Sidebar */
+    .map-sidebar { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    .sidebar-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--paper); margin-bottom: 4px; }
+    .sidebar-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 12px; }
+    .country-rank-list { display: flex; flex-direction: column; gap: 6px; }
+    .cr-item {
+      display: grid; grid-template-columns: 24px 28px 1fr 44px;
+      align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 10px;
+      background: var(--mist2); border: 1px solid transparent;
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .cr-item:hover { background: var(--mist); border-color: rgba(255,255,255,.1); transform: translateX(2px); }
+    .cr-rank { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-dim); }
+    .cr-flag { font-size: 18px; }
+    .cr-info { min-width: 0; }
+    .cr-name { font-size: 12px; font-weight: 600; color: var(--paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cr-sub { font-size: 10px; color: var(--text-dim); }
+    .cr-score { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; text-align: right; }
+    .sidebar-divider { height: 1px; background: var(--mist); margin: 4px 0; }
+    .sidebar-cta {
+      display: block; text-align: center;
+      background: linear-gradient(135deg,var(--amber-dim),rgba(217,79,61,.1));
+      border: 1px solid rgba(232,146,42,.3);
+      border-radius: 12px; padding: 16px;
+      text-decoration: none; transition: all .2s;
+    }
+    .sidebar-cta:hover { background: linear-gradient(135deg,rgba(232,146,42,.25),rgba(217,79,61,.15)); }
+    .sidebar-cta-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--amber-lt); margin-bottom: 6px;
+    }
+    .sidebar-cta-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; color: var(--paper); margin-bottom: 4px; }
+    .sidebar-cta-desc { font-size: 11px; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+    .sidebar-cta-price { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--amber-lt); }
+    .sidebar-cta-was { font-size: 13px; color: var(--text-dim); text-decoration: line-through; margin-right: 6px; }
+
+    .map-dash-bottom {
+      border-top: 1px solid var(--mist);
+      display: grid; grid-template-columns: repeat(5,1fr); gap: 0;
+      background: var(--mist);
+    }
+    .mdb-stat {
+      padding: 20px 24px; background: var(--surface2);
+      transition: background .2s;
+    }
+    .mdb-stat:hover { background: var(--surface3); }
+    .mdb-stat-val { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--paper); margin-bottom: 4px; }
+    .mdb-stat-label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+
+    /* ── REST OF PAGE SECTIONS ── */
+    .section { padding: 90px 52px; position: relative; z-index: 10; }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 14px;
+    }
+    .section-title-h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px,3.5vw,44px);
+      font-weight: 800; letter-spacing: -1.5px;
+      margin-bottom: 14px; line-height: 1.1; color: var(--paper);
+    }
+    .section-sub-p {
+      font-size: 16px; color: var(--text-dim); font-weight: 300; line-height: 1.65;
+      max-width: 520px; margin-bottom: 56px;
     }
 
     .steps-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
       background: var(--mist); border-radius: 20px; overflow: hidden;
     }
     .step {
-      background: var(--paper); padding: 40px 36px;
+      background: var(--surface); padding: 36px 32px;
       transition: background .2s;
     }
-    .step:hover { background: white; }
+    .step:hover { background: var(--surface2); }
     .step-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 48px; font-weight: 800; color: var(--mist);
-      line-height: 1; margin-bottom: 20px;
+      font-family: 'Syne', sans-serif; font-size: 44px; font-weight: 800;
+      color: var(--mist); line-height: 1; margin-bottom: 18px;
     }
-    .step h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-    .step p { font-size: 15px; color: #4A4845; line-height: 1.6; font-weight: 300; }
+    .step h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--paper); }
+    .step p { font-size: 14px; color: var(--text-dim); line-height: 1.6; font-weight: 300; }
 
-    /* ── INPUT METHODS ── */
-    .input-section { background: var(--ink); color: var(--paper); }
-    .input-section .section-label { color: var(--sage-lt); }
-    .input-section .section-sub { color: rgba(245,242,236,.6); }
-
-    .methods-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    }
+    .input-section { background: var(--surface2); }
+    .methods-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
     .method-card {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 20px; padding: 36px 30px;
+      background: var(--mist2); border: 1px solid var(--mist);
+      border-radius: 20px; padding: 32px 26px;
       cursor: pointer; text-decoration: none; color: inherit;
-      transition: background .2s, border-color .2s, transform .2s;
-      display: block;
+      transition: all .2s; display: block;
     }
-    .method-card:hover {
-      background: rgba(255,255,255,.1);
-      border-color: var(--sage);
-      transform: translateY(-4px);
-    }
-    .method-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin-bottom: 24px;
-    }
-    .method-card h3 {
-      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .method-card p { font-size: 14px; color: rgba(245,242,236,.6); line-height: 1.6; font-weight: 300; }
-    .method-tag {
-      display: inline-block; margin-top: 20px;
-      padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600;
-    }
-    .tag-free { background: var(--sage); color: white; }
-    .tag-paid { background: var(--amber); color: white; }
+    .method-card:hover { background: var(--mist); border-color: rgba(255,255,255,.15); transform: translateY(-4px); }
+    .method-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+    .method-card h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--paper); }
+    .method-card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; font-weight: 300; }
+    .method-tag { display: inline-block; margin-top: 16px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+    .tag-free { background: rgba(74,139,98,.2); color: var(--sage-lt); border: 1px solid rgba(74,139,98,.3); }
+    .tag-paid { background: var(--amber-dim); color: var(--amber-lt); border: 1px solid rgba(232,146,42,.3); }
 
-    /* ── ARCHETYPES ── */
-    .archetypes-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-    }
+    .archetypes-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
     .archetype-card {
-      border-radius: 20px; padding: 32px 24px;
-      border: 1.5px solid var(--mist);
-      transition: transform .2s, box-shadow .2s;
+      border-radius: 20px; padding: 28px 22px;
+      border: 1px solid var(--mist);
+      background: var(--surface2);
+      transition: transform .2s, box-shadow .2s, border-color .2s;
     }
-    .archetype-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(13,15,20,.08); }
-    .archetype-emoji { font-size: 40px; margin-bottom: 16px; }
-    .archetype-card h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-    .archetype-card p { font-size: 14px; color: #4A4845; line-height: 1.5; font-weight: 300; }
+    .archetype-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.3); border-color: rgba(255,255,255,.12); }
+    .archetype-emoji { font-size: 36px; margin-bottom: 14px; }
+    .archetype-card h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--paper); }
+    .archetype-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; font-weight: 300; }
 
-    /* ── WHAT'S IN THE REPORT ── */
-    .report-section { background: white; }
-    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-    .report-preview {
-      background: var(--paper); border-radius: 20px;
-      padding: 32px; border: 1.5px solid var(--mist);
-      position: relative;
-    }
-    .report-preview-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 24px;
-    }
-    .report-preview-header h4 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
-    .price-tag {
-      background: var(--amber-lt); color: var(--amber);
-      padding: 6px 14px; border-radius: 100px;
-      font-size: 13px; font-weight: 600;
-    }
+    .report-section { background: var(--surface); }
+    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+    .report-preview { background: var(--surface2); border-radius: 20px; padding: 28px; border: 1px solid var(--mist); }
+    .report-preview-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .report-preview-header h4 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--paper); }
+    .price-tag { background: var(--amber-dim); color: var(--amber-lt); padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; border: 1px solid rgba(232,146,42,.3); }
+    .report-items { display: flex; flex-direction: column; gap: 10px; }
+    .report-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--mist2); border-radius: 12px; font-size: 13px; }
+    .report-item-icon { font-size: 16px; flex-shrink: 0; }
+    .report-item strong { display: block; font-weight: 600; margin-bottom: 2px; font-size: 13px; color: var(--paper); }
+    .report-item span { color: var(--text-dim); font-size: 12px; }
+    .includes-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+    .include-row { display: flex; align-items: flex-start; gap: 12px; }
+    .check { width: 22px; height: 22px; border-radius: 50%; background: rgba(74,139,98,.2); color: var(--sage-lt); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(74,139,98,.3); }
+    .include-row div h4 { font-weight: 600; font-size: 14px; margin-bottom: 2px; color: var(--paper); }
+    .include-row div p { font-size: 12px; color: var(--text-dim); }
 
-    .report-items { display: flex; flex-direction: column; gap: 12px; }
-    .report-item {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px 16px; background: white; border-radius: 12px;
-      font-size: 14px; font-weight: 400;
-    }
-    .report-item-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-    .report-item strong { display: block; font-weight: 600; margin-bottom: 2px; font-size: 14px; }
-    .report-item span { color: var(--mid); font-size: 13px; }
+    .proof-section { background: var(--ink); }
+    .proof-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    .proof-card { background: var(--surface2); border-radius: 16px; padding: 24px 22px; border: 1px solid var(--mist); }
+    .proof-stars { color: var(--amber-lt); font-size: 13px; margin-bottom: 12px; }
+    .proof-card p { font-size: 14px; line-height: 1.6; font-weight: 300; color: var(--text-dim); margin-bottom: 18px; }
+    .proof-person { display: flex; align-items: center; gap: 10px; }
+    .proof-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .proof-person strong { display: block; font-size: 13px; font-weight: 600; color: var(--paper); }
+    .proof-person span { font-size: 11px; color: var(--text-dim); }
 
-    .includes-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
-    .include-row { display: flex; align-items: flex-start; gap: 14px; }
-    .check {
-      width: 24px; height: 24px; border-radius: 50%;
-      background: var(--sage-lt); color: var(--sage);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; flex-shrink: 0; margin-top: 2px;
-    }
-    .include-row div h4 { font-weight: 600; font-size: 15px; margin-bottom: 3px; }
-    .include-row div p { font-size: 13px; color: var(--mid); }
+    /* Urgency */
+    .urgency-section { background: var(--surface); }
+    .urgency-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; background: var(--mist); border-radius: 20px; overflow: hidden; }
+    .urgency-card { padding: 36px 24px; background: var(--surface); transition: background .2s; }
+    .urgency-card:hover { background: var(--surface2); }
+    .urgency-stat { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: var(--sage-lt); line-height: 1; margin-bottom: 14px; letter-spacing: -2px; }
+    .urgency-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; font-weight: 300; }
 
-    /* ── SOCIAL PROOF ── */
-    .proof-section { background: var(--mist); }
-    .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .proof-card {
-      background: var(--paper); border-radius: 16px; padding: 28px 24px;
-    }
-    .proof-stars { color: var(--amber); font-size: 14px; margin-bottom: 14px; }
-    .proof-card p { font-size: 15px; line-height: 1.6; font-weight: 300; margin-bottom: 20px; }
-    .proof-person { display: flex; align-items: center; gap: 12px; }
-    .proof-avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: var(--sage-lt); display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-    .proof-person strong { display: block; font-size: 14px; font-weight: 600; }
-    .proof-person span { font-size: 12px; color: var(--mid); }
+    /* Methodology */
+    .methodology-section { background: var(--ink); }
+    .methodology-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+    .method-sources { display: flex; flex-wrap: wrap; gap: 8px; }
+    .source-chip { padding: 7px 13px; background: var(--mist); border: 1px solid rgba(255,255,255,.08); border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--text-dim); }
+    .method-steps { display: flex; flex-direction: column; }
+    .method-step { display: flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--mist); }
+    .method-step:last-child { border-bottom: none; }
+    .mstep-num { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--sage-lt); letter-spacing: 1px; flex-shrink: 0; padding-top: 2px; width: 24px; }
+    .method-step h4 { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--paper); }
+    .method-step p { font-size: 13px; color: var(--text-dim); line-height: 1.5; font-weight: 300; }
 
-    /* ── CTA ── */
-    .cta-section {
-      background: var(--sage);
-      padding: 100px 48px; text-align: center;
-    }
-    .cta-section h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(36px, 5vw, 60px);
-      font-weight: 800; letter-spacing: -2px; color: white;
-      margin-bottom: 20px; line-height: 1.1;
-    }
-    .cta-section p { font-size: 18px; color: rgba(255,255,255,.75); font-weight: 300; margin-bottom: 40px; }
-    .btn-white {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: white; color: var(--sage);
-      padding: 18px 40px; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
-      text-decoration: none; transition: transform .15s, box-shadow .2s;
-      box-shadow: 0 8px 30px rgba(13,15,20,.2);
-    }
-    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(13,15,20,.3); }
+    /* Anchor */
+    .anchor-section { background: var(--surface2); padding: 72px 52px; }
+    .anchor-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+    .anchor-compare { display: flex; flex-direction: column; gap: 10px; }
+    .compare-row { border-radius: 14px; padding: 18px 22px; }
+    .compare-alt { background: var(--mist2); border: 1px solid var(--mist); }
+    .compare-us { background: var(--sage); border: none; padding: 22px; }
+    .compare-badge { display: inline-block; background: var(--amber); color: white; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; padding: 3px 10px; border-radius: 100px; margin-bottom: 7px; }
+    .compare-label { font-size: 14px; font-weight: 600; color: var(--paper); margin-bottom: 3px; }
+    .compare-alt .compare-label { color: var(--text-dim); }
+    .compare-price { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: rgba(245,242,236,.2); margin: 4px 0; }
+    .compare-was { font-size: 15px; color: rgba(255,255,255,.35); text-decoration: line-through; }
+    .compare-price-us { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: white; }
+    .compare-note { font-size: 11px; color: rgba(245,242,236,.45); margin-top: 5px; }
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--ink); color: rgba(245,242,236,.5);
-      padding: 48px; display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px;
-    }
-    footer .logo { color: var(--paper); }
-    footer p { font-size: 13px; }
-    footer nav { background: none; border: none; position: static; padding: 0; }
-    footer nav a { color: rgba(245,242,236,.4); font-size: 13px; }
-    footer nav a:hover { color: var(--paper); }
+    /* FAQ */
+    .faq-section { background: var(--surface); }
+    .faq-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 72px; align-items: start; }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid var(--mist); }
+    .faq-item summary { padding: 20px 0; font-weight: 600; font-size: 14px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; transition: color .2s; color: var(--text); }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: '+'; font-size: 18px; color: var(--text-dim); font-weight: 300; transition: transform .2s; }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item[open] summary { color: var(--sage-lt); }
+    .faq-item p { font-size: 13px; color: var(--text-dim); line-height: 1.7; font-weight: 300; padding-bottom: 18px; }
+
+    /* CTA */
+    .cta-section { background: var(--sage); padding: 90px 52px; text-align: center; position: relative; overflow: hidden; }
+    .cta-section::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse at center, rgba(255,255,255,.08) 0%, transparent 70%); }
+    .cta-section h2 { font-family: 'Syne', sans-serif; font-size: clamp(32px,5vw,56px); font-weight: 800; letter-spacing: -2px; color: white; margin-bottom: 18px; line-height: 1.1; position: relative; z-index: 1; }
+    .cta-section p { font-size: 17px; color: rgba(255,255,255,.75); font-weight: 300; margin-bottom: 36px; position: relative; z-index: 1; }
+    .btn-white { display: inline-flex; align-items: center; gap: 10px; background: white; color: var(--sage); padding: 17px 36px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; transition: transform .15s, box-shadow .2s; box-shadow: 0 8px 30px rgba(0,0,0,.2); position: relative; z-index: 1; }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+
+    /* Footer */
+    footer { background: var(--surface); color: var(--text-dim); padding: 44px 52px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-top: 1px solid var(--mist); }
+    footer p { font-size: 12px; }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--paper); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .footer-logo img { width: 28px; height: 28px; object-fit: contain; }
+    .footer-logo span { color: var(--sage-lt); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--text-dim); font-size: 12px; text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: var(--paper); }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      /* Nav */
-      nav { padding: 12px 20px; }
-      .nav-links { gap: 8px; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .logo-img { width: 32px; height: 32px; }
-      .logo { font-size: 16px; gap: 7px; }
-      .nav-cta { padding: 9px 16px; font-size: 13px !important; white-space: nowrap; }
-
-      /* Hero */
-      .hero {
-        grid-template-columns: 1fr;
-        padding: 90px 20px 48px;
-        gap: 0;
-        text-align: center;
-      }
-      .hero-card { display: none; }
-      .hero-left { display: flex; flex-direction: column; align-items: center; }
-      .hero-eyebrow { font-size: 11px; }
-      h1 { font-size: clamp(36px, 10vw, 56px); }
-      .hero-sub { font-size: 15px; max-width: 100%; }
-      .hero-actions { flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
-      .btn-primary, .btn-ghost { width: 100%; justify-content: center; text-align: center; }
-      .hero-trust { justify-content: center; }
-
-      /* Sections */
-      .section { padding: 48px 20px; }
-      .section-header { margin-bottom: 32px; }
-
-      /* Steps */
-      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
-
-      /* Methods */
-      .methods-grid { grid-template-columns: 1fr; gap: 12px; }
-      .method-item { flex-direction: row; text-align: left; padding: 20px; }
-
-      /* Archetypes */
-      .archetypes-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .archetype-card { padding: 20px 16px; }
-
-      /* Report grid */
-      .report-grid { grid-template-columns: 1fr; gap: 24px; }
-
-      /* Proof */
-      .proof-grid { grid-template-columns: 1fr; gap: 16px; }
-
-      /* CTA section */
-      .cta-section { padding: 48px 20px; text-align: center; }
-      .cta-section h2 { font-size: clamp(26px, 6vw, 40px); }
-
-      /* Footer */
-      footer { padding: 40px 20px; }
-      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    @media (max-width: 1100px) {
+      .map-dash-body { grid-template-columns: 1fr 280px; }
     }
-
+    @media (max-width: 900px) {
+      nav { padding: 12px 18px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .nav-cta { padding: 9px 16px; font-size: 12px !important; white-space: nowrap; }
+      .logo { font-size: 16px; }
+      .logo img { width: 30px; }
+      .hero-content { grid-template-columns: 1fr; padding: 40px 20px 32px; text-align: center; }
+      .hero-map-wrap { display: none; }
+      .hero-sub { max-width: 100%; }
+      .hero-actions { justify-content: center; }
+      .hero-trust { justify-content: center; }
+      .map-section { padding: 60px 20px; }
+      .map-dash-body { grid-template-columns: 1fr; }
+      .map-sidebar { display: none; }
+      .map-dash-bottom { grid-template-columns: repeat(3,1fr); }
+      .section { padding: 60px 20px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .methods-grid { grid-template-columns: 1fr; }
+      .archetypes-grid { grid-template-columns: 1fr 1fr; }
+      .report-grid { grid-template-columns: 1fr; gap: 28px; }
+      .proof-grid { grid-template-columns: 1fr; }
+      .urgency-grid { grid-template-columns: 1fr 1fr; }
+      .methodology-inner { grid-template-columns: 1fr; gap: 36px; }
+      .anchor-inner { grid-template-columns: 1fr; gap: 36px; }
+      .faq-inner { grid-template-columns: 1fr; gap: 28px; }
+      .anchor-section { padding: 60px 20px; }
+      .cta-section { padding: 60px 20px; }
+      footer { padding: 36px 20px; }
+      .map-section-header { flex-direction: column; align-items: flex-start; }
+    }
     @media (max-width: 480px) {
       h1 { font-size: 36px; letter-spacing: -1.5px; }
       .archetypes-grid { grid-template-columns: 1fr; }
-      nav { padding: 10px 14px; }
-      .logo { font-size: 14px; gap: 6px; }
-      .logo-img { width: 28px; height: 28px; }
-      .nav-cta { padding: 8px 14px; font-size: 12px !important; white-space: nowrap; }
-    }
-
-    /* ── URGENCY SECTION ── */
-    .urgency-section { background: var(--ink); color: var(--paper); }
-    .urgency-section .section-label { color: var(--sage-lt); }
-    .urgency-section .section-sub { color: rgba(245,242,236,.6); }
-    .urgency-grid {
-      display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
-      background: rgba(255,255,255,.06); border-radius: 20px; overflow: hidden; margin-top: 0;
-    }
-    .urgency-card {
-      padding: 40px 28px; background: var(--ink);
-      transition: background .2s;
-    }
-    .urgency-card:hover { background: #161820; }
-    .urgency-stat {
-      font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800;
-      color: var(--sage); line-height: 1; margin-bottom: 16px; letter-spacing: -2px;
-    }
-    .urgency-desc { font-size: 14px; color: rgba(245,242,236,.6); line-height: 1.6; font-weight: 300; }
-
-    /* ── METHODOLOGY ── */
-    .methodology-section { background: var(--paper); }
-    .methodology-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-    .method-sources { display: flex; flex-wrap: wrap; gap: 10px; }
-    .source-chip {
-      padding: 8px 14px; background: var(--mist); border-radius: 100px;
-      font-size: 13px; font-weight: 500; color: var(--ink);
-    }
-    .method-steps { display: flex; flex-direction: column; gap: 0; }
-    .method-step {
-      display: flex; gap: 20px; padding: 24px 0;
-      border-bottom: 1px solid var(--mist);
-    }
-    .method-step:last-child { border-bottom: none; }
-    .mstep-num {
-      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-      color: var(--sage); letter-spacing: 1px; flex-shrink: 0; padding-top: 2px; width: 28px;
-    }
-    .method-step h4 { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-    .method-step p { font-size: 14px; color: var(--mid); line-height: 1.5; font-weight: 300; }
-
-    /* ── PRICE ANCHOR ── */
-    .anchor-section { background: #0D0F14; padding-top: 80px; padding-bottom: 80px; }
-    .anchor-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-    .anchor-section .section-label { color: var(--sage-lt); }
-    .anchor-compare { display: flex; flex-direction: column; gap: 12px; }
-    .compare-row {
-      border-radius: 16px; padding: 20px 24px;
-    }
-    .compare-alt { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
-    .compare-us {
-      background: var(--sage); position: relative; overflow: hidden;
-      border: none; padding: 24px;
-    }
-    .compare-badge {
-      display: inline-block; background: var(--amber); color: white;
-      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; padding: 3px 10px;
-      border-radius: 100px; margin-bottom: 8px;
-    }
-    .compare-label { font-size: 15px; font-weight: 600; color: white; margin-bottom: 4px; }
-    .compare-alt .compare-label { color: rgba(245,242,236,.6); }
-    .compare-price { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: rgba(245,242,236,.3); margin: 4px 0; }
-    .compare-was { font-size: 16px; color: rgba(255,255,255,.4); text-decoration: line-through; }
-    .compare-price-us { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: white; }
-    .compare-note { font-size: 12px; color: rgba(245,242,236,.4); margin-top: 6px; }
-
-    /* ── FAQ ── */
-    .faq-section { background: white; }
-    .faq-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: start; }
-    .faq-list { display: flex; flex-direction: column; }
-    .faq-item {
-      border-bottom: 1px solid var(--mist); padding: 0;
-    }
-    .faq-item summary {
-      padding: 22px 0; font-weight: 600; font-size: 15px; cursor: pointer;
-      list-style: none; display: flex; justify-content: space-between; align-items: center;
-      transition: color .2s;
-    }
-    .faq-item summary::-webkit-details-marker { display: none; }
-    .faq-item summary::after { content: '+'; font-size: 20px; color: var(--mid); font-weight: 300; transition: transform .2s; }
-    .faq-item[open] summary::after { transform: rotate(45deg); }
-    .faq-item[open] summary { color: var(--sage); }
-    .faq-item p { font-size: 14px; color: #4A4845; line-height: 1.7; font-weight: 300; padding-bottom: 20px; }
-
-    /* ── RESPONSIVE NEW SECTIONS ── */
-    @media (max-width: 900px) {
       .urgency-grid { grid-template-columns: 1fr 1fr; }
-      .methodology-inner { grid-template-columns: 1fr; gap: 40px; }
-      .anchor-inner { grid-template-columns: 1fr; gap: 40px; }
-      .faq-inner { grid-template-columns: 1fr; gap: 32px; }
-    }
-    @media (max-width: 480px) {
-      .urgency-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
-      .urgency-stat { font-size: 36px; }
+      .map-dash-bottom { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -552,76 +559,119 @@
 <!-- NAV -->
 <nav>
   <a href="/" class="logo">
-    <img src="ThePlanItEarthLogoB.png" alt="PlanItEarth" class="logo-img" />
+    <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
     The PlanIt<span>Earth</span>
   </a>
   <div class="nav-links">
     <a href="#how-it-works">How it works</a>
-    <a href="#report">The Report</a>
-    <a href="index-professions.html">AI Risk Index</a>
+    <a href="#map-section">AI Risk Map</a>
+    <a href="index-professions.html">Index</a>
     <a href="#faq-section">FAQ</a>
-    <a href="quiz.html" class="nav-cta">Check My Career →</a>
+    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="hero-eyebrow">AI Career Intelligence · 100+ Professions Analysed</div>
-    <h1>
-      Don't get<br>
-      <span class="strike">blindsided</span><br>
-      by <em>AI.</em>
-    </h1>
-    <p class="hero-sub">
-      Will AI replace your job? Find out in 60 seconds. Not a fear score — a real, data-backed intelligence brief built for your exact profession, role, and skill set.
-    </p>
-    <div class="hero-actions">
-      <a href="quiz.html" class="btn-primary">
-        Analyse My Career — Free Preview
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="#how-it-works" class="btn-ghost">See how it works</a>
-    </div>
-    <div class="hero-trust">
-      <div class="trust-avatars">
-        <span>👩‍⚕️</span><span>👨‍💻</span><span>👩‍⚖️</span><span>👨‍🏫</span><span>+</span>
+  <div class="hero-bg"></div>
+  <div class="hero-bg-grid"></div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-eyebrow">AI Career Intelligence · 1,850 data points</div>
+      <h1>
+        Will AI<br>
+        <span class="strike">replace</span><br>
+        your <em>job?</em>
+      </h1>
+      <p class="hero-sub">
+        The only platform with a real data-backed answer — built from Frey & Osborne, Oxford Insights AI Index, World Bank, and UNDP research. Find out in 60 seconds.
+      </p>
+      <div class="hero-actions">
+        <a href="quiz.html" class="btn-primary">
+          Analyse My Career — Free
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#map-section" class="btn-ghost">See the global risk map ↓</a>
       </div>
-      <span><span id="live-counter">3,412</span> professionals already know their future</span>
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <span>👩‍⚕️</span><span>👨‍💻</span><span>👩‍⚖️</span><span>👨‍🏫</span><span>+</span>
+        </div>
+        <span><span id="live-counter">3,412</span> professionals already know their future</span>
+      </div>
+    </div>
+
+    <!-- Mini map preview in hero -->
+    <div class="hero-map-wrap">
+      <div class="hero-map-header">
+        <h3><span class="live-dot"></span>Global AI Risk Index — Live</h3>
+        <span>Hover a country</span>
+      </div>
+      <svg id="hero-map-svg"></svg>
+      <div class="hero-map-footer">
+        <div class="hm-stat"><div class="hm-stat-val">185</div><div class="hm-stat-label">Professions</div></div>
+        <div class="hm-stat"><div class="hm-stat-val">10</div><div class="hm-stat-label">Countries</div></div>
+        <div class="hm-stat"><div class="hm-stat-val">1,850</div><div class="hm-stat-label">Data points</div></div>
+        <a href="#map-section" class="hm-cta">Explore full map ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EPIC MAP SECTION -->
+<section class="map-section" id="map-section">
+  <div class="map-section-header">
+    <div>
+      <div class="section-eyebrow">Global AI Automation Risk Index</div>
+      <div class="section-title">The world's job displacement<br>risk — mapped.</div>
+      <div class="section-sub">Country-adjusted automation scores across 185 professions. Built from four independent academic and institutional datasets. Click any country for a detailed breakdown.</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="index-professions.html" style="padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;background:var(--mist);color:var(--text-dim);border:1px solid rgba(255,255,255,.08);transition:all .2s" onmouseover="this.style.color='var(--paper)'" onmouseout="this.style.color='var(--text-dim)'">185 Professions →</a>
+      <a href="index-sectors.html" style="padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;background:var(--mist);color:var(--text-dim);border:1px solid rgba(255,255,255,.08);transition:all .2s" onmouseover="this.style.color='var(--paper)'" onmouseout="this.style.color='var(--text-dim)'">9 Sectors →</a>
+      <a href="index-deep.html" style="padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;background:var(--amber-dim);color:var(--amber-lt);border:1px solid rgba(232,146,42,.3)">✦ Deep Index →</a>
     </div>
   </div>
 
-  <div style="position:relative;">
-    <div class="hero-card">
-      <div class="floating-pill pill-1">🟢 High Augmentation</div>
-      <div class="floating-pill pill-2">📄 Your brief is ready</div>
-      <div class="card-profession">Radiologist</div>
-      <div class="card-sector">Healthcare · NHS / Private</div>
-      <div class="metric-row">
-        <div class="metric">
-          <div class="metric-top"><span>Automation Exposure</span><span>62/100</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:62%;background:#C0392B"></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-top"><span>Augmentation Potential</span><span>87/100</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:87%;background:#3D6B4F"></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-top"><span>Income Protection</span><span>74/100</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:74%;background:#D4841A"></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-top"><span>Skill Evolution Pressure</span><span>71/100</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:71%;background:#8A6AB5"></div></div>
+  <div class="map-dashboard">
+    <div class="map-dash-top">
+      <div class="map-dash-title">AI Automation Risk · Country × Profession Matrix</div>
+      <div class="map-dash-badges">
+        <span class="mdb mdb-source">Frey &amp; Osborne 2013</span>
+        <span class="mdb mdb-source">Oxford Insights AI Index</span>
+        <span class="mdb mdb-source">World Bank</span>
+        <span class="mdb mdb-source">UNDP HDI</span>
+      </div>
+    </div>
+    <div class="map-dash-body">
+      <div class="map-area">
+        <svg id="world-map"></svg>
+        <div class="map-legend">
+          <span>Low</span><div class="legend-ramp"></div><span>High</span>
+          <span style="margin-left:10px;opacity:.5">risk</span>
         </div>
       </div>
-      <div class="archetype-badge">
-        <div class="emoji">🔬</div>
+      <div class="map-sidebar">
         <div>
-          <div class="label">Your archetype</div>
-          <div class="name">The Augmented Expert</div>
+          <div class="sidebar-title">Country Rankings</div>
+          <div class="sidebar-sub">By avg. automation risk across 185 professions</div>
         </div>
+        <div class="country-rank-list" id="rank-list"></div>
+        <div class="sidebar-divider"></div>
+        <a href="index-deep.html" class="sidebar-cta">
+          <div class="sidebar-cta-badge">✦ Deep Index</div>
+          <div class="sidebar-cta-title">See per profession, per country</div>
+          <div class="sidebar-cta-desc">How does an accountant's risk differ between France and the US? Unlock all 1,850 combinations.</div>
+          <div><span class="sidebar-cta-was">€8</span><span class="sidebar-cta-price">€4.99</span></div>
+        </a>
       </div>
+    </div>
+    <div class="map-dash-bottom">
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--red-lt)">38.6%</div><div class="mdb-stat-label">Highest avg. risk (US)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--sage-lt)">22.8%</div><div class="mdb-stat-label">Lowest avg. risk (Brazil)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val">96%</div><div class="mdb-stat-label">Peak score (Telemarketer, US)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val">0.2%</div><div class="mdb-stat-label">Lowest score (Psychiatrist)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--amber-lt)">±39pts</div><div class="mdb-stat-label">Max country spread</div></div>
     </div>
   </div>
 </section>
@@ -629,83 +679,37 @@
 <!-- HOW IT WORKS -->
 <section class="section" id="how-it-works">
   <div class="section-label">The Process</div>
-  <h2 class="section-title">Three steps to clarity.</h2>
-  <p class="section-sub">No jargon. No vague predictions. Just data-grounded insight about your specific role.</p>
-
+  <div class="section-title-h2">Three steps to clarity.</div>
+  <p class="section-sub-p">No jargon. No vague predictions. Data-grounded insight about your specific role.</p>
   <div class="steps-grid">
-    <div class="step">
-      <div class="step-num">01</div>
-      <h3>Tell us about your career</h3>
-      <p>Take a 5-minute quiz, paste your LinkedIn URL, or upload your CV. We pull your actual role, skills, and experience — not a generic job title.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <h3>We analyse your position</h3>
-      <p>Our model cross-references your profile against task-level automation data, sector trends, regulatory landscape, and 5-year demand forecasts.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <h3>Get your Career Intelligence Brief</h3>
-      <p>A free dashboard preview — then a full personalised PDF report with your archetype, risk breakdown, skill roadmap, and action plan. Specific to you.</p>
-    </div>
+    <div class="step"><div class="step-num">01</div><h3>Tell us about your career</h3><p>Take a 5-minute quiz, paste your LinkedIn URL, or upload your CV. We pull your actual role, skills, and experience — not a generic job title.</p></div>
+    <div class="step"><div class="step-num">02</div><h3>We analyse your position</h3><p>Our model cross-references your profile against task-level automation data, sector trends, regulatory landscape, and 5-year demand forecasts.</p></div>
+    <div class="step"><div class="step-num">03</div><h3>Get your Career Intelligence Brief</h3><p>A free dashboard preview — then a full personalised PDF with your archetype, risk breakdown, skill roadmap, and action plan.</p></div>
   </div>
 </section>
 
 <!-- INPUT METHODS -->
 <section class="section input-section">
   <div class="section-label">Choose your path</div>
-  <h2 class="section-title" style="color:var(--paper)">Three ways in.</h2>
-  <p class="section-sub">Start however feels right. All three paths lead to your personalised brief.</p>
-
+  <div class="section-title-h2">Three ways in.</div>
+  <p class="section-sub-p" style="margin-bottom:40px">Start however feels right. All paths lead to your personalised brief.</p>
   <div class="methods-grid">
-    <a href="quiz.html?mode=quiz" class="method-card">
-      <div class="method-icon" style="background:rgba(61,107,79,.3)">🎯</div>
-      <h3>Quick Quiz</h3>
-      <p>5 smart questions. No login, no data sharing. Great for a fast, anonymous assessment.</p>
-      <span class="method-tag tag-free">Free preview</span>
-    </a>
-    <a href="quiz.html?mode=linkedin" class="method-card">
-      <div class="method-icon" style="background:rgba(212,132,26,.2)">💼</div>
-      <h3>LinkedIn Analysis</h3>
-      <p>Paste your LinkedIn URL. We extract your roles, skills, and experience for a richer profile.</p>
-      <span class="method-tag tag-free">Free preview</span>
-    </a>
-    <a href="quiz.html?mode=cv" class="method-card">
-      <div class="method-icon" style="background:rgba(139,107,181,.2)">📄</div>
-      <h3>CV Upload</h3>
-      <p>Upload your CV for the most precise analysis. Ideal if you want maximum accuracy in your paid brief.</p>
-      <span class="method-tag tag-paid">Most detailed</span>
-    </a>
+    <a href="quiz.html?mode=quiz" class="method-card"><div class="method-icon" style="background:rgba(74,139,98,.2)">🎯</div><h3>Quick Quiz</h3><p>5 smart questions. No login, no data sharing. Great for a fast, anonymous assessment.</p><span class="method-tag tag-free">Free preview</span></a>
+    <a href="quiz.html?mode=linkedin" class="method-card"><div class="method-icon" style="background:rgba(232,146,42,.15)">💼</div><h3>LinkedIn Analysis</h3><p>Paste your LinkedIn URL. We extract your roles, skills, and experience for a richer profile.</p><span class="method-tag tag-free">Free preview</span></a>
+    <a href="quiz.html?mode=cv" class="method-card"><div class="method-icon" style="background:rgba(139,107,181,.2)">📄</div><h3>CV Upload</h3><p>Upload your CV for the most precise analysis. Ideal for maximum accuracy in your paid brief.</p><span class="method-tag tag-paid">Most detailed</span></a>
   </div>
 </section>
 
 <!-- ARCHETYPES -->
 <section class="section">
   <div class="section-label">Career Archetypes</div>
-  <h2 class="section-title">Which one are you?</h2>
-  <p class="section-sub">Every professional falls into one of four archetypes. Your brief tells you exactly where you stand — and what to do next.</p>
-
+  <div class="section-title-h2">Which one are you?</div>
+  <p class="section-sub-p" style="margin-bottom:40px">Every professional falls into one of four archetypes. Your brief tells you exactly where you stand.</p>
   <div class="archetypes-grid">
-    <div class="archetype-card" style="background:linear-gradient(135deg,#E8F5EE,#F5F2EC)">
-      <div class="archetype-emoji">🌿</div>
-      <h3>The Augmented Expert</h3>
-      <p>AI makes you more powerful. Your expertise compounds with the right tools. Focus on adoption, not defence.</p>
-    </div>
-    <div class="archetype-card" style="background:linear-gradient(135deg,#FFF4E0,#F5F2EC)">
-      <div class="archetype-emoji">🧭</div>
-      <h3>The Strategic Adapter</h3>
-      <p>Your role is shifting. Not disappearing — evolving. You need a clear roadmap for the next 3 years.</p>
-    </div>
-    <div class="archetype-card" style="background:linear-gradient(135deg,#FDE8D8,#F5F2EC)">
-      <div class="archetype-emoji">🔄</div>
-      <h3>The Transition Candidate</h3>
-      <p>Adjacent moves exist that protect your income and leverage your experience. Time to map them.</p>
-    </div>
-    <div class="archetype-card" style="background:linear-gradient(135deg,#F8E8E8,#F5F2EC)">
-      <div class="archetype-emoji">⚡</div>
-      <h3>The Urgent Reskiller</h3>
-      <p>Specific tasks in your role are under pressure now. Your brief includes a prioritised action plan.</p>
-    </div>
+    <div class="archetype-card"><div class="archetype-emoji">🌿</div><h3>The Augmented Expert</h3><p>AI makes you more powerful. Your expertise compounds with the right tools. Focus on adoption, not defence.</p></div>
+    <div class="archetype-card"><div class="archetype-emoji">🧭</div><h3>The Strategic Adapter</h3><p>Your role is shifting. Not disappearing — evolving. You need a clear roadmap for the next 3 years.</p></div>
+    <div class="archetype-card"><div class="archetype-emoji">🔄</div><h3>The Transition Candidate</h3><p>Adjacent moves exist that protect your income and leverage your experience. Time to map them.</p></div>
+    <div class="archetype-card"><div class="archetype-emoji">⚡</div><h3>The Urgent Reskiller</h3><p>Specific tasks in your role are under pressure now. Your brief includes a prioritised action plan.</p></div>
   </div>
 </section>
 
@@ -714,77 +718,34 @@
   <div class="report-grid">
     <div>
       <div class="section-label">The Brief</div>
-      <h2 class="section-title">Your personalised Career Intelligence Brief.</h2>
-      <p class="section-sub" style="margin-bottom:36px">Not a generic template with your name on it. A report built from your actual profile, role, sector, and skill set.</p>
-
+      <div class="section-title-h2">Your personalised Career Intelligence Brief.</div>
+      <p style="font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.65;margin-bottom:32px">Not a generic template. A report built from your actual profile, role, sector, and skill set.</p>
       <div class="includes-list">
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>6-Dimension Career Dashboard</h4><p>Automation exposure, augmentation potential, income protection, skill pressure, demand trend, regulatory landscape.</p></div>
-        </div>
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>Your Career Archetype & What It Means</h4><p>Personalised narrative on why you scored the way you did.</p></div>
-        </div>
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>Task-Level Breakdown</h4><p>Which of your specific tasks are at risk, and which AI will amplify. Not just your job title — your actual work.</p></div>
-        </div>
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>1, 3 & 5-Year Horizon Outlook</h4><p>What your field looks like at each interval, with income trajectory estimates.</p></div>
-        </div>
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>Prioritised Skill Roadmap</h4><p>Exactly what to learn, in what order, with specific course recommendations.</p></div>
-        </div>
-        <div class="include-row">
-          <div class="check">✓</div>
-          <div><h4>Sources & Methodology</h4><p>WEF, McKinsey, O*NET, BLS data underpins every score. You can verify everything.</p></div>
-        </div>
+        <div class="include-row"><div class="check">✓</div><div><h4>6-Dimension Career Dashboard</h4><p>Automation exposure, augmentation potential, income protection, skill pressure, demand trend, regulatory landscape.</p></div></div>
+        <div class="include-row"><div class="check">✓</div><div><h4>Your Career Archetype & What It Means</h4><p>Personalised narrative on why you scored the way you did.</p></div></div>
+        <div class="include-row"><div class="check">✓</div><div><h4>Task-Level Breakdown</h4><p>Which of your specific tasks are at risk, and which AI will amplify.</p></div></div>
+        <div class="include-row"><div class="check">✓</div><div><h4>1, 3 & 5-Year Horizon Outlook</h4><p>What your field looks like at each interval, with income trajectory estimates.</p></div></div>
+        <div class="include-row"><div class="check">✓</div><div><h4>Prioritised Skill Roadmap</h4><p>Exactly what to learn, in what order, with specific course recommendations.</p></div></div>
+        <div class="include-row"><div class="check">✓</div><div><h4>Sources & Methodology</h4><p>Frey & Osborne, Oxford Insights, World Bank, UNDP data underpins every score.</p></div></div>
       </div>
-
-      <a href="quiz.html" class="btn-primary" style="margin-top:8px">
-        Get My Brief — <span style="text-decoration:line-through;opacity:.5;font-weight:400">€12</span> €7.99
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <a href="quiz.html" class="btn-primary" style="margin-top:4px">
+        Get My Brief — <span style="text-decoration:line-through;opacity:.5;font-weight:300;margin-right:4px">€12</span> €7.99
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <p style="font-size:13px;color:var(--mid);margin-top:12px">Instant PDF delivery · Secure checkout · One-time payment</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">Instant PDF · Secure checkout · One-time payment</p>
     </div>
-
     <div class="report-preview">
       <div class="report-preview-header">
-        <div>
-          <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Career Intelligence Brief</div>
-          <h4>Sarah Chen · UX Designer</h4>
-          <p style="font-size:13px;color:var(--mid);margin-top:2px">Technology · 6 years experience</p>
-        </div>
-        <div style="text-align:right"><div style="font-size:11px;color:var(--mid);text-decoration:line-through">€12.00</div><span class="price-tag">€7.99</span></div>
+        <div><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px">Career Intelligence Brief</div><h4>Sarah Chen · UX Designer</h4><p style="font-size:12px;color:var(--text-dim);margin-top:2px">Technology · 6 years experience</p></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--text-dim);text-decoration:line-through">€12.00</div><span class="price-tag">€7.99</span></div>
       </div>
       <div class="report-items">
-        <div class="report-item">
-          <div class="report-item-icon">📊</div>
-          <div><strong>Career Dashboard</strong><span>6 scored dimensions with peer benchmarks</span></div>
-        </div>
-        <div class="report-item">
-          <div class="report-item-icon">🧭</div>
-          <div><strong>Archetype: Strategic Adapter</strong><span>Your role is evolving. Here's how to lead it.</span></div>
-        </div>
-        <div class="report-item">
-          <div class="report-item-icon">⚠️</div>
-          <div><strong>3 tasks under pressure</strong><span>Wireframing, user testing scripts, basic UI copy</span></div>
-        </div>
-        <div class="report-item">
-          <div class="report-item-icon">🚀</div>
-          <div><strong>4 tasks AI will amplify</strong><span>Research synthesis, accessibility audits, design strategy</span></div>
-        </div>
-        <div class="report-item">
-          <div class="report-item-icon">🗺️</div>
-          <div><strong>Skill Roadmap: 6 steps</strong><span>Starting with AI-assisted prototyping tools</span></div>
-        </div>
-        <div class="report-item">
-          <div class="report-item-icon">📅</div>
-          <div><strong>3 horizon outlooks</strong><span>1yr stable · 3yr moderate shift · 5yr strong demand</span></div>
-        </div>
+        <div class="report-item"><div class="report-item-icon">📊</div><div><strong>Career Dashboard</strong><span>6 scored dimensions with peer benchmarks</span></div></div>
+        <div class="report-item"><div class="report-item-icon">🧭</div><div><strong>Archetype: Strategic Adapter</strong><span>Your role is evolving. Here's how to lead it.</span></div></div>
+        <div class="report-item"><div class="report-item-icon">⚠️</div><div><strong>3 tasks under pressure</strong><span>Wireframing, user testing scripts, basic UI copy</span></div></div>
+        <div class="report-item"><div class="report-item-icon">🚀</div><div><strong>4 tasks AI will amplify</strong><span>Research synthesis, accessibility audits, design strategy</span></div></div>
+        <div class="report-item"><div class="report-item-icon">🗺️</div><div><strong>Skill Roadmap: 6 steps</strong><span>Starting with AI-assisted prototyping tools</span></div></div>
+        <div class="report-item"><div class="report-item-icon">📅</div><div><strong>3 horizon outlooks</strong><span>1yr stable · 3yr moderate shift · 5yr strong demand</span></div></div>
       </div>
     </div>
   </div>
@@ -793,59 +754,24 @@
 <!-- SOCIAL PROOF -->
 <section class="section proof-section">
   <div class="section-label" style="text-align:center">What people say</div>
-  <h2 class="section-title" style="text-align:center;margin-bottom:48px">They knew first.</h2>
-
+  <div class="section-title-h2" style="text-align:center;margin-bottom:40px">They knew first.</div>
   <div class="proof-grid">
-    <div class="proof-card">
-      <div class="proof-stars">★★★★★</div>
-      <p>"I expected a vague score. I got a 14-page brief that actually named the specific tasks in my job that are at risk. Started a Python course the same week."</p>
-      <div class="proof-person">
-        <div class="proof-avatar">👨‍💼</div>
-        <div><strong>Marcus O.</strong><span>Financial Analyst · London</span></div>
-      </div>
-    </div>
-    <div class="proof-card">
-      <div class="proof-stars">★★★★★</div>
-      <p>"As a nurse, I was worried. But my brief showed that my role scores 88/100 for augmentation potential. That framing changed everything for me."</p>
-      <div class="proof-person">
-        <div class="proof-avatar">👩‍⚕️</div>
-        <div><strong>Priya K.</strong><span>Registered Nurse · Manchester</span></div>
-      </div>
-    </div>
-    <div class="proof-card">
-      <div class="proof-stars">★★★★★</div>
-      <p>"Shared my brief with my manager. We ended up restructuring my entire development plan around it. Worth every penny and more."</p>
-      <div class="proof-person">
-        <div class="proof-avatar">👩‍💻</div>
-        <div><strong>Tanya R.</strong><span>Software Engineer · Remote</span></div>
-      </div>
-    </div>
+    <div class="proof-card"><div class="proof-stars">★★★★★</div><p>"I expected a vague score. I got a 14-page brief that actually named the specific tasks in my job that are at risk. Started a Python course the same week."</p><div class="proof-person"><div class="proof-avatar">👨‍💼</div><div><strong>Marcus O.</strong><span>Financial Analyst · London</span></div></div></div>
+    <div class="proof-card"><div class="proof-stars">★★★★★</div><p>"As a nurse, I was worried. But my brief showed my role scores 88/100 for augmentation potential. That framing changed everything for me."</p><div class="proof-person"><div class="proof-avatar">👩‍⚕️</div><div><strong>Priya K.</strong><span>Registered Nurse · Manchester</span></div></div></div>
+    <div class="proof-card"><div class="proof-stars">★★★★★</div><p>"Shared my brief with my manager. We ended up restructuring my entire development plan around it. Worth every penny and more."</p><div class="proof-person"><div class="proof-avatar">👩‍💻</div><div><strong>Tanya R.</strong><span>Software Engineer · Remote</span></div></div></div>
   </div>
 </section>
 
-
-<!-- WHY THIS MATTERS NOW -->
+<!-- WHY NOW -->
 <section class="section urgency-section">
   <div class="section-label">The context</div>
-  <h2 class="section-title">Why right now matters.</h2>
-  <p class="section-sub">AI isn't coming. It's already here — and it's reshaping careers faster than any previous technology shift.</p>
+  <div class="section-title-h2">Why right now matters.</div>
+  <p style="font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.65;max-width:520px;margin-bottom:40px">AI isn't coming. It's already here — and it's reshaping careers faster than any previous technology shift.</p>
   <div class="urgency-grid">
-    <div class="urgency-card">
-      <div class="urgency-stat">40%</div>
-      <div class="urgency-desc">of all jobs will be significantly disrupted by AI within 5 years, per the IMF</div>
-    </div>
-    <div class="urgency-card">
-      <div class="urgency-stat">3 yrs</div>
-      <div class="urgency-desc">is the average window professionals have to adapt before disruption becomes visible in their role</div>
-    </div>
-    <div class="urgency-card">
-      <div class="urgency-stat">85%</div>
-      <div class="urgency-desc">of workers say they've received no guidance from employers on how AI will change their specific role</div>
-    </div>
-    <div class="urgency-card">
-      <div class="urgency-stat">£150/hr</div>
-      <div class="urgency-desc">is what career coaches charge for advice that still rarely accounts for AI impact on your specific tasks</div>
-    </div>
+    <div class="urgency-card"><div class="urgency-stat">40%</div><div class="urgency-desc">of all jobs will be significantly disrupted by AI within 5 years, per the IMF</div></div>
+    <div class="urgency-card"><div class="urgency-stat">3 yrs</div><div class="urgency-desc">is the average window professionals have to adapt before disruption becomes visible in their role</div></div>
+    <div class="urgency-card"><div class="urgency-stat">85%</div><div class="urgency-desc">of workers say they've received no guidance from employers on how AI will change their specific role</div></div>
+    <div class="urgency-card"><div class="urgency-stat">£150/hr</div><div class="urgency-desc">is what career coaches charge for advice that still rarely accounts for AI impact on your specific tasks</div></div>
   </div>
 </section>
 
@@ -854,82 +780,38 @@
   <div class="methodology-inner">
     <div>
       <div class="section-label">How it works</div>
-      <h2 class="section-title" style="max-width:420px">Built on labour market data, not guesswork.</h2>
-      <p style="font-size:16px;color:#4A4845;line-height:1.7;font-weight:300;max-width:460px;margin-bottom:32px">
-        Every score in your Career Intelligence Brief is calculated from real data — not generic AI sentiment. We analyse your role's actual task composition, then cross-reference it against current AI capability benchmarks.
-      </p>
+      <div class="section-title-h2" style="max-width:380px">Built on four independent datasets.</div>
+      <p style="font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.7;max-width:420px;margin-bottom:28px">Every score is calculated from real institutional data — not AI sentiment or opinion. The methodology is published and verifiable.</p>
       <div class="method-sources">
-        <div class="source-chip">📊 WEF Future of Jobs</div>
-        <div class="source-chip">🏛️ O*NET Task Database</div>
-        <div class="source-chip">📈 McKinsey Global Institute</div>
-        <div class="source-chip">🏢 BLS Occupational Data</div>
-        <div class="source-chip">🤖 Stanford AI Index</div>
-        <div class="source-chip">📋 100+ Profession Profiles</div>
+        <span class="source-chip">Frey &amp; Osborne (Oxford)</span>
+        <span class="source-chip">Oxford Insights AI Index</span>
+        <span class="source-chip">World Bank Employment</span>
+        <span class="source-chip">UNDP Human Development</span>
+        <span class="source-chip">185 Professions</span>
+        <span class="source-chip">10 Countries</span>
       </div>
     </div>
     <div class="method-steps">
-      <div class="method-step">
-        <div class="mstep-num">01</div>
-        <div>
-          <h4>Task decomposition</h4>
-          <p>We break your role into its component tasks — not just the job title.</p>
-        </div>
-      </div>
-      <div class="method-step">
-        <div class="mstep-num">02</div>
-        <div>
-          <h4>AI capability mapping</h4>
-          <p>Each task is scored against current and near-term AI capabilities from published research.</p>
-        </div>
-      </div>
-      <div class="method-step">
-        <div class="mstep-num">03</div>
-        <div>
-          <h4>Personalisation layer</h4>
-          <p>Your quiz answers or CV adjust the baseline scores for your actual experience, sector, and context.</p>
-        </div>
-      </div>
-      <div class="method-step">
-        <div class="mstep-num">04</div>
-        <div>
-          <h4>Intelligence brief generation</h4>
-          <p>Claude AI synthesises everything into a personalised narrative with specific, actionable recommendations.</p>
-        </div>
-      </div>
+      <div class="method-step"><div class="mstep-num">01</div><div><h4>Task decomposition</h4><p>Each role broken into its component tasks — not just the job title.</p></div></div>
+      <div class="method-step"><div class="mstep-num">02</div><div><h4>AI capability mapping</h4><p>Each task scored against current AI capabilities from peer-reviewed research.</p></div></div>
+      <div class="method-step"><div class="mstep-num">03</div><div><h4>Country adjustment</h4><p>Scores adjusted by AI adoption index, employment growth, and education level per country.</p></div></div>
+      <div class="method-step"><div class="mstep-num">04</div><div><h4>Personalisation layer</h4><p>Your quiz, LinkedIn, or CV adjusts the baseline for your actual experience and context.</p></div></div>
     </div>
   </div>
 </section>
 
 <!-- PRICE ANCHOR -->
-<section class="section anchor-section">
+<section class="anchor-section">
   <div class="anchor-inner">
-    <div class="anchor-left">
+    <div>
       <div class="section-label">The value</div>
-      <h2 class="section-title" style="color:var(--paper)">Career clarity.<br>Not career coaching.</h2>
-      <p style="font-size:16px;color:rgba(245,242,236,.65);font-weight:300;line-height:1.7;max-width:400px">
-        A single session with a career coach costs £150 — and rarely covers AI. Your Career Intelligence Brief gives you a data-backed analysis of exactly how AI affects your specific role, delivered instantly.
-      </p>
+      <div class="section-title-h2" style="color:var(--paper)">Career clarity.<br>Not career coaching.</div>
+      <p style="font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.7;max-width:380px">A career coach charges £150/hr and rarely covers AI. Your Career Intelligence Brief gives you a data-backed analysis of exactly how AI affects your specific role, instantly.</p>
     </div>
     <div class="anchor-compare">
-      <div class="compare-row compare-alt">
-        <div class="compare-label">Career coach (1 session)</div>
-        <div class="compare-price">£150</div>
-        <div class="compare-note">Generic advice · No AI analysis · Weeks to book</div>
-      </div>
-      <div class="compare-row compare-alt">
-        <div class="compare-label">LinkedIn Premium (1 month)</div>
-        <div class="compare-price">£44</div>
-        <div class="compare-note">Job listings · No personalised insight</div>
-      </div>
-      <div class="compare-row compare-us">
-        <div class="compare-badge">TODAY</div>
-        <div class="compare-label">Career Intelligence Brief</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="compare-was">€12</div>
-          <div class="compare-price-us">€7.99</div>
-        </div>
-        <div class="compare-note" style="color:rgba(245,242,236,.5)">Personalised · AI-specific · Instant PDF delivery</div>
-      </div>
+      <div class="compare-row compare-alt"><div class="compare-label">Career coach (1 session)</div><div class="compare-price">£150</div><div class="compare-note">Generic advice · No AI analysis · Weeks to book</div></div>
+      <div class="compare-row compare-alt"><div class="compare-label">LinkedIn Premium (1 month)</div><div class="compare-price">£44</div><div class="compare-note">Job listings · No personalised insight</div></div>
+      <div class="compare-row compare-us"><div class="compare-badge">TODAY</div><div class="compare-label">Career Intelligence Brief</div><div style="display:flex;align-items:center;gap:8px"><div class="compare-was">€12</div><div class="compare-price-us">€7.99</div></div><div class="compare-note" style="color:rgba(255,255,255,.55)">Personalised · AI-specific · Instant PDF delivery</div></div>
     </div>
   </div>
 </section>
@@ -939,33 +821,15 @@
   <div class="faq-inner">
     <div>
       <div class="section-label">Common questions</div>
-      <h2 class="section-title">Everything you need<br>to know.</h2>
+      <div class="section-title-h2">Everything you need<br>to know.</div>
     </div>
     <div class="faq-list">
-      <details class="faq-item">
-        <summary>How accurate is the analysis?</summary>
-        <p>The scores are grounded in published labour market and AI capability data (WEF, O*NET, McKinsey, Stanford AI Index). Your quiz answers or CV refine the baseline. Like any forward-looking model, it reflects the best available evidence — not a crystal ball. We show you the data sources so you can verify.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What do you do with my CV or LinkedIn data?</summary>
-        <p>Your data is used solely to generate your report. We do not store your CV after processing, sell your data, or use it to train AI models. Your LinkedIn URL is only used to read your public profile. We take privacy seriously — see our privacy policy for full details.</p>
-      </details>
-      <details class="faq-item">
-        <summary>How is this different from a generic AI risk score?</summary>
-        <p>Most "AI risk scores" just look at your job title and spit out a number. We analyse your actual task composition, sector, experience level, and role context. Two people with the same job title can have very different risk profiles — and your brief reflects that.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What exactly is in the Career Intelligence Brief?</summary>
-        <p>A 4-page personalised PDF covering: your 6-dimension career dashboard with scores and explanations, your career archetype and what it means for you specifically, a task-level breakdown of what AI will disrupt vs. amplify in your work, 1/3/5-year horizon outlooks with income trajectory, a prioritised 6-step skill roadmap, and specific AI tool and course recommendations.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What is the refund policy?</summary>
-        <p>Because the report is generated and delivered instantly, we are unable to offer refunds once the PDF has been sent. If you have an issue with your report — wrong profession analysed, technical error, delivery failure — contact us and we'll sort it out immediately.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Can I get this for my team or company?</summary>
-        <p>Yes. We're building a team and enterprise tier for workforce AI exposure analysis. Get in touch at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="771f121b1b1837031f12071b16191e03121605031f5914181a">[email&#160;protected]</a> and we'll discuss what's possible.</p>
-      </details>
+      <details class="faq-item"><summary>How accurate is the analysis?</summary><p>The scores are grounded in published labour market and AI capability data (Frey & Osborne, Oxford Insights, World Bank, UNDP). Your quiz answers or CV refine the baseline. Like any forward-looking model, it reflects the best available evidence — not a crystal ball. We show you the data sources so you can verify.</p></details>
+      <details class="faq-item"><summary>What do you do with my CV or LinkedIn data?</summary><p>Your data is used solely to generate your report. We do not store your CV after processing, sell your data, or use it to train AI models. Your LinkedIn URL is only used to read your public profile.</p></details>
+      <details class="faq-item"><summary>How is this different from a generic AI risk score?</summary><p>Most scores just look at your job title and return a number. We analyse your actual task composition, sector, experience level, and country context. Two people with the same job title in different countries can have very different risk profiles.</p></details>
+      <details class="faq-item"><summary>What exactly is in the Career Intelligence Brief?</summary><p>A 4-page personalised PDF: your 6-dimension career dashboard, career archetype with explanation, task-level breakdown (what AI will disrupt vs amplify), 1/3/5-year horizon outlooks, a prioritised 6-step skill roadmap, and specific AI tool and course recommendations.</p></details>
+      <details class="faq-item"><summary>What is the refund policy?</summary><p>Because the report is generated and delivered instantly, we cannot offer refunds once the PDF has been sent. If you have an issue — wrong profession, technical error, delivery failure — contact us and we'll resolve it immediately.</p></details>
+      <details class="faq-item"><summary>Can I get this for my team or company?</summary><p>Yes. We're building a team and enterprise tier for workforce AI exposure analysis. Get in touch at hello@theplanitearth.com.</p></details>
     </div>
   </div>
 </section>
@@ -973,32 +837,149 @@
 <!-- CTA -->
 <section class="cta-section">
   <h2>Your career won't<br>wait for certainty.</h2>
-  <p>Get your personalised Career Intelligence Brief today.<br>Takes 5 minutes. <span style='text-decoration:line-through;opacity:.5'>€12</span> €7.99. Clarity that lasts years.</p>
-  <a href="quiz.html" class="btn-white">
-    Start My Analysis →
-  </a>
+  <p>Get your personalised Career Intelligence Brief today.<br>Takes 5 minutes. <span style="text-decoration:line-through;opacity:.5">€12</span> €7.99. Clarity that lasts years.</p>
+  <a href="quiz.html" class="btn-white">Start My Analysis →</a>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <a href="/" class="logo">The PlanIt<span>Earth</span></a>
-  <p>© 2025 PlanItEarth. Data-grounded career intelligence.</p>
-  <nav>
-    <div class="nav-links">
-      <a href="#">Methodology</a>
-      <a href="#">Privacy</a>
-      <a href="#">Contact</a>
-    </div>
-  </nav>
+  <a href="/" class="footer-logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span>Earth</span></a>
+  <p>© 2025 ThePlanItEarth · Data-grounded career intelligence.</p>
+  <div class="footer-links">
+    <a href="index-professions.html">AI Risk Index</a>
+    <a href="index-deep.html">Deep Index</a>
+    <a href="#faq-section">Privacy</a>
+    <a href="mailto:hello@theplanitearth.com">Contact</a>
+  </div>
 </footer>
 
+<!-- MAP TOOLTIP -->
+<div id="map-tt" class="map-tt"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Live counter — increments slowly to feel real
-  (function() {
-    const el = document.getElementById('live-counter');
-    if (!el) return;
-    const base = 3412;
-    // Small random offset per session so it feels live
-    let count = base + Math.floor(Math.random() * 80);
-    el.textContent = count.toLocaleString
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="data.js"></script>
+<script>
+// Live counter
+(function(){
+  const el=document.getElementById('live-counter');
+  if(!el)return;
+  let n=3412+Math.floor(Math.random()*80);
+  el.textContent=n.toLocaleString();
+  setInterval(()=>{n+=Math.floor(Math.random()*3)+1;el.textContent=n.toLocaleString();},22000+Math.random()*13000);
+})();
+
+const iso3={
+  'Australia':'AUS','Brazil':'BRA','Canada':'CAN','China':'CHN',
+  'France':'FRA','Germany':'DEU','India':'IND','Japan':'JPN',
+  'United Kingdom':'GBR','United States':'USA'
+};
+const numericIso={
+  '036':'AUS','076':'BRA','124':'CAN','156':'CHN',
+  '250':'FRA','276':'DEU','356':'IND','392':'JPN',
+  '826':'GBR','840':'USA'
+};
+const metaByIso={};
+Object.entries(COUNTRY_META).forEach(([n,d])=>{metaByIso[d.iso]={name:n,...d};});
+
+const colorScale=d3.scaleLinear()
+  .domain([0.20,0.28,0.39])
+  .range(['#2A6B4A','#C67B1A','#B03020'])
+  .clamp(true);
+
+const tt=document.getElementById('map-tt');
+
+function rc(s){return s>=.35?'#F5876A':s>=.25?'#E8922A':'#7EC09A';}
+function pctf(s){return(s*100).toFixed(1)+'%';}
+
+function buildMap(svgEl, height, interactive){
+  const svg=d3.select(svgEl);
+  const W=svgEl.clientWidth||960, H=height||480;
+  svg.attr('viewBox',`0 0 ${W} ${H}`);
+  const proj=d3.geoNaturalEarth1().scale(W/6.3).translate([W/2,H/2]);
+  const path=d3.geoPath().projection(proj);
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r=>r.json())
+    .then(data=>{
+      const script=document.createElement('script');
+      script.src='https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js';
+      script.onload=()=>{
+        // Ocean background
+        svg.append('rect').attr('width',W).attr('height',H).attr('fill','#0E1420');
+        // Graticule
+        const grat=d3.geoGraticule()();
+        svg.append('path').datum(grat).attr('d',path)
+          .attr('fill','none').attr('stroke','rgba(255,255,255,.04)').attr('stroke-width','0.5');
+        // Countries
+        const features=topojson.feature(data,data.objects.countries).features;
+        const paths=svg.selectAll('path.country')
+          .data(features).enter().append('path')
+          .attr('class','country')
+          .attr('d',path)
+          .attr('stroke','rgba(255,255,255,.08)')
+          .attr('stroke-width','0.4')
+          .attr('fill',d=>{
+            const a3=numericIso[d.id];
+            const c=metaByIso[a3];
+            return c?colorScale(c.avg_auto):'#1A2030';
+          });
+
+        if(interactive){
+          paths
+            .style('cursor',d=>metaByIso[numericIso[d.id]]?'pointer':'default')
+            .style('transition','filter .2s')
+            .on('mousemove',function(event,d){
+              const a3=numericIso[d.id];
+              const c=metaByIso[a3];
+              if(!c){tt.classList.remove('visible');return;}
+              const riskCol=rc(c.avg_auto);
+              tt.innerHTML=`
+                <div class="map-tt-flag">${c.flag||'🌍'}</div>
+                <div class="map-tt-name">${c.name}</div>
+                <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
+                <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto*100}%;background:${riskCol}"></div></div>
+                <div class="map-tt-row"><span class="map-tt-label">Reskilling potential</span><span class="map-tt-val" style="color:#7EC09A">${pctf(c.avg_resk)}</span></div>
+                <div class="map-tt-row"><span class="map-tt-label">AI adoption index</span><span class="map-tt-val">${(c.ai*100).toFixed(0)}/100</span></div>
+                <div class="map-tt-row"><span class="map-tt-label">Employment growth</span><span class="map-tt-val" style="color:${c.growth>=0?'#7EC09A':'#F5876A'}">${c.growth>=0?'+':''}${(c.growth*100).toFixed(1)}%</span></div>
+                <a href="index-deep.html?country=${encodeURIComponent(c.name)}&unlocked=false" class="map-tt-cta">See profession-level breakdown →</a>`;
+              tt.style.left=(event.clientX+16)+'px';
+              tt.style.top=(event.clientY-10)+'px';
+              tt.classList.add('visible');
+              d3.select(this).style('filter','brightness(1.35)');
+            })
+            .on('mouseleave',function(){
+              tt.classList.remove('visible');
+              d3.select(this).style('filter','none');
+            })
+            .on('click',(event,d)=>{
+              const a3=numericIso[d.id];
+              const c=metaByIso[a3];
+              if(c)window.location='index-countries.html#'+c.iso;
+            });
+        }
+      };
+      if(!document.querySelector('script[src*="topojson"]')) document.head.appendChild(script);
+      else if(window.topojson) script.onload();
+    }).catch(()=>{});
+}
+
+// Rank list in sidebar
+const sorted=Object.entries(COUNTRY_META).sort((a,b)=>b[1].avg_auto-a[1].avg_auto);
+document.getElementById('rank-list').innerHTML=sorted.map(([name,d],i)=>{
+  const col=rc(d.avg_auto);
+  return`<a class="cr-item" href="index-countries.html">
+    <div class="cr-rank">${i+1}</div>
+    <div class="cr-flag">${d.flag||'🌍'}</div>
+    <div class="cr-info"><div class="cr-name">${name}</div><div class="cr-sub">AI: ${(d.ai*100).toFixed(0)}/100</div></div>
+    <div class="cr-score" style="color:${col}">${Math.round(d.avg_auto*100)}%</div>
+  </a>`;
+}).join('');
+
+// Build both maps when DOM ready
+window.addEventListener('load',()=>{
+  buildMap(document.getElementById('world-map'), 480, true);
+  buildMap(document.getElementById('hero-map-svg'), 260, false);
+});
+</script>
+</body>
+</html>

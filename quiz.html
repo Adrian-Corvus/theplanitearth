@@ -26,7 +26,7 @@
     html, body { height: 100%; }
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--paper); color: var(--ink);
+      background: var(--ink); color: var(--paper);
       overflow-x: hidden;
     }
 
@@ -35,11 +35,11 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 40px;
-      background: var(--paper); border-bottom: 1px solid var(--mist);
+      background: var(--ink); border-bottom: 1px solid var(--mist);
     }
     .logo {
       font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
-      color: var(--ink); text-decoration: none;
+      color: var(--paper); text-decoration: none;
     }
     .logo span { color: var(--sage); }
     .progress-wrap {
@@ -87,7 +87,7 @@
       gap: 16px; max-width: 760px; width: 100%;
     }
     .method-btn {
-      background: white; border: 2px solid var(--mist);
+      background: var(--surface2); border: 1px solid rgba(255,255,255,.1);
       border-radius: 20px; padding: 32px 24px;
       cursor: pointer; text-align: center;
       transition: border-color .2s, transform .2s, box-shadow .2s;
@@ -120,12 +120,12 @@
     .options-grid { display: flex; flex-direction: column; gap: 12px; }
     .option-btn {
       display: flex; align-items: center; gap: 16px;
-      background: white; border: 2px solid var(--mist);
+      background: var(--surface2); border: 1px solid rgba(255,255,255,.1);
       border-radius: 14px; padding: 18px 22px;
       cursor: pointer; text-align: left;
       transition: border-color .15s, background .15s, transform .15s;
       font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400;
-      color: var(--ink);
+      color: var(--paper);
     }
     .option-btn:hover { border-color: var(--sage); background: #F0F7F3; transform: translateX(4px); }
     .option-btn.selected { border-color: var(--sage); background: #F0F7F3; }
@@ -145,7 +145,7 @@
       font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--mid);
       display: flex; align-items: center; gap: 6px; padding: 0;
     }
-    .btn-back:hover { color: var(--ink); }
+    .btn-back:hover { color: var(--paper); }
     .btn-next {
       display: flex; align-items: center; gap: 8px;
       background: var(--ink); color: var(--paper);
@@ -168,9 +168,9 @@
       width: 100%; max-width: 480px; margin: 16px 0;
     }
     .country-btn {
-      padding: 12px 10px; border: 2px solid var(--mist); border-radius: 12px;
-      background: white; cursor: pointer; font-size: 13px; font-weight: 500;
-      color: var(--ink); text-align: center; transition: all .15s;
+      padding: 12px 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+      background: var(--surface2); cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--paper); text-align: center; transition: all .15s;
     }
     .country-btn:hover { border-color: var(--sage); background: #F0F7F3; }
     .country-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--sage); font-weight: 700; }
@@ -179,7 +179,7 @@
       flex-direction: column; padding: 100px 24px 60px;
     }
     .input-card {
-      background: white; border-radius: 24px; padding: 48px 40px;
+      background: var(--surface2); border-radius: 24px; padding: 48px 40px;
       box-shadow: 0 8px 40px rgba(13,15,20,.08);
       max-width: 520px; width: 100%;
     }
@@ -191,8 +191,8 @@
     .field-label { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; }
     .text-input {
       width: 100%; padding: 14px 18px; border-radius: 12px;
-      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
-      font-size: 15px; color: var(--ink); background: var(--paper);
+      border: 1px solid rgba(255,255,255,.1); font-family: 'DM Sans', sans-serif;
+      font-size: 15px; color: var(--paper); background: var(--ink);
       outline: none; transition: border-color .2s;
     }
     .text-input:focus { border-color: var(--sage); }
@@ -220,7 +220,7 @@
       width: 100%; border: 2px dashed var(--mist); border-radius: 20px;
       padding: 48px 24px; text-align: center; cursor: pointer;
       transition: border-color .2s, background .2s; margin-bottom: 20px;
-      background: white;
+      background: var(--surface2);
     }
     .upload-zone:hover, .upload-zone.drag { border-color: var(--sage); background: #F0F7F3; }
     .upload-zone .upload-icon { font-size: 48px; margin-bottom: 16px; }
@@ -306,7 +306,7 @@
 
     /* Metrics */
     .metrics-card {
-      background: white; border-radius: 20px; padding: 36px;
+      background: var(--surface2); border-radius: 20px; padding: 36px;
       box-shadow: 0 4px 24px rgba(13,15,20,.06);
       margin-bottom: 24px;
     }
@@ -339,7 +339,7 @@
     .task-item {
       display: flex; align-items: flex-start; gap: 8px;
       font-size: 13px; font-weight: 400; margin-bottom: 10px;
-      color: var(--ink);
+      color: var(--paper);
     }
     .task-item:last-child { margin-bottom: 0; }
 
@@ -349,7 +349,7 @@
     }
     .paid-preview-inner {
       filter: blur(6px); pointer-events: none;
-      padding: 20px; background: var(--paper);
+      padding: 20px; background: var(--ink);
       user-select: none;
     }
     .paid-overlay {
@@ -409,19 +409,19 @@
     }
 
     .share-card {
-      background: white; border-radius: 20px; padding: 24px;
-      border: 1.5px solid var(--mist);
+      background: var(--surface2); border-radius: 20px; padding: 24px;
+      border: 1px solid rgba(255,255,255,.08);
     }
     .share-card h4 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
     .share-card p { font-size: 13px; color: var(--mid); font-weight: 300; margin-bottom: 16px; line-height: 1.5; }
     .share-btn {
       width: 100%; padding: 12px; border-radius: 100px;
-      border: 1.5px solid var(--mist); background: var(--paper);
+      border: 1px solid rgba(255,255,255,.08); background: var(--ink);
       font-family: 'DM Sans', sans-serif; font-size: 14px;
       cursor: pointer; transition: border-color .2s, background .2s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .share-btn:hover { border-color: var(--ink); background: var(--mist); }
+    .share-btn:hover { border-color: var(--paper); background: var(--mist); }
 
     /* ── PAYMENT SCREEN ── */
     #screen-payment {
@@ -429,7 +429,7 @@
       flex-direction: column; padding: 100px 24px 60px;
     }
     .payment-form-card {
-      background: white; border-radius: 24px; padding: 48px 40px;
+      background: var(--surface2); border-radius: 24px; padding: 48px 40px;
       box-shadow: 0 8px 40px rgba(13,15,20,.08);
       max-width: 480px; width: 100%;
     }
@@ -442,8 +442,8 @@
     .form-row label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
     .form-row input {
       width: 100%; padding: 14px 18px; border-radius: 12px;
-      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
-      font-size: 15px; color: var(--ink); background: var(--paper); outline: none;
+      border: 1px solid rgba(255,255,255,.1); font-family: 'DM Sans', sans-serif;
+      font-size: 15px; color: var(--paper); background: var(--ink); outline: none;
       transition: border-color .2s;
     }
     .form-row input:focus { border-color: var(--sage); }
@@ -484,9 +484,9 @@
     }
     .delivery-email-box input {
       flex: 1; padding: 14px 18px; border-radius: 100px;
-      border: 2px solid var(--mist); font-family: 'DM Sans', sans-serif;
+      border: 1px solid rgba(255,255,255,.1); font-family: 'DM Sans', sans-serif;
       font-size: 15px; outline: none; transition: border-color .2s;
-      background: var(--paper);
+      background: var(--ink);
     }
     .delivery-email-box input:focus { border-color: var(--sage); }
     .btn-send {
@@ -505,8 +505,8 @@
     }
     .ns-primary { background: var(--ink); color: white; }
     .ns-primary:hover { background: var(--sage); }
-    .ns-ghost { border: 1.5px solid var(--mist); color: var(--ink); }
-    .ns-ghost:hover { border-color: var(--ink); background: var(--mist); }
+    .ns-ghost { border: 1px solid rgba(255,255,255,.08); color: var(--paper); }
+    .ns-ghost:hover { border-color: var(--paper); background: var(--mist); }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
@@ -665,7 +665,7 @@
     .trust-strip {
       display: flex; align-items: center; justify-content: center;
       gap: 24px; padding: 16px 24px;
-      background: white; border-radius: 16px;
+      background: var(--surface2); border-radius: 16px;
       margin-bottom: 24px;
       box-shadow: 0 2px 12px rgba(13,15,20,.05);
       flex-wrap: wrap;
@@ -740,7 +740,7 @@
   <div class="input-card" style="max-width:520px">
     <h2>Your LinkedIn Profile</h2>
     <p style="font-size:14px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
-      Paste your LinkedIn profile URL below. Make sure your profile is set to <strong style="color:var(--ink)">public</strong> in your LinkedIn privacy settings.
+      Paste your LinkedIn profile URL below. Make sure your profile is set to <strong style="color:var(--paper)">public</strong> in your LinkedIn privacy settings.
     </p>
     <label class="field-label" for="li-url">LinkedIn Profile URL</label>
     <input class="text-input" id="li-url" type="url"
@@ -752,7 +752,7 @@
     <label class="field-label" style="margin-top:18px" for="li-name">Your name (for the brief)</label>
     <input class="text-input" id="li-name" type="text" placeholder="Your name" />
     <div style="margin-top:18px;padding:14px 16px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
-      <strong style="color:var(--ink)">Make your profile public first:</strong><br>
+      <strong style="color:var(--paper)">Make your profile public first:</strong><br>
       LinkedIn → Me → Settings &amp; Privacy → Visibility → Profile visibility → <em>Public</em>
     </div>
     <button class="btn-analyse" id="li-next" onclick="startLinkedInAnalysis()" style="opacity:.4;pointer-events:none;margin-top:20px">
@@ -964,7 +964,7 @@
       <div class="payment-card">
         <div class="eyebrow">Career Intelligence Brief</div>
         <h3>Your complete personalised report</h3>
-        <div class="price-display"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€12</span>€7.99</div>
+        <div class="price-display"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€12</span><span style="font-size:22px;font-weight:700">€7.99</span></div>
         <div class="price-note">One-time · or €9.99 with Profile Optimisation</div>
         <div class="payment-includes">
           <div class="pay-item"><div class="pay-check">✓</div>Full 6-dimension dashboard</div>
@@ -1002,12 +1002,12 @@
           Based on your CV, we identified several areas that could improve your visibility with recruiters and ATS systems in the AI job market.
         </p>
         <div id="upsell-issues-list" style="margin-bottom:16px"></div>
-        <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid #F5D9A0">
+        <div style="background:var(--surface2);border-radius:12px;padding:14px 16px;border:1px solid #F5D9A0">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <strong style="font-size:13px;color:var(--ink)">Add Profile Optimisation Report</strong>
+            <strong style="font-size:13px;color:var(--paper)">Add Profile Optimisation Report</strong>
             <span style="font-size:15px;font-weight:700;color:var(--sage)">+€2.00</span>
           </div>
-          <p style="font-size:12px;color:var(--mid);margin-bottom:12px">LinkedIn headline rewrite · CV bullet transformations · ATS keywords · Quick wins · Total: <strong><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€14</span>€9.99</strong></p>
+          <p style="font-size:12px;color:var(--mid);margin-bottom:12px">LinkedIn headline rewrite · CV bullet transformations · ATS keywords · Quick wins · Total: <strong><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€14</span><span style="font-size:22px;font-weight:700">€9.99</span></strong></p>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button onclick="selectPlan('bundle')" id="btn-bundle"
               style="flex:1;min-width:140px;padding:10px 16px;background:var(--sage);color:white;border:none;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer">
@@ -1044,14 +1044,14 @@
           class="plan-btn selected-plan"
           style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--sage);background:#F0F7F3;cursor:pointer;text-align:left">
           <div style="font-size:11px;font-weight:700;color:var(--sage);letter-spacing:1px;margin-bottom:3px">CAREER BRIEF</div>
-          <div style="font-size:16px;font-weight:700;color:var(--ink)"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€12</span>€7.99</div>
+          <div style="font-size:16px;font-weight:700;color:var(--paper)"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€12</span><span style="font-size:22px;font-weight:700">€7.99</span></div>
           <div style="font-size:11px;color:var(--mid)">Personalised PDF</div>
         </button>
         <button onclick="selectPlan('bundle')" id="plan-btn-bundle"
           class="plan-btn"
-          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:2px solid var(--mist);background:white;cursor:pointer;text-align:left">
+          style="flex:1;min-width:140px;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:var(--surface2);cursor:pointer;text-align:left">
           <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:3px">BRIEF + PROFILE OPT.</div>
-          <div style="font-size:16px;font-weight:700;color:var(--ink)"><span style="font-size:12px;font-weight:300;text-decoration:line-through;opacity:.5;margin-right:4px">€14</span>€9.99</div>
+          <div style="font-size:16px;font-weight:700;color:var(--paper)"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€14</span><span style="font-size:22px;font-weight:700">€9.99</span></div>
           <div style="font-size:11px;color:var(--mid)">Most popular</div>
         </button>
       </div>
