@@ -14,20 +14,20 @@
       --bg2: #FAFAF8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--paper); min-height: 100vh; }
 
     /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px; background: var(--paper); border-bottom: 1px solid var(--mist);
+      padding: 16px 40px; background: var(--ink); border-bottom: 1px solid var(--mist);
     }
     .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
-      color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+      color: var(--paper); text-decoration: none; display: flex; align-items: center; gap: 10px; }
     .logo img { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; }
     .logo span { color: var(--sage); }
     nav a.back { font-size: 13px; color: var(--mid); text-decoration: none; }
-    nav a.back:hover { color: var(--ink); }
+    nav a.back:hover { color: var(--paper); }
 
     /* SCREENS */
     .screen { display: none; min-height: 100vh; padding-top: 80px; }
@@ -36,18 +36,18 @@
 
     /* CARDS */
     .input-card {
-      background: white; border-radius: 20px; padding: 40px 36px;
+      background: var(--surface2); border-radius: 20px; padding: 40px 36px;
       box-shadow: 0 4px 24px rgba(0,0,0,.06); width: 100%; max-width: 520px;
     }
     .input-card h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 8px; }
     .field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
       text-transform: uppercase; color: var(--mid); margin-bottom: 8px; margin-top: 18px; }
     .text-input {
-      width: 100%; padding: 14px 16px; border: 2px solid var(--mist); border-radius: 12px;
-      font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--paper);
-      color: var(--ink); outline: none; transition: border .2s;
+      width: 100%; padding: 14px 16px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--ink);
+      color: var(--text); outline: none; transition: border .2s;
     }
-    .text-input:focus { border-color: var(--sage); background: white; }
+    .text-input:focus { border-color: var(--sage); background: var(--surface2); }
     .btn-go {
       display: block; width: 100%; margin-top: 24px; padding: 16px;
       background: var(--ink); color: white; border: none; border-radius: 100px;
@@ -73,9 +73,9 @@
     /* COUNTRY GRID */
     .country-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
     .country-btn {
-      padding: 12px 8px; border: 2px solid var(--mist); border-radius: 12px;
-      background: white; cursor: pointer; font-size: 13px; font-weight: 500;
-      color: var(--ink); text-align: center; transition: all .15s; font-family: 'DM Sans', sans-serif;
+      padding: 12px 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+      background: var(--surface2); cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--paper); text-align: center; transition: all .15s; font-family: 'DM Sans', sans-serif;
     }
     .country-btn:hover { border-color: var(--sage); background: #F0F7F3; }
     .country-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--sage); font-weight: 700; }
@@ -87,20 +87,20 @@
       font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer;
       background: none; color: var(--mid); transition: all .2s;
     }
-    .method-tab.active { background: white; color: var(--ink); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .method-tab.active { background: var(--surface2); color: var(--paper); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
 
     /* PLAN CARDS */
     .plan-cards { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
     .plan-card {
-      flex: 1; min-width: 160px; padding: 18px 16px; border: 2px solid var(--mist);
-      border-radius: 16px; cursor: pointer; background: white; transition: all .15s; text-align: left;
+      flex: 1; min-width: 160px; padding: 18px 16px; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; cursor: pointer; background: var(--surface2); transition: all .15s; text-align: left;
     }
     .plan-card:hover { border-color: var(--sage); }
     .plan-card.selected { border-color: var(--sage); background: #F0F7F3; }
     .plan-card .plan-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
     .plan-card.bundle .plan-label { color: var(--amber); }
     .plan-card.bundle.selected { border-color: var(--amber); background: #FFF8F0; }
-    .plan-card .plan-price { font-size: 22px; font-weight: 700; color: var(--ink); }
+    .plan-card .plan-price { font-size: 22px; font-weight: 700; color: var(--paper); }
     .plan-card .plan-desc { font-size: 11px; color: var(--mid); margin-top: 3px; }
     .plan-card .plan-badge { display: inline-block; font-size: 10px; background: var(--amber); color: white; padding: 2px 8px; border-radius: 100px; margin-top: 6px; }
 
@@ -112,7 +112,7 @@
     .orbit-ring-2 { width: 66px; height: 66px; border-right-color: var(--amber); animation: spin 1.8s linear infinite reverse; }
     .orbit-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 24px; }
     @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
-    .load-stage { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .load-stage { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--paper); margin-bottom: 8px; }
     .load-sub { font-size: 14px; color: var(--mid); }
 
     /* STEP INDICATOR */
@@ -133,7 +133,7 @@
 
 <nav>
   <a href="/" class="logo">
-    <img src="ThePlanItEarthLogoB.png" alt="ThePlanItEarth" />
+    <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth" />
     The PlanIt<span>Earth</span>
   </a>
   <a href="index.html" class="back">← Back to home</a>
@@ -182,7 +182,7 @@
         URL should look like: linkedin.com/in/your-name
       </div>
       <div style="margin-top:14px;padding:12px 14px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
-        <strong style="color:var(--ink)">Set profile to public first:</strong>
+        <strong style="color:var(--paper)">Set profile to public first:</strong>
         LinkedIn → Me → Settings &amp; Privacy → Visibility → Public
       </div>
     </div>
@@ -266,12 +266,12 @@
     <div class="plan-cards">
       <div class="plan-card selected" id="plan-opt" onclick="setPlan('opt-only')">
         <div class="plan-label">Profile Optimisation</div>
-        <div class="plan-price"><span style="font-size:13px;font-weight:300;text-decoration:line-through;opacity:.45;margin-right:4px">€8</span>€4.99</div>
+        <div class="plan-price"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€8</span><span style="font-size:22px;font-weight:700">€4.99</span></div>
         <div class="plan-desc">LinkedIn rewrite · CV bullets · ATS keywords · Quick wins</div>
       </div>
       <div class="plan-card bundle" id="plan-bundle" onclick="setPlan('opt-bundle')">
         <div class="plan-label">+ Career Brief</div>
-        <div class="plan-price"><span style="font-size:13px;font-weight:300;text-decoration:line-through;opacity:.45;margin-right:4px">€14</span>€9.99</div>
+        <div class="plan-price"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€14</span><span style="font-size:22px;font-weight:700">€9.99</span></div>
         <div class="plan-desc">Everything above + full AI career analysis PDF</div>
         <div class="plan-badge">Best value</div>
       </div>
