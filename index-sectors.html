@@ -1,221 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>AI Automation Risk by Industry Sector 2025 — ThePlanItEarth</title>
-  <meta name="description" content="Which industries face the highest AI automation risk? Ranked sector scores across Finance, Technology, Healthcare, Legal, Education and more." />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta name="description" content="Which industries face the highest AI automation risk? Sector-level scores across Administration, Knowledge, Services, Manufacturing and more — built from 1,850 real data points."/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root{--ink:#0D0F14;--paper:#F5F2EC;--sage:#3D6B4F;--sage-lt:#C8DDD0;--amber:#D4841A;--amber-lt:#FAE8C8;--red:#C0392B;--red-lt:#FDECEA;--mist:#E8E4DC;--mid:#8A8880;}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
     nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--paper);border-bottom:1px solid var(--mist);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
-    .logo img{width:36px;height:36px;object-fit:contain;border-radius:6px;}
+    .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
     .logo span{color:var(--sage);}
-    .nav-links{display:flex;gap:28px;align-items:center;}
-    .nav-links a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--ink);}
-    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:10px 22px;border-radius:100px;font-size:13px!important;}
+    .nav-r{display:flex;gap:24px;align-items:center;}
+    .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
+    .nav-r a:hover,.nav-r a.active{color:var(--ink);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
+    @media(max-width:900px){nav{padding:10px 14px;}.nav-r a:not(.nav-cta){display:none;}.nav-cta{padding:8px 14px;font-size:12px!important;white-space:nowrap;}.logo{font-size:15px;}.logo img{width:28px;height:28px;}}
 
-    .page-hero{padding:120px 48px 48px;max-width:800px;}
-    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--amber-lt);color:var(--amber);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:24px;}
-    .page-hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
-    .page-hero h1 em{font-style:normal;color:var(--amber);}
-    .page-hero p{font-size:17px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:32px;}
-    .index-nav{display:flex;gap:12px;flex-wrap:wrap;}
-    .index-link{padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
-    .index-link:hover{border-color:var(--ink);color:var(--ink);}
-    .index-link.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .hero{padding:110px 48px 48px;max-width:800px;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--amber-lt);color:var(--amber);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:22px;}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.06;margin-bottom:18px;}
+    h1 em{font-style:normal;color:var(--amber);}
+    .hero-sub{font-size:16px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:28px;}
+    .index-tabs{display:flex;gap:10px;flex-wrap:wrap;}
+    .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
+    .itab:hover{border-color:var(--ink);color:var(--ink);}
+    .itab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .itab.premium{border-color:var(--amber);color:var(--amber);}
+
+    /* RANKED BAR CHART */
+    .chart-section{padding:48px 48px 24px;}
+    .chart-section h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-1px;margin-bottom:28px;}
+    .chart-bars{display:flex;flex-direction:column;gap:10px;}
+    .cbar-row{display:grid;grid-template-columns:180px 1fr 40px;align-items:center;gap:14px;}
+    .cbar-label{font-size:13px;font-weight:600;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cbar-track{height:36px;background:var(--mist);border-radius:8px;overflow:hidden;position:relative;cursor:pointer;}
+    .cbar-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:12px;transition:width 1s cubic-bezier(.22,1,.36,1);}
+    .cbar-fill span{font-size:12px;font-weight:700;color:white;white-space:nowrap;}
+    .cbar-resk{height:4px;background:var(--sage);border-radius:2px;position:absolute;bottom:4px;left:0;transition:width 1s cubic-bezier(.22,1,.36,1);opacity:.7;}
+    .cbar-count{font-size:11px;color:var(--mid);text-align:center;}
 
     /* SECTOR CARDS */
-    .sectors-wrap{padding:0 48px 64px;}
-    .sectors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
-    .sector-card{background:white;border-radius:20px;padding:28px;border:1.5px solid var(--mist);cursor:pointer;transition:all .2s;text-decoration:none;color:inherit;display:block;}
-    .sector-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(13,15,20,.08);border-color:transparent;}
-    .sector-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
-    .sector-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;}
-    .sector-count{font-size:12px;color:var(--mid);}
-    .sector-rank{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--mist);}
-    .sector-scores{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
-    .score-row{display:flex;flex-direction:column;gap:4px;}
-    .score-top{display:flex;justify-content:space-between;font-size:12px;}
-    .score-top .label{font-weight:600;color:var(--mid);}
-    .score-top .val{font-weight:700;}
-    .bar-track{height:7px;background:var(--mist);border-radius:100px;overflow:hidden;}
-    .bar-fill{height:100%;border-radius:100px;}
-    .risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;}
-    .risk-badge.high{background:var(--red-lt);color:var(--red);}
-    .risk-badge.med{background:var(--amber-lt);color:var(--amber);}
-    .risk-badge.low{background:var(--sage-lt);color:var(--sage);}
-    .sector-footer{border-top:1px solid var(--mist);padding-top:16px;display:flex;justify-content:space-between;align-items:center;}
-    .sector-cta{font-size:12px;font-weight:700;color:var(--sage);}
-    .sector-professions{font-size:12px;color:var(--mid);}
+    .cards-section{padding:24px 48px 48px;}
+    .cards-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:20px;}
+    .scgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+    .scard{background:white;border-radius:18px;padding:26px;border:1.5px solid var(--mist);transition:all .2s;text-decoration:none;display:block;color:inherit;}
+    .scard:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(13,15,20,.08);border-color:transparent;}
+    .sc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+    .sc-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;}
+    .sc-count{font-size:11px;color:var(--mid);}
+    .sc-rank{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--mist);}
+    .sc-bars{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;}
+    .sc-brow{display:flex;flex-direction:column;gap:3px;}
+    .sc-btop{display:flex;justify-content:space-between;font-size:11px;}
+    .sc-btop .lbl{font-weight:600;color:var(--mid);}
+    .sc-btop .val{font-weight:700;}
+    .btrack{height:6px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .bfill{height:100%;border-radius:100px;}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+    .badge.H{background:var(--red-lt);color:var(--red);}
+    .badge.M{background:var(--amber-lt);color:var(--amber);}
+    .badge.L{background:var(--sage-lt);color:var(--sage);}
+    .sc-foot{border-top:1px solid var(--mist);padding-top:14px;display:flex;justify-content:space-between;align-items:center;}
+    .sc-cta{font-size:11px;font-weight:700;color:var(--sage);}
 
-    /* RANKED TABLE */
-    .table-wrap{padding:0 48px 48px;}
-    .section-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-    .section-title-row h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;}
-    .rank-table{width:100%;border-collapse:collapse;}
-    .rank-table thead th{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--mist);}
-    .rank-table tbody tr{border-bottom:1px solid var(--mist);transition:background .15s;}
-    .rank-table tbody tr:hover{background:white;}
-    .rank-table td{padding:16px;font-size:14px;vertical-align:middle;}
-    .rank-num{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--mid);}
+    /* QUADRANT EXPLAINER */
+    .quad-section{padding:0 48px 48px;}
+    .quad-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:20px;}
+    .quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .qcard{border-radius:14px;padding:22px;}
+    .qcard h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:8px;}
+    .qcard p{font-size:13px;line-height:1.6;font-weight:300;}
+    .q-da{background:#FDECEA;border:1.5px solid #F5C6C0;}.q-da h4{color:var(--red);}
+    .q-dr{background:#FFF8F0;border:1.5px solid #F5DDB0;}.q-dr h4{color:var(--amber);}
+    .q-sa{background:#EEF7F2;border:1.5px solid #BCD8C8;}.q-sa h4{color:var(--sage);}
+    .q-sr{background:#F5F2EC;border:1.5px solid var(--mist);}.q-sr h4{color:var(--mid);}
 
-    .upsell-banner{margin:32px 48px;background:var(--ink);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-    .upsell-banner h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;margin-bottom:6px;}
-    .upsell-banner p{font-size:14px;color:rgba(245,242,236,.6);font-weight:300;}
-    .upsell-banner a{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:white;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;}
-    .upsell-was{font-size:12px;color:rgba(255,255,255,.3);text-decoration:line-through;}
-
-    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
-    footer a{color:rgba(245,242,236,.4);font-size:13px;text-decoration:none;}
+    .upsell{margin:0 48px 40px;background:var(--ink);border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+    .upsell h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;margin-bottom:5px;}
+    .upsell p{font-size:13px;color:rgba(245,242,236,.55);font-weight:300;}
+    .upsell a{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:white;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+    footer a{color:rgba(245,242,236,.4);font-size:12px;text-decoration:none;}
     footer a:hover{color:var(--paper);}
-    .footer-links{display:flex;gap:24px;}
-
-    @media(max-width:900px){
-      nav{padding:14px 20px;}
-      .nav-links a:not(.nav-cta){display:none;}
-      .page-hero{padding:100px 20px 40px;}
-      .sectors-wrap,.table-wrap{padding:0 20px 40px;}
-      .upsell-banner{margin:24px 20px;}
-      .sectors-grid{grid-template-columns:1fr;}
-    }
+    .fl{display:flex;gap:20px;}
+    @media(max-width:900px){.hero{padding:95px 20px 36px;}.chart-section,.cards-section,.quad-section{padding-left:20px;padding-right:20px;}.upsell{margin:0 20px 32px;}.cbar-row{grid-template-columns:100px 1fr 30px;}.scgrid{grid-template-columns:1fr;}.quad-grid{grid-template-columns:1fr;}footer{padding:32px 20px;}}
   </style>
 </head>
 <body>
-
 <nav>
-  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png" />The PlanIt<span>Earth</span></a>
-  <div class="nav-links">
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png"/>The PlanIt<span>Earth</span></a>
+  <div class="nav-r">
     <a href="index-professions.html">Professions</a>
     <a href="index-sectors.html" class="active">Sectors</a>
     <a href="index-countries.html">Countries</a>
-    <a href="index-deep.html">Deep Index</a>
-    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
+    <a href="index-deep.html" style="color:var(--amber);font-weight:600">Deep Index ✦</a>
+    <a href="quiz.html" class="nav-cta">Get My Brief →</a>
   </div>
 </nav>
 
-<div class="page-hero">
-  <div class="hero-eyebrow">2025 Sector Risk Index</div>
-  <h1>Which industries are most<br>exposed to <em>AI disruption?</em></h1>
-  <p>Sector-level automation risk scores showing which industries face the most immediate AI pressure — and which are positioned to benefit from augmentation.</p>
-  <div class="index-nav">
-    <a href="index-professions.html" class="index-link">By Profession</a>
-    <a href="index-sectors.html" class="index-link active">By Sector</a>
-    <a href="index-countries.html" class="index-link">By Country</a>
-    <a href="index-deep.html" class="index-link">Deep Index ✦</a>
+<div class="hero">
+  <div class="eyebrow">2025 Sector Risk Index</div>
+  <h1>Which industries are<br><em>most exposed</em> to AI?</h1>
+  <p class="hero-sub">Sector-level automation pressure and reskilling potential — aggregated from 1,850 profession-country data points using Frey & Osborne, Oxford Insights, World Bank, and UNDP data.</p>
+  <div class="index-tabs">
+    <a href="index-professions.html" class="itab">185 Professions</a>
+    <a href="index-sectors.html" class="itab active">9 Sectors</a>
+    <a href="index-countries.html" class="itab">10 Countries + Map</a>
+    <a href="index-deep.html" class="itab premium">✦ Deep Index</a>
   </div>
 </div>
 
-<div class="sectors-wrap">
-  <div class="sectors-grid" id="sectors-grid"></div>
+<div class="chart-section">
+  <h2>Sector automation ranking</h2>
+  <div class="chart-bars" id="chart"></div>
 </div>
 
-<div class="table-wrap">
-  <div class="section-title-row">
-    <h2>Full sector ranking</h2>
+<div class="cards-section">
+  <h2>Sector breakdown</h2>
+  <div class="scgrid" id="cards"></div>
+</div>
+
+<div class="quad-section">
+  <h2>How to read the quadrants</h2>
+  <div class="quad-grid">
+    <div class="qcard q-da"><h4>🔴 High Automation + High Reskilling</h4><p>Strong displacement pressure but real capacity to respond. Priority for structured reskilling programmes. Examples: Administration, Technical.</p></div>
+    <div class="qcard q-dr"><h4>🟠 High Automation + Low Reskilling</h4><p>Highest risk zone. Strong pressure with limited structural capacity to adapt. Requires policy-level intervention. Examples: Manufacturing (emerging markets).</p></div>
+    <div class="qcard q-sa"><h4>🟢 Low Automation + High Reskilling</h4><p>Stable sector with high adaptive capacity. Proactive upskilling opportunity — these roles will evolve, not disappear. Examples: Knowledge, Management.</p></div>
+    <div class="qcard q-sr"><h4>⚪ Low Automation + Low Reskilling</h4><p>Limited immediate risk but may warrant monitoring. Often found in emerging markets where both AI adoption and education are lower.</p></div>
   </div>
-  <table class="rank-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Sector</th>
-        <th>Automation Risk</th>
-        <th>Augmentation Potential</th>
-        <th>Professions tracked</th>
-        <th>Risk level</th>
-      </tr>
-    </thead>
-    <tbody id="sector-table"></tbody>
-  </table>
 </div>
 
-<div class="upsell-banner">
+<div class="upsell">
   <div>
-    <h3>Drill down: sector × country × profession</h3>
-    <p>How does Finance risk differ between the UK and Singapore? Unlock the full cross-referenced Deep Index.</p>
+    <h3>See which professions drive your sector's risk</h3>
+    <p>The Deep Index breaks any sector into its individual professions — ranked by country. See exactly where the pressure is concentrated.</p>
   </div>
-  <a href="index-deep.html">Unlock Deep Index &nbsp;·&nbsp; <span class="upsell-was">€8</span> €4.99 →</a>
+  <a href="index-deep.html">Unlock Deep Index · <s style="opacity:.4">€8</s> €4.99 →</a>
 </div>
 
 <footer>
-  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
-  <p style="font-size:13px">Data: WEF, McKinsey, O*NET, BLS, Stanford AI Index. Estimates, not guarantees.</p>
-  <div class="footer-links">
-    <a href="index-professions.html">Professions</a>
-    <a href="index-countries.html">Countries</a>
-    <a href="index.html">Home</a>
-  </div>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:11px">Data: Frey &amp; Osborne · Oxford Insights · World Bank · UNDP. Aggregated sector averages from 1,850 profession-country data points.</p>
+  <div class="fl"><a href="index-professions.html">Professions</a><a href="index-countries.html">Countries</a><a href="index-deep.html">Deep Index</a><a href="index.html">Home</a></div>
 </footer>
 
 <script src="data.js"></script>
 <script>
-function riskLevel(s){return s>=65?'high':s>=35?'med':'low';}
-function riskLabel(s){return s>=65?'High Risk':s>=35?'Medium Risk':'Low Risk';}
-function riskColor(s){return s>=65?'#C0392B':s>=35?'#D4841A':'#3D6B4F';}
+function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
+function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
+function rc(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function pct(s){return Math.round(s*100);}
 
-const sorted = [...SECTORS].sort((a,b)=>b.automation-a.automation);
+const sorted=[...SECTOR_META].sort((a,b)=>b.avg_auto-a.avg_auto);
 
-// Cards
-const grid = document.getElementById('sectors-grid');
-grid.innerHTML = sorted.map((s,i)=>{
-  const rl=riskLevel(s.automation), rc=riskColor(s.automation);
-  return `<a class="sector-card" href="index-professions.html?sector=${encodeURIComponent(s.name)}">
-    <div class="sector-header">
-      <div>
-        <div class="sector-name">${s.name}</div>
-        <div class="sector-count">${s.professions} professions tracked</div>
-      </div>
-      <div class="sector-rank">${String(i+1).padStart(2,'0')}</div>
+// Bar chart
+document.getElementById('chart').innerHTML=sorted.map(s=>{
+  const col=rc(s.avg_auto);
+  const w=pct(s.avg_auto);
+  const rw=pct(s.avg_resk);
+  return`<div class="cbar-row">
+    <div class="cbar-label">${s.name}</div>
+    <div class="cbar-track" onclick="window.location='index-professions.html?sec=${encodeURIComponent(s.name)}'">
+      <div class="cbar-fill" style="width:${w}%;background:${col}"><span>${w}% automation risk</span></div>
+      <div class="cbar-resk" style="width:${rw}%"></div>
     </div>
-    <div class="sector-scores">
-      <div class="score-row">
-        <div class="score-top"><span class="label">Automation Risk</span><span class="val" style="color:${rc}">${s.automation}/100</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${s.automation}%;background:${rc}"></div></div>
-      </div>
-      <div class="score-row">
-        <div class="score-top"><span class="label">Augmentation Potential</span><span class="val" style="color:var(--sage)">${s.augmentation}/100</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${s.augmentation}%;background:var(--sage)"></div></div>
-      </div>
-    </div>
-    <div class="sector-footer">
-      <span class="risk-badge ${rl}">${riskLabel(s.automation)}</span>
-      <span class="sector-cta">See professions →</span>
-    </div>
-  </a>`;
+    <div class="cbar-count">${s.count}</div>
+  </div>`;
 }).join('');
 
-// Table
-const tbody = document.getElementById('sector-table');
-tbody.innerHTML = sorted.map((s,i)=>{
-  const rl=riskLevel(s.automation), rc=riskColor(s.automation);
-  return `<tr>
-    <td class="rank-num">${i+1}</td>
-    <td><strong>${s.name}</strong></td>
-    <td>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="flex:1;height:6px;background:var(--mist);border-radius:100px;overflow:hidden;min-width:80px">
-          <div style="width:${s.automation}%;height:100%;background:${rc};border-radius:100px"></div>
-        </div>
-        <span style="font-size:13px;font-weight:700;color:${rc};min-width:40px">${s.automation}/100</span>
-      </div>
-    </td>
-    <td>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="flex:1;height:6px;background:var(--mist);border-radius:100px;overflow:hidden;min-width:80px">
-          <div style="width:${s.augmentation}%;height:100%;background:var(--sage);border-radius:100px"></div>
-        </div>
-        <span style="font-size:13px;font-weight:700;color:var(--sage);min-width:40px">${s.augmentation}/100</span>
-      </div>
-    </td>
-    <td style="font-size:13px;color:var(--mid)">${s.professions}</td>
-    <td><span class="risk-badge ${rl}">${riskLabel(s.automation)}</span></td>
-  </tr>`;
+// Cards
+document.getElementById('cards').innerHTML=sorted.map((s,i)=>{
+  const lv=rl(s.avg_auto),col=rc(s.avg_auto);
+  return`<a class="scard" href="index-professions.html?sec=${encodeURIComponent(s.name)}">
+    <div class="sc-head"><div><div class="sc-name">${s.name}</div><div class="sc-count">${s.count} professions tracked</div></div><div class="sc-rank">${String(i+1).padStart(2,'0')}</div></div>
+    <div class="sc-bars">
+      <div class="sc-brow"><div class="sc-btop"><span class="lbl">Automation Risk</span><span class="val" style="color:${col}">${pct(s.avg_auto)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(s.avg_auto)}%;background:${col}"></div></div></div>
+      <div class="sc-brow"><div class="sc-btop"><span class="lbl">Reskilling Potential</span><span class="val" style="color:var(--sage)">${pct(s.avg_resk)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(s.avg_resk)}%;background:var(--sage)"></div></div></div>
+    </div>
+    <div class="sc-foot"><span class="badge ${lv}">${rlabel(s.avg_auto)}</span><span class="sc-cta">See professions →</span></div>
+  </a>`;
 }).join('');
 </script>
 </body>

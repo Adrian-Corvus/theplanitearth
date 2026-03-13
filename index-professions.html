@@ -3,451 +3,296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Automation Risk by Profession 2025 — Will AI Replace Your Job?</title>
-  <meta name="description" content="See which professions face the highest AI automation risk in 2025. Ranked scores for 70+ careers across Finance, Tech, Healthcare, Law, and more." />
+  <title>AI Automation Risk by Profession 2025 — 185 Jobs Ranked</title>
+  <meta name="description" content="Which jobs are most at risk from AI automation? Ranked scores for 185 professions based on Frey & Osborne research, Oxford Insights AI Index, World Bank and UNDP data." />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --ink:#0D0F14; --paper:#F5F2EC; --sage:#3D6B4F; --sage-lt:#C8DDD0;
-      --amber:#D4841A; --amber-lt:#FAE8C8; --red:#C0392B; --red-lt:#FDECEA;
-      --mist:#E8E4DC; --mid:#8A8880; --white:#fff;
-      --risk-high:#C0392B; --risk-med:#D4841A; --risk-low:#3D6B4F;
-    }
+    :root{--ink:#0D0F14;--paper:#F5F2EC;--sage:#3D6B4F;--sage-lt:#C8DDD0;--amber:#D4841A;--amber-lt:#FAE8C8;--red:#C0392B;--red-lt:#FDECEA;--mist:#E8E4DC;--mid:#8A8880;--white:#fff;}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
-
-    /* NAV */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--paper);border-bottom:1px solid var(--mist);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
-    .logo img{width:36px;height:36px;object-fit:contain;border-radius:6px;}
+    .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
     .logo span{color:var(--sage);}
-    .nav-links{display:flex;gap:28px;align-items:center;}
-    .nav-links a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--ink);}
-    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:10px 22px;border-radius:100px;font-size:13px!important;}
-    .nav-cta:hover{background:var(--sage)!important;}
+    .nav-r{display:flex;gap:24px;align-items:center;}
+    .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s;}
+    .nav-r a:hover,.nav-r a.active{color:var(--ink);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
+    @media(max-width:900px){nav{padding:10px 14px;}.nav-r a:not(.nav-cta){display:none;}.nav-cta{padding:8px 14px;font-size:12px!important;white-space:nowrap;}.logo{font-size:15px;}.logo img{width:28px;height:28px;}}
 
-    /* HERO */
-    .page-hero{padding:120px 48px 60px;max-width:900px;}
-    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--red-lt);color:var(--red);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:24px;}
-    .hero-eyebrow::before{content:'●';font-size:8px;animation:pulse 2s infinite;}
+    .hero{padding:110px 48px 48px;max-width:860px;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--red-lt);color:var(--red);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:22px;}
+    .eyebrow::before{content:'●';font-size:8px;animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-    .page-hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
-    .page-hero h1 em{font-style:normal;color:var(--sage);}
-    .page-hero p{font-size:17px;color:#4A4845;font-weight:300;line-height:1.65;max-width:600px;margin-bottom:32px;}
-    .index-nav{display:flex;gap:12px;flex-wrap:wrap;}
-    .index-link{padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
-    .index-link:hover{border-color:var(--ink);color:var(--ink);}
-    .index-link.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-2px;line-height:1.06;margin-bottom:18px;}
+    h1 em{font-style:normal;color:var(--sage);}
+    .hero-sub{font-size:16px;color:#4A4845;font-weight:300;line-height:1.65;max-width:620px;margin-bottom:28px;}
+    .source-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+    .source-chip{padding:5px 12px;background:var(--mist);border-radius:100px;font-size:11px;font-weight:600;color:var(--mid);}
+    .index-tabs{display:flex;gap:10px;flex-wrap:wrap;}
+    .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
+    .itab:hover{border-color:var(--ink);color:var(--ink);}
+    .itab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .itab.premium{border-color:var(--amber);color:var(--amber);}
+    .itab.premium:hover{background:var(--amber);color:white;}
 
-    /* SUMMARY STATS BAR */
-    .stats-bar{display:flex;gap:2px;background:var(--mist);margin:0 48px 0;border-radius:16px;overflow:hidden;}
-    .stat-cell{flex:1;padding:24px 28px;background:var(--paper);transition:background .2s;}
-    .stat-cell:hover{background:white;}
-    .stat-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:4px;}
-    .stat-label{font-size:12px;color:var(--mid);font-weight:500;}
-    .stat-num.red{color:var(--risk-high);}
-    .stat-num.amber{color:var(--risk-med);}
-    .stat-num.green{color:var(--risk-low);}
+    .stats-row{display:flex;gap:2px;background:var(--mist);margin:0 48px;border-radius:14px;overflow:hidden;}
+    .sc{flex:1;padding:20px 24px;background:var(--paper);transition:background .2s;}
+    .sc:hover{background:white;}
+    .sc-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:3px;}
+    .sc-l{font-size:11px;color:var(--mid);font-weight:500;}
+    .red{color:var(--red)}.amber{color:var(--amber)}.green{color:var(--sage)}
 
-    /* CONTROLS */
-    .controls{padding:32px 48px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
-    .search-wrap{position:relative;flex:1;min-width:240px;max-width:360px;}
-    .search-wrap input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--mist);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;background:white;outline:none;transition:border .2s;}
-    .search-wrap input:focus{border-color:var(--sage);}
-    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mid);font-size:16px;}
-    .filter-group{display:flex;gap:8px;flex-wrap:wrap;}
-    .filter-btn{padding:10px 16px;border:1.5px solid var(--mist);border-radius:100px;font-size:13px;font-weight:500;background:white;cursor:pointer;transition:all .2s;color:var(--ink);}
-    .filter-btn:hover{border-color:var(--ink);}
-    .filter-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-    .filter-btn.risk-high.active{background:var(--risk-high);border-color:var(--risk-high);}
-    .filter-btn.risk-med.active{background:var(--risk-med);border-color:var(--risk-med);}
-    .filter-btn.risk-low.active{background:var(--risk-low);border-color:var(--risk-low);}
-    .sort-select{padding:10px 14px;border:1.5px solid var(--mist);border-radius:100px;font-size:13px;background:white;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;}
-
-    /* RESULTS COUNT */
-    .results-count{padding:0 48px 16px;font-size:13px;color:var(--mid);}
+    .controls{padding:28px 48px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .sw{position:relative;flex:1;min-width:220px;max-width:320px;}
+    .sw input{width:100%;padding:11px 16px 11px 40px;border:1.5px solid var(--mist);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;background:white;outline:none;transition:border .2s;}
+    .sw input:focus{border-color:var(--sage);}
+    .sw-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--mid);}
+    .fbtn{padding:9px 15px;border:1.5px solid var(--mist);border-radius:100px;font-size:12px;font-weight:600;background:white;cursor:pointer;transition:all .2s;color:var(--ink);}
+    .fbtn:hover{border-color:var(--ink);}
+    .fbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .fbtn.r.on{background:var(--red);border-color:var(--red);}
+    .fbtn.a.on{background:var(--amber);border-color:var(--amber);}
+    .fbtn.g.on{background:var(--sage);border-color:var(--sage);}
+    .sortsel{padding:9px 13px;border:1.5px solid var(--mist);border-radius:100px;font-size:12px;background:white;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;}
+    .vtoggle{display:flex;background:var(--mist);border-radius:100px;padding:3px;}
+    .vbtn{padding:6px 13px;border:none;background:none;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--mid);transition:all .2s;}
+    .vbtn.on{background:white;color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+    .rcount{padding:0 48px 14px;font-size:12px;color:var(--mid);}
 
     /* TABLE */
-    .table-wrap{padding:0 48px 48px;overflow-x:auto;}
-    .prof-table{width:100%;border-collapse:collapse;}
-    .prof-table thead th{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--mist);white-space:nowrap;}
-    .prof-table tbody tr{border-bottom:1px solid var(--mist);transition:background .15s;cursor:pointer;}
-    .prof-table tbody tr:hover{background:white;}
-    .prof-table td{padding:16px;font-size:14px;vertical-align:middle;}
-    .rank-num{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--mid);width:40px;}
-    .prof-name{font-weight:600;font-size:15px;}
-    .prof-sector{font-size:12px;color:var(--mid);margin-top:2px;}
-    .risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;white-space:nowrap;}
-    .risk-badge.high{background:var(--red-lt);color:var(--risk-high);}
-    .risk-badge.med{background:var(--amber-lt);color:var(--amber);}
-    .risk-badge.low{background:var(--sage-lt);color:var(--sage);}
-    .score-cell{min-width:120px;}
-    .mini-bar-track{height:6px;background:var(--mist);border-radius:100px;overflow:hidden;margin-top:4px;}
-    .mini-bar-fill{height:100%;border-radius:100px;}
-    .score-val{font-size:12px;font-weight:600;}
-    .timeline-cell{font-size:13px;color:var(--mid);white-space:nowrap;}
-    .cta-cell a{font-size:12px;font-weight:600;color:var(--sage);text-decoration:none;white-space:nowrap;padding:6px 14px;border-radius:100px;border:1.5px solid var(--sage-lt);transition:all .2s;}
-    .cta-cell a:hover{background:var(--sage);color:white;border-color:var(--sage);}
+    .twrap{padding:0 48px 48px;overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    thead th{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mid);padding:10px 14px;text-align:left;border-bottom:2px solid var(--mist);white-space:nowrap;}
+    tbody tr{border-bottom:1px solid var(--mist);transition:background .15s;cursor:pointer;}
+    tbody tr:hover{background:white;}
+    td{padding:14px;font-size:13px;vertical-align:middle;}
+    .rk{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--mist);width:36px;}
+    .pname{font-weight:600;font-size:14px;}
+    .psec{font-size:11px;color:var(--mid);margin-top:2px;}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap;}
+    .badge.H{background:var(--red-lt);color:var(--red);}
+    .badge.M{background:var(--amber-lt);color:var(--amber);}
+    .badge.L{background:var(--sage-lt);color:var(--sage);}
+    .barcell{min-width:110px;}
+    .barlabel{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
+    .bartrack{height:5px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .barfill{height:100%;border-radius:100px;}
+    .varcell{font-size:12px;color:var(--mid);white-space:nowrap;}
+    .varcell span{color:var(--amber);font-weight:600;}
+    .ctacell a{font-size:11px;font-weight:600;color:var(--sage);text-decoration:none;padding:5px 12px;border-radius:100px;border:1.5px solid var(--sage-lt);transition:all .2s;white-space:nowrap;}
+    .ctacell a:hover{background:var(--sage);color:white;border-color:var(--sage);}
 
-    /* CARD GRID */
-    .cards-section{padding:0 48px 48px;}
-    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-    .prof-card{background:white;border-radius:16px;padding:24px;border:1.5px solid var(--mist);transition:all .2s;cursor:pointer;text-decoration:none;display:block;color:inherit;}
-    .prof-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(13,15,20,.08);border-color:transparent;}
-    .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
-    .card-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px;}
-    .card-sector{font-size:11px;color:var(--mid);font-weight:500;}
-    .card-scores{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-    .card-score-row{display:flex;flex-direction:column;gap:3px;}
-    .card-score-label{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--mid);}
-    .card-score-label span:last-child{font-size:12px;font-weight:700;color:var(--ink);}
-    .card-bar{height:5px;background:var(--mist);border-radius:100px;overflow:hidden;}
-    .card-bar-fill{height:100%;border-radius:100px;}
-    .card-footer{display:flex;justify-content:space-between;align-items:center;}
-    .card-timeline{font-size:11px;color:var(--mid);}
-    .card-cta{font-size:11px;font-weight:700;color:var(--sage);display:flex;align-items:center;gap:4px;}
+    /* CARDS */
+    .cgrid{padding:0 48px 48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;}
+    .pcard{background:white;border-radius:16px;padding:22px;border:1.5px solid var(--mist);transition:all .2s;cursor:pointer;text-decoration:none;display:block;color:inherit;}
+    .pcard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(13,15,20,.08);border-color:transparent;}
+    .pc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+    .pc-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:2px;}
+    .pc-sec{font-size:11px;color:var(--mid);}
+    .pc-scores{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+    .pc-row{display:flex;flex-direction:column;gap:3px;}
+    .pc-lbl{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--mid);}
+    .pc-lbl span:last-child{font-size:11px;font-weight:700;color:var(--ink);}
+    .pc-bar{height:4px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .pc-fill{height:100%;border-radius:100px;}
+    .pc-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--mist);padding-top:12px;}
+    .pc-var{font-size:10px;color:var(--mid);}
+    .pc-var b{color:var(--amber);}
+    .pc-cta{font-size:11px;font-weight:700;color:var(--sage);}
 
-    /* VIEW TOGGLE */
-    .view-toggle{display:flex;background:var(--mist);border-radius:100px;padding:3px;gap:2px;}
-    .view-btn{padding:7px 14px;border:none;background:none;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--mid);transition:all .2s;}
-    .view-btn.active{background:white;color:var(--ink);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+    /* UPSELL */
+    .upsell{margin:0 48px 32px;background:var(--ink);border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+    .upsell h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;margin-bottom:5px;}
+    .upsell p{font-size:13px;color:rgba(245,242,236,.55);font-weight:300;}
+    .upsell a{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:white;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;transition:transform .15s;}
+    .upsell a:hover{transform:translateY(-1px);}
+    .uwas{font-size:11px;opacity:.4;text-decoration:line-through;}
 
-    /* DEEP UPSELL BANNER */
-    .upsell-banner{margin:0 48px 32px;background:var(--ink);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-    .upsell-banner h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;margin-bottom:6px;}
-    .upsell-banner p{font-size:14px;color:rgba(245,242,236,.6);font-weight:300;}
-    .upsell-banner a{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:white;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s;}
-    .upsell-banner a:hover{transform:translateY(-1px);}
-    .upsell-price{display:flex;align-items:center;gap:6px;}
-    .upsell-was{font-size:12px;color:rgba(255,255,255,.3);text-decoration:line-through;}
-
-    /* FOOTER */
-    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
-    footer .logo{color:var(--paper);}
-    footer p{font-size:13px;}
-    footer a{color:rgba(245,242,236,.4);font-size:13px;text-decoration:none;}
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+    footer a{color:rgba(245,242,236,.4);font-size:12px;text-decoration:none;}
     footer a:hover{color:var(--paper);}
-    .footer-links{display:flex;gap:24px;}
-
-    /* RESPONSIVE */
-    @media(max-width:900px){
-      nav{padding:14px 20px;}
-      .nav-links a:not(.nav-cta){display:none;}
-      .page-hero{padding:100px 20px 40px;}
-      .stats-bar{margin:0 20px;}
-      .controls{padding:24px 20px 16px;}
-      .results-count{padding:0 20px 12px;}
-      .table-wrap{padding:0 20px 40px;}
-      .cards-section{padding:0 20px 40px;}
-      .upsell-banner{margin:0 20px 24px;}
-    }
-    @media(max-width:600px){
-      .stats-bar{flex-wrap:wrap;}
-      .stat-cell{min-width:50%;}
-      .cards-grid{grid-template-columns:1fr;}
-    }
+    .fl{display:flex;gap:20px;}
+    @media(max-width:900px){.hero{padding:95px 20px 36px;}.stats-row{margin:0 20px;}.controls{padding:20px 20px 12px;}.rcount{padding:0 20px 10px;}.twrap,.cgrid{padding:0 20px 36px;}.upsell{margin:0 20px 24px;}footer{padding:32px 20px;}}
   </style>
 </head>
 <body>
-
 <nav>
-  <a href="/" class="logo">
-    <img src="ThePlanItEarthLogoB.png" alt="ThePlanItEarth" />
-    The PlanIt<span>Earth</span>
-  </a>
-  <div class="nav-links">
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoB.png"/>The PlanIt<span>Earth</span></a>
+  <div class="nav-r">
     <a href="index-professions.html" class="active">Professions</a>
     <a href="index-sectors.html">Sectors</a>
     <a href="index-countries.html">Countries</a>
-    <a href="index-deep.html">Deep Index</a>
-    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
+    <a href="index-deep.html" style="color:var(--amber);font-weight:600">Deep Index ✦</a>
+    <a href="quiz.html" class="nav-cta">Get My Brief →</a>
   </div>
 </nav>
 
-<div class="page-hero">
-  <div class="hero-eyebrow">2025 AI Risk Index</div>
+<div class="hero">
+  <div class="eyebrow">2025 AI Risk Index · 1,850 data points</div>
   <h1>Will AI replace<br>your <em>profession?</em></h1>
-  <p>Ranked automation risk scores for 69 professions, grounded in WEF, McKinsey, O*NET, and Stanford AI Index data. Updated for 2025.</p>
-  <div class="index-nav">
-    <a href="index-professions.html" class="index-link active">By Profession</a>
-    <a href="index-sectors.html" class="index-link">By Sector</a>
-    <a href="index-countries.html" class="index-link">By Country</a>
-    <a href="index-deep.html" class="index-link">Deep Index ✦</a>
+  <p class="hero-sub">Ranked automation risk scores for 185 professions across 10 countries. Built from peer-reviewed research and four independent institutional datasets — not opinion.</p>
+  <div class="source-chips">
+    <span class="source-chip">Frey &amp; Osborne (Oxford)</span>
+    <span class="source-chip">Oxford Insights AI Index</span>
+    <span class="source-chip">World Bank Employment</span>
+    <span class="source-chip">UNDP Human Development Index</span>
+  </div>
+  <div class="index-tabs">
+    <a href="index-professions.html" class="itab active">185 Professions</a>
+    <a href="index-sectors.html" class="itab">9 Sectors</a>
+    <a href="index-countries.html" class="itab">10 Countries + Map</a>
+    <a href="index-deep.html" class="itab premium">✦ Deep Index</a>
   </div>
 </div>
 
-<!-- STATS BAR -->
-<div class="stats-bar" id="stats-bar">
-  <div class="stat-cell">
-    <div class="stat-num" id="stat-total">69</div>
-    <div class="stat-label">Professions ranked</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num red" id="stat-high">—</div>
-    <div class="stat-label">High risk (&gt;65)</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num amber" id="stat-med">—</div>
-    <div class="stat-label">Medium risk (35–65)</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num green" id="stat-low">—</div>
-    <div class="stat-label">Low risk (&lt;35)</div>
-  </div>
+<div class="stats-row">
+  <div class="sc"><div class="sc-n" id="s-total">185</div><div class="sc-l">Professions ranked</div></div>
+  <div class="sc"><div class="sc-n red" id="s-high">—</div><div class="sc-l">High risk (&gt;65%)</div></div>
+  <div class="sc"><div class="sc-n amber" id="s-med">—</div><div class="sc-l">Medium (35–65%)</div></div>
+  <div class="sc"><div class="sc-n green" id="s-low">—</div><div class="sc-l">Low risk (&lt;35%)</div></div>
 </div>
 
-<!-- UPSELL BANNER -->
-<div class="upsell-banner">
+<div class="upsell">
   <div>
-    <h3>See risk scores by country × sector × profession</h3>
-    <p>How does an accountant's risk differ between France and Singapore? Unlock the full cross-referenced index.</p>
+    <h3>Your exact risk: profession + country combined</h3>
+    <p>An accountant faces 91% risk in the US but 54% in Brazil. The Deep Index shows your precise score with full quadrant analysis.</p>
   </div>
-  <a href="index-deep.html">
-    Unlock Deep Index &nbsp;·&nbsp;
-    <span class="upsell-price"><span class="upsell-was">€8</span> €4.99</span>
-    →
-  </a>
+  <a href="index-deep.html"><span class="uwas">€8</span> €4.99 · Unlock Deep Index →</a>
 </div>
 
-<!-- CONTROLS -->
 <div class="controls">
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="search" placeholder="Search professions…" oninput="applyFilters()" />
+  <div class="sw"><span class="sw-icon">🔍</span><input id="srch" placeholder="Search professions…" oninput="render()"/></div>
+  <div id="sec-filters" style="display:flex;gap:6px;flex-wrap:wrap">
+    <button class="fbtn on" onclick="setSec('all',this)">All</button>
   </div>
-  <div class="filter-group" id="sector-filters">
-    <button class="filter-btn active" onclick="setSector('all',this)">All sectors</button>
-  </div>
-  <div class="filter-group">
-    <button class="filter-btn risk-high" onclick="setRisk('high',this)">🔴 High risk</button>
-    <button class="filter-btn risk-med" onclick="setRisk('med',this)">🟡 Medium</button>
-    <button class="filter-btn risk-low" onclick="setRisk('low',this)">🟢 Low risk</button>
-  </div>
-  <select class="sort-select" onchange="applyFilters()" id="sort-select">
-    <option value="automation-desc">Highest risk first</option>
-    <option value="automation-asc">Lowest risk first</option>
-    <option value="augmentation-desc">Highest augmentation</option>
-    <option value="name-asc">A → Z</option>
+  <button class="fbtn r" id="fr-H" onclick="toggleRisk('H',this)">🔴 High</button>
+  <button class="fbtn a" id="fr-M" onclick="toggleRisk('M',this)">🟡 Medium</button>
+  <button class="fbtn g" id="fr-L" onclick="toggleRisk('L',this)">🟢 Low</button>
+  <select class="sortsel" id="srt" onchange="render()">
+    <option value="auto-d">Highest risk first</option>
+    <option value="auto-a">Lowest risk first</option>
+    <option value="resk-d">Highest reskilling</option>
+    <option value="var-d">Biggest country variation</option>
+    <option value="az">A → Z</option>
   </select>
-  <div class="view-toggle">
-    <button class="view-btn active" id="btn-table" onclick="setView('table')">≡ Table</button>
-    <button class="view-btn" id="btn-cards" onclick="setView('cards')">⊞ Cards</button>
+  <div class="vtoggle">
+    <button class="vbtn on" id="vt" onclick="setView('t')">≡ Table</button>
+    <button class="vbtn" id="vc" onclick="setView('c')">⊞ Cards</button>
   </div>
 </div>
+<div class="rcount" id="rc"></div>
 
-<div class="results-count" id="results-count"></div>
-
-<!-- TABLE VIEW -->
-<div class="table-wrap" id="view-table">
-  <table class="prof-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Profession</th>
-        <th>Automation Risk</th>
-        <th>Augmentation Potential</th>
-        <th>Est. Timeline</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="table-body"></tbody>
-  </table>
+<div id="tv" class="twrap">
+  <table><thead><tr>
+    <th>#</th><th>Profession</th><th>Automation Risk</th><th>Reskilling Potential</th><th>Country Variation</th><th></th>
+  </tr></thead><tbody id="tb"></tbody></table>
 </div>
-
-<!-- CARDS VIEW -->
-<div class="cards-section" id="view-cards" style="display:none">
-  <div class="cards-grid" id="cards-body"></div>
-</div>
+<div id="cv" class="cgrid" style="display:none"></div>
 
 <footer>
-  <a href="/" class="logo" style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:8px;">
-    <img src="ThePlanItEarthLogoB.png" style="width:28px;filter:invert(1);opacity:.7" />
-    The PlanIt<span style="color:var(--sage-lt)">Earth</span>
-  </a>
-  <p>Scores are research-grounded estimates, not guarantees. Data: WEF, McKinsey, O*NET, BLS, Stanford AI Index.</p>
-  <div class="footer-links">
-    <a href="index-sectors.html">Sectors</a>
-    <a href="index-countries.html">Countries</a>
-    <a href="index-deep.html">Deep Index</a>
-    <a href="index.html">Home</a>
-  </div>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:11px">Data: Frey &amp; Osborne (2013) · Oxford Insights · World Bank · UNDP HDI. Scores are relative risk indicators, not forecasts.</p>
+  <div class="fl"><a href="index-sectors.html">Sectors</a><a href="index-countries.html">Countries</a><a href="index-deep.html">Deep Index</a><a href="index.html">Home</a></div>
 </footer>
 
 <script src="data.js"></script>
 <script>
-let activeSector = 'all';
-let activeRisk   = null;
-let currentView  = 'table';
+let activeSec='all', activeRisks=new Set(), view='t';
 
-function riskLevel(score) {
-  if (score >= 65) return 'high';
-  if (score >= 35) return 'med';
-  return 'low';
-}
-function riskLabel(score) {
-  if (score >= 65) return 'High Risk';
-  if (score >= 35) return 'Medium';
-  return 'Low Risk';
-}
-function riskColor(score) {
-  if (score >= 65) return '#C0392B';
-  if (score >= 35) return '#D4841A';
-  return '#3D6B4F';
-}
-function timelineLabel(y) {
-  if (y <= 2) return '⚡ Within 2 years';
-  if (y <= 4) return '~' + y + ' years';
-  if (y <= 7) return '~' + y + ' years';
-  return '7+ years';
-}
+function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
+function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium':'Low Risk';}
+function rc2(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function pct(s){return Math.round(s*100);}
 
-// Build sector filter buttons
-function buildSectorFilters() {
-  const sectors = [...new Set(PROFESSIONS.map(p => p.sector))].sort();
-  const wrap = document.getElementById('sector-filters');
-  sectors.forEach(s => {
-    const b = document.createElement('button');
-    b.className = 'filter-btn';
-    b.textContent = s;
-    b.onclick = function() { setSector(s, this); };
-    wrap.appendChild(b);
+function buildSectors(){
+  const secs=[...new Set(PROFESSIONS.map(p=>p.sector))].sort();
+  const w=document.getElementById('sec-filters');
+  secs.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='fbtn';b.textContent=s;
+    b.onclick=function(){setSec(s,this);};
+    w.appendChild(b);
   });
 }
-
-function setSector(s, el) {
-  activeSector = s;
-  document.querySelectorAll('#sector-filters .filter-btn').forEach(b => b.classList.remove('active'));
-  if (el) el.classList.add('active');
-  applyFilters();
+function setSec(s,el){
+  activeSec=s;
+  document.querySelectorAll('#sec-filters .fbtn').forEach(b=>b.classList.remove('on'));
+  el&&el.classList.add('on');render();
+}
+function toggleRisk(r,el){
+  if(activeRisks.has(r)){activeRisks.delete(r);el.classList.remove('on');}
+  else{activeRisks.add(r);el.classList.add('on');}
+  render();
+}
+function setView(v){
+  view=v;
+  document.getElementById('tv').style.display=v==='t'?'block':'none';
+  document.getElementById('cv').style.display=v==='c'?'grid':'none';
+  document.getElementById('vt').classList.toggle('on',v==='t');
+  document.getElementById('vc').classList.toggle('on',v==='c');
 }
 
-function setRisk(r, el) {
-  if (activeRisk === r) {
-    activeRisk = null;
-    document.querySelectorAll('.filter-btn.risk-high,.filter-btn.risk-med,.filter-btn.risk-low').forEach(b => b.classList.remove('active'));
-  } else {
-    activeRisk = r;
-    document.querySelectorAll('.filter-btn.risk-high,.filter-btn.risk-med,.filter-btn.risk-low').forEach(b => b.classList.remove('active'));
-    if (el) el.classList.add('active');
-  }
-  applyFilters();
-}
-
-function setView(v) {
-  currentView = v;
-  document.getElementById('view-table').style.display = v === 'table' ? 'block' : 'none';
-  document.getElementById('view-cards').style.display = v === 'cards' ? 'block' : 'none';
-  document.getElementById('btn-table').classList.toggle('active', v === 'table');
-  document.getElementById('btn-cards').classList.toggle('active', v === 'cards');
-}
-
-function applyFilters() {
-  const query  = document.getElementById('search').value.toLowerCase();
-  const sortBy = document.getElementById('sort-select').value;
-
-  let filtered = PROFESSIONS.filter(p => {
-    const matchSearch  = !query || p.name.toLowerCase().includes(query) || p.sector.toLowerCase().includes(query);
-    const matchSector  = activeSector === 'all' || p.sector === activeSector;
-    const matchRisk    = !activeRisk || riskLevel(p.automation) === activeRisk;
-    return matchSearch && matchSector && matchRisk;
+function render(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  const s=document.getElementById('srt').value;
+  let d=[...PROFESSIONS].filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q)&&!p.sector.toLowerCase().includes(q))return false;
+    if(activeSec!=='all'&&p.sector!==activeSec)return false;
+    if(activeRisks.size&&!activeRisks.has(rl(p.avg_auto)))return false;
+    return true;
+  });
+  d.sort((a,b)=>{
+    if(s==='auto-d')return b.avg_auto-a.avg_auto;
+    if(s==='auto-a')return a.avg_auto-b.avg_auto;
+    if(s==='resk-d')return b.avg_resk-a.avg_resk;
+    if(s==='var-d')return b.variation-a.variation;
+    return a.name.localeCompare(b.name);
   });
 
-  filtered.sort((a, b) => {
-    if (sortBy === 'automation-desc')    return b.automation - a.automation;
-    if (sortBy === 'automation-asc')     return a.automation - b.automation;
-    if (sortBy === 'augmentation-desc')  return b.augmentation - a.augmentation;
-    if (sortBy === 'name-asc')           return a.name.localeCompare(b.name);
-    return 0;
-  });
+  // Stats
+  document.getElementById('s-total').textContent=d.length;
+  document.getElementById('s-high').textContent=d.filter(p=>rl(p.avg_auto)==='H').length;
+  document.getElementById('s-med').textContent=d.filter(p=>rl(p.avg_auto)==='M').length;
+  document.getElementById('s-low').textContent=d.filter(p=>rl(p.avg_auto)==='L').length;
+  document.getElementById('rc').textContent=d.length+' professions shown';
 
-  renderTable(filtered);
-  renderCards(filtered);
-  updateStats(filtered);
-  document.getElementById('results-count').textContent =
-    filtered.length + ' profession' + (filtered.length !== 1 ? 's' : '') + ' shown';
-}
-
-function renderTable(data) {
-  const tbody = document.getElementById('table-body');
-  tbody.innerHTML = data.map((p, i) => {
-    const rl = riskLevel(p.automation);
-    const rc = riskColor(p.automation);
-    return `<tr onclick="window.location='quiz.html?profession=${encodeURIComponent(p.name)}'">
-      <td class="rank-num">${i + 1}</td>
-      <td>
-        <div class="prof-name">${p.name}</div>
-        <div class="prof-sector">${p.sector}</div>
+  // Table
+  document.getElementById('tb').innerHTML=d.map((p,i)=>{
+    const lv=rl(p.avg_auto),rc=rc2(p.avg_auto);
+    return`<tr onclick="window.location='index-deep.html?p=${encodeURIComponent(p.name)}'">
+      <td class="rk">${i+1}</td>
+      <td><div class="pname">${p.name}</div><div class="psec">${p.sector}</div></td>
+      <td class="barcell">
+        <div class="barlabel"><span class="badge ${lv}">${rlabel(p.avg_auto)}</span><span style="font-weight:700;color:${rc}">${pct(p.avg_auto)}%</span></div>
+        <div class="bartrack"><div class="barfill" style="width:${pct(p.avg_auto)}%;background:${rc}"></div></div>
       </td>
-      <td class="score-cell">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-          <span class="risk-badge ${rl}">${riskLabel(p.automation)}</span>
-          <span class="score-val" style="color:${rc}">${p.automation}/100</span>
-        </div>
-        <div class="mini-bar-track">
-          <div class="mini-bar-fill" style="width:${p.automation}%;background:${rc}"></div>
-        </div>
+      <td class="barcell">
+        <div class="barlabel"><span style="font-size:11px;color:var(--mid)">Reskilling</span><span style="font-weight:700;color:var(--sage)">${pct(p.avg_resk)}%</span></div>
+        <div class="bartrack"><div class="barfill" style="width:${pct(p.avg_resk)}%;background:var(--sage)"></div></div>
       </td>
-      <td class="score-cell">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:12px;color:var(--mid)">Augmentation</span>
-          <span class="score-val" style="color:var(--sage)">${p.augmentation}/100</span>
-        </div>
-        <div class="mini-bar-track">
-          <div class="mini-bar-fill" style="width:${p.augmentation}%;background:var(--sage)"></div>
-        </div>
-      </td>
-      <td class="timeline-cell">${timelineLabel(p.timeline)}</td>
-      <td class="cta-cell"><a href="quiz.html?profession=${encodeURIComponent(p.name)}" onclick="event.stopPropagation()">Get my brief →</a></td>
+      <td class="varcell">Varies <span>±${pct(p.variation)}pts</span><br>by country</td>
+      <td class="ctacell"><a href="index-deep.html?p=${encodeURIComponent(p.name)}" onclick="event.stopPropagation()">See by country →</a></td>
     </tr>`;
   }).join('');
-}
 
-function renderCards(data) {
-  const grid = document.getElementById('cards-body');
-  grid.innerHTML = data.map(p => {
-    const rl = riskLevel(p.automation);
-    const rc = riskColor(p.automation);
-    return `<a class="prof-card" href="quiz.html?profession=${encodeURIComponent(p.name)}">
-      <div class="card-header">
-        <div>
-          <div class="card-name">${p.name}</div>
-          <div class="card-sector">${p.sector}</div>
-        </div>
-        <span class="risk-badge ${rl}">${riskLabel(p.automation)}</span>
+  // Cards
+  document.getElementById('cv').innerHTML=d.map(p=>{
+    const lv=rl(p.avg_auto),rc=rc2(p.avg_auto);
+    return`<a class="pcard" href="index-deep.html?p=${encodeURIComponent(p.name)}">
+      <div class="pc-head"><div><div class="pc-name">${p.name}</div><div class="pc-sec">${p.sector}</div></div><span class="badge ${lv}">${rlabel(p.avg_auto)}</span></div>
+      <div class="pc-scores">
+        <div class="pc-row"><div class="pc-lbl"><span>Automation Risk</span><span style="color:${rc}">${pct(p.avg_auto)}%</span></div><div class="pc-bar"><div class="pc-fill" style="width:${pct(p.avg_auto)}%;background:${rc}"></div></div></div>
+        <div class="pc-row"><div class="pc-lbl"><span>Reskilling Potential</span><span style="color:var(--sage)">${pct(p.avg_resk)}%</span></div><div class="pc-bar"><div class="pc-fill" style="width:${pct(p.avg_resk)}%;background:var(--sage)"></div></div></div>
       </div>
-      <div class="card-scores">
-        <div class="card-score-row">
-          <div class="card-score-label"><span>Automation Risk</span><span style="color:${rc}">${p.automation}/100</span></div>
-          <div class="card-bar"><div class="card-bar-fill" style="width:${p.automation}%;background:${rc}"></div></div>
-        </div>
-        <div class="card-score-row">
-          <div class="card-score-label"><span>Augmentation Potential</span><span style="color:var(--sage)">${p.augmentation}/100</span></div>
-          <div class="card-bar"><div class="card-bar-fill" style="width:${p.augmentation}%;background:var(--sage)"></div></div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <span class="card-timeline">${timelineLabel(p.timeline)}</span>
-        <span class="card-cta">Get my brief →</span>
-      </div>
+      <div class="pc-foot"><span class="pc-var">Country spread: <b>±${pct(p.variation)}pts</b></span><span class="pc-cta">See by country →</span></div>
     </a>`;
   }).join('');
 }
 
-function updateStats(data) {
-  const high = data.filter(p => p.automation >= 65).length;
-  const med  = data.filter(p => p.automation >= 35 && p.automation < 65).length;
-  const low  = data.filter(p => p.automation < 35).length;
-  document.getElementById('stat-total').textContent = data.length;
-  document.getElementById('stat-high').textContent  = high;
-  document.getElementById('stat-med').textContent   = med;
-  document.getElementById('stat-low').textContent   = low;
-}
-
-buildSectorFilters();
-applyFilters();
+buildSectors();render();
 </script>
 </body>
 </html>
