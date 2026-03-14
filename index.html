@@ -616,6 +616,7 @@
       .map-dash-bottom { grid-template-columns: 1fr 1fr; }
     }
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 </head>
 <body>
 
@@ -979,76 +980,88 @@ const tt=document.getElementById('map-tt');
 function rc(s){return s>=.35?'#F5876A':s>=.25?'#E8922A':'#7EC09A';}
 function pctf(s){return(s*100).toFixed(1)+'%';}
 
-function buildMap(svgEl, height, interactive){
-  const svg=d3.select(svgEl);
-  const W=svgEl.clientWidth||960, H=height||480;
-  svg.attr('viewBox',`0 0 ${W} ${H}`);
-  const proj=d3.geoNaturalEarth1().scale(W/6.3).translate([W/2,H/2]);
-  const path=d3.geoPath().projection(proj);
+// Shared world topology — fetched once, used by both maps
+let _worldData = null;
+function getWorldData() {
+  if (_worldData) return Promise.resolve(_worldData);
+  return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r => r.json())
+    .then(data => { _worldData = data; return data; });
+}
 
-  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-    .then(r=>r.json())
-    .then(data=>{
-      const script=document.createElement('script');
-      script.src='https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js';
-      script.onload=()=>{
-        // Ocean background
-        svg.append('rect').attr('width',W).attr('height',H).attr('fill','#0E1420');
-        // Graticule
-        const grat=d3.geoGraticule()();
-        svg.append('path').datum(grat).attr('d',path)
-          .attr('fill','none').attr('stroke','rgba(255,255,255,.04)').attr('stroke-width','0.5');
-        // Countries
-        const features=topojson.feature(data,data.objects.countries).features;
-        const paths=svg.selectAll('path.country')
-          .data(features).enter().append('path')
-          .attr('class','country')
-          .attr('d',path)
-          .attr('stroke','rgba(255,255,255,.08)')
-          .attr('stroke-width','0.4')
-          .attr('fill',d=>{
-            const a3=numericIso[d.id];
-            const c=metaByIso[a3];
-            return c?colorScale(c.avg_auto):'#1A2030';
-          });
+function drawMap(svgEl, height, interactive) {
+  // Use offsetWidth for accurate painted width, fallback to 960
+  const W = svgEl.closest('.map-area, .hero-map-wrap')?.offsetWidth || svgEl.offsetWidth || 960;
+  const H = height || 480;
+  const svg = d3.select(svgEl).attr('viewBox', `0 0 ${W} ${H}`);
 
-        if(interactive){
-          paths
-            .style('cursor',d=>metaByIso[numericIso[d.id]]?'pointer':'default')
-            .style('transition','filter .2s')
-            .on('mousemove',function(event,d){
-              const a3=numericIso[d.id];
-              const c=metaByIso[a3];
-              if(!c){tt.classList.remove('visible');return;}
-              const riskCol=rc(c.avg_auto);
-              tt.innerHTML=`
-                <div class="map-tt-flag">${c.flag||'🌍'}</div>
-                <div class="map-tt-name">${c.name}</div>
-                <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
-                <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto*100}%;background:${riskCol}"></div></div>
-                <div class="map-tt-row"><span class="map-tt-label">Reskilling potential</span><span class="map-tt-val" style="color:#7EC09A">${pctf(c.avg_resk)}</span></div>
-                <div class="map-tt-row"><span class="map-tt-label">AI adoption index</span><span class="map-tt-val">${(c.ai*100).toFixed(0)}/100</span></div>
-                <div class="map-tt-row"><span class="map-tt-label">Employment growth</span><span class="map-tt-val" style="color:${c.growth>=0?'#7EC09A':'#F5876A'}">${c.growth>=0?'+':''}${(c.growth*100).toFixed(1)}%</span></div>
-                <a href="index-deep.html?country=${encodeURIComponent(c.name)}&unlocked=false" class="map-tt-cta">See profession-level breakdown →</a>`;
-              tt.style.left=(event.clientX+16)+'px';
-              tt.style.top=(event.clientY-10)+'px';
-              tt.classList.add('visible');
-              d3.select(this).style('filter','brightness(1.35)');
-            })
-            .on('mouseleave',function(){
-              tt.classList.remove('visible');
-              d3.select(this).style('filter','none');
-            })
-            .on('click',(event,d)=>{
-              const a3=numericIso[d.id];
-              const c=metaByIso[a3];
-              if(c)window.location='index-countries.html#'+c.iso;
-            });
-        }
-      };
-      if(!document.querySelector('script[src*="topojson"]')) document.head.appendChild(script);
-      else if(window.topojson) script.onload();
-    }).catch(()=>{});
+  getWorldData().then(data => {
+    if (typeof topojson === 'undefined') {
+      console.warn('topojson not loaded');
+      return;
+    }
+    svg.selectAll('*').remove(); // clear any previous render
+
+    // Ocean
+    svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#0D1220');
+
+    // Graticule grid lines
+    svg.append('path')
+      .datum(d3.geoGraticule()())
+      .attr('d', d3.geoPath().projection(
+        d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2])
+      ))
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,.03)')
+      .attr('stroke-width', '0.5');
+
+    const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2]);
+    const path = d3.geoPath().projection(proj);
+    const features = topojson.feature(data, data.objects.countries).features;
+
+    const paths = svg.selectAll('path.country')
+      .data(features).enter().append('path')
+      .attr('class', 'country')
+      .attr('d', path)
+      .attr('stroke', 'rgba(255,255,255,.07)')
+      .attr('stroke-width', '0.4')
+      .attr('fill', d => {
+        const c = metaByIso[numericIso[d.id]];
+        return c ? colorScale(c.avg_auto) : '#1C2235';
+      });
+
+    if (interactive) {
+      paths
+        .style('cursor', d => metaByIso[numericIso[d.id]] ? 'pointer' : 'default')
+        .on('mousemove', function(event, d) {
+          const c = metaByIso[numericIso[d.id]];
+          if (!c) { tt.classList.remove('visible'); return; }
+          const riskCol = rc(c.avg_auto);
+          tt.innerHTML = `
+            <div class="map-tt-flag">${c.flag || '🌍'}</div>
+            <div class="map-tt-name">${c.name}</div>
+            <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
+            <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto * 100}%;background:${riskCol}"></div></div>
+            <div class="map-tt-row"><span class="map-tt-label">Reskilling potential</span><span class="map-tt-val" style="color:#7EC09A">${pctf(c.avg_resk)}</span></div>
+            <div class="map-tt-row"><span class="map-tt-label">AI adoption index</span><span class="map-tt-val">${(c.ai * 100).toFixed(0)}/100</span></div>
+            <div class="map-tt-row"><span class="map-tt-label">Employment growth</span><span class="map-tt-val" style="color:${c.growth >= 0 ? '#7EC09A' : '#F5876A'}">${c.growth >= 0 ? '+' : ''}${(c.growth * 100).toFixed(1)}%</span></div>
+            <a href="index-deep.html?country=${encodeURIComponent(c.name)}" class="map-tt-cta">See profession-level breakdown →</a>`;
+          tt.style.left = (event.clientX + 16) + 'px';
+          tt.style.top  = (event.clientY - 10) + 'px';
+          tt.classList.add('visible');
+          d3.select(this).attr('fill', d3.color(colorScale(c.avg_auto)).brighter(0.6));
+        })
+        .on('mouseleave', function(event, d) {
+          const c = metaByIso[numericIso[d.id]];
+          tt.classList.remove('visible');
+          d3.select(this).attr('fill', c ? colorScale(c.avg_auto) : '#1C2235');
+        })
+        .on('click', (event, d) => {
+          const c = metaByIso[numericIso[d.id]];
+          if (c) window.location = 'index-countries.html';
+        });
+    }
+  }).catch(err => console.warn('Map load failed:', err));
 }
 
 // Rank list in sidebar
@@ -1059,4 +1072,19 @@ document.getElementById('rank-list').innerHTML=sorted.map(([name,d],i)=>{
     <div class="cr-rank">${i+1}</div>
     <div class="cr-flag">${d.flag||'🌍'}</div>
     <div class="cr-info"><div class="cr-name">${name}</div><div class="cr-sub">AI: ${(d.ai*100).toFixed(0)}/100</div></div>
-    <div class="cr-score" style="color:${col}">${Mat
+    <div class="cr-score" style="color:${col}">${Math.round(d.avg_auto*100)}%</div>
+  </a>`;
+}).join('');
+
+// Init map after layout paint
+document.addEventListener('DOMContentLoaded', () => {
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const mainMap = document.getElementById('world-map');
+      if (mainMap) drawMap(mainMap, 480, true);
+    }, 150);
+  });
+});
+</script>
+</body>
+</html>
