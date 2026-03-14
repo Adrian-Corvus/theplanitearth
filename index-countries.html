@@ -91,12 +91,12 @@
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     nav{background:rgba(13,15,20,.9)!important;backdrop-filter:blur(20px);position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--ink);border-bottom:1px solid var(--mist);}
-    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:10px;}
     .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
     .logo span{color:var(--sage);}
     .nav-r{display:flex;gap:24px;align-items:center;}
     .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
-    .nav-r a:hover,.nav-r a.active{color:var(--ink);}
+    .nav-r a:hover,.nav-r a.active{color:var(--paper);}
     .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
     @media(max-width:900px){nav{padding:10px 14px;}.nav-r a:not(.nav-cta){display:none;}.nav-cta{padding:8px 14px;font-size:12px!important;white-space:nowrap;}.logo{font-size:15px;}.logo img{width:28px;height:28px;}}
 
@@ -107,7 +107,7 @@
     .hero-sub{font-size:16px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:28px;}
     .index-tabs{display:flex;gap:10px;flex-wrap:wrap;}
     .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
-    .itab:hover{border-color:var(--ink);color:var(--ink);}
+    .itab:hover{border-color:var(--paper);color:var(--paper);}
     .itab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
     .itab.premium{border-color:var(--amber);color:var(--amber);}
 
@@ -197,7 +197,7 @@
   <div class="index-tabs">
     <a href="index-professions.html" class="itab">185 Professions</a>
     <a href="index-sectors.html" class="itab">9 Sectors</a>
-    <a href="index-countries.html" class="itab active">10 Countries + Map</a>
+    <a href="index-countries.html" class="itab active">Countries + Map</a>
     <a href="index-deep.html" class="itab premium">✦ Deep Index</a>
   </div>
 </div>
@@ -213,7 +213,7 @@
       <div class="legend-grad"><span style="font-size:10px;color:var(--sage)">Low</span><div class="grad-bar"></div><span style="font-size:10px;color:var(--red)">High</span></div>
       <span style="margin-left:12px">⬜ = Not in dataset</span>
     </div>
-    <div class="map-disclaimer">Map covers 10 countries in current dataset. Grey = outside dataset. Deep Index shows profession-level breakdown per country.</div>
+    <div class="map-disclaimer">Coloured countries have data. Grey = outside dataset. Click any country to explore profession-level breakdown.</div>
   </div>
 </div>
 
@@ -242,141 +242,195 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script src="data.js"></script>
 <script>
+// ── Helpers ──────────────────────────────────────────────────────────────────
 function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
 function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
-function rc(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function rc(s){return s>=.65?'#F5876A':s>=.35?'#F5C87A':'#7EC09A';}
 function pct(s){return Math.round(s*100);}
 function pctf(s){return(s*100).toFixed(1)+'%';}
 
-const iso3map = {
-  'Australia':'AUS','Brazil':'BRA','Canada':'CAN','China':'CHN',
-  'France':'FRA','Germany':'DEU','India':'IND','Japan':'JPN',
-  'United Kingdom':'GBR','United States':'USA'
+// Flag lookup — covers all countries the converter may produce
+const FLAG_BY_NAME = {
+  'Afghanistan':'🇦🇫','Albania':'🇦🇱','Algeria':'🇩🇿','Angola':'🇦🇴','Argentina':'🇦🇷',
+  'Armenia':'🇦🇲','Australia':'🇦🇺','Austria':'🇦🇹','Azerbaijan':'🇦🇿','Bangladesh':'🇧🇩',
+  'Belarus':'🇧🇾','Belgium':'🇧🇪','Bolivia':'🇧🇴','Bosnia and Herzegovina':'🇧🇦',
+  'Botswana':'🇧🇼','Brazil':'🇧🇷','Bulgaria':'🇧🇬','Burkina Faso':'🇧🇫','Burundi':'🇧🇮',
+  'Cambodia':'🇰🇭','Cameroon':'🇨🇲','Canada':'🇨🇦','Chile':'🇨🇱','China':'🇨🇳',
+  'Colombia':'🇨🇴','Congo':'🇨🇬','Costa Rica':'🇨🇷','Croatia':'🇭🇷','Czech Republic':'🇨🇿',
+  'Denmark':'🇩🇰','Dominican Republic':'🇩🇴','Ecuador':'🇪🇨','Egypt':'🇪🇬',
+  'El Salvador':'🇸🇻','Estonia':'🇪🇪','Ethiopia':'🇪🇹','Finland':'🇫🇮','France':'🇫🇷',
+  'Georgia':'🇬🇪','Germany':'🇩🇪','Ghana':'🇬🇭','Greece':'🇬🇷','Guatemala':'🇬🇹',
+  'Honduras':'🇭🇳','Hungary':'🇭🇺','India':'🇮🇳','Indonesia':'🇮🇩','Iran':'🇮🇷',
+  'Iraq':'🇮🇶','Ireland':'🇮🇪','Israel':'🇮🇱','Italy':'🇮🇹','Jamaica':'🇯🇲',
+  'Japan':'🇯🇵','Jordan':'🇯🇴','Kazakhstan':'🇰🇿','Kenya':'🇰🇪','Kuwait':'🇰🇼',
+  'Latvia':'🇱🇻','Lebanon':'🇱🇧','Lithuania':'🇱🇹','Luxembourg':'🇱🇺',
+  'Madagascar':'🇲🇬','Malawi':'🇲🇼','Malaysia':'🇲🇾','Mali':'🇲🇱','Malta':'🇲🇹',
+  'Mauritius':'🇲🇺','Mexico':'🇲🇽','Moldova':'🇲🇩','Mongolia':'🇲🇳','Montenegro':'🇲🇪',
+  'Morocco':'🇲🇦','Mozambique':'🇲🇿','Myanmar':'🇲🇲','Namibia':'🇳🇦','Nepal':'🇳🇵',
+  'Netherlands':'🇳🇱','New Zealand':'🇳🇿','Nicaragua':'🇳🇮','Niger':'🇳🇪',
+  'Nigeria':'🇳🇬','North Macedonia':'🇲🇰','Norway':'🇳🇴','Pakistan':'🇵🇰',
+  'Panama':'🇵🇦','Paraguay':'🇵🇾','Peru':'🇵🇪','Philippines':'🇵🇭','Poland':'🇵🇱',
+  'Portugal':'🇵🇹','Romania':'🇷🇴','Russia':'🇷🇺','Rwanda':'🇷🇼',
+  'Saudi Arabia':'🇸🇦','Senegal':'🇸🇳','Serbia':'🇷🇸','Singapore':'🇸🇬',
+  'Slovakia':'🇸🇰','Slovenia':'🇸🇮','Somalia':'🇸🇴','South Africa':'🇿🇦',
+  'South Korea':'🇰🇷','Spain':'🇪🇸','Sri Lanka':'🇱🇰','Sudan':'🇸🇩',
+  'Eswatini':'🇸🇿','Swaziland':'🇸🇿','Sweden':'🇸🇪','Switzerland':'🇨🇭',
+  'Taiwan':'🇹🇼','Tajikistan':'🇹🇯','Tanzania':'🇹🇿','Thailand':'🇹🇭',
+  'Togo':'🇹🇬','Tunisia':'🇹🇳','Turkey':'🇹🇷','Turkmenistan':'🇹🇲',
+  'UAE':'🇦🇪','Uganda':'🇺🇬','Ukraine':'🇺🇦','United Kingdom':'🇬🇧',
+  'United States':'🇺🇸','Uruguay':'🇺🇾','Uzbekistan':'🇺🇿','Venezuela':'🇻🇪',
+  'Vietnam':'🇻🇳','Zambia':'🇿🇲','Zimbabwe':'🇿🇼','Armenia':'🇦🇲',
+  'Kosovo':'🇽🇰','Libya':'🇱🇾','Lesotho':'🇱🇸','Seychelles':'🇸🇨',
 };
+function getFlag(name, d) { return FLAG_BY_NAME[name] || (d && d.flag) || '🌍'; }
+
+// ── Build countryByIso lookup from COUNTRY_META ───────────────────────────────
+// Full ISO numeric → alpha-3 map
+const numericIso = {
+  '004':'AFG','008':'ALB','012':'DZA','024':'AGO','032':'ARG','036':'AUS','040':'AUT',
+  '050':'BGD','056':'BEL','064':'BTN','068':'BOL','070':'BIH','076':'BRA','100':'BGR',
+  '104':'MMR','108':'BDI','112':'BLR','116':'KHM','124':'CAN','144':'LKA','152':'CHL',
+  '156':'CHN','170':'COL','174':'COM','191':'HRV','203':'CZE','204':'BEN','208':'DNK',
+  '218':'ECU','222':'SLV','231':'ETH','246':'FIN','250':'FRA','276':'DEU','288':'GHA',
+  '300':'GRC','320':'GTM','332':'HTI','340':'HND','348':'HUN','356':'IND','360':'IDN',
+  '364':'IRN','368':'IRQ','372':'IRL','376':'ISR','380':'ITA','388':'JAM','392':'JPN',
+  '398':'KAZ','400':'JOR','404':'KEN','408':'PRK','410':'KOR','414':'KWT','417':'KGZ',
+  '422':'LBN','426':'LSO','428':'LVA','434':'LBY','440':'LTU','442':'LUX','450':'MDG',
+  '454':'MWI','458':'MYS','466':'MLI','470':'MLT','480':'MUS','484':'MEX','496':'MNG',
+  '498':'MDA','499':'MNE','504':'MAR','508':'MOZ','516':'NAM','524':'NPL','528':'NLD',
+  '540':'NCL','548':'VUT','554':'NZL','558':'NIC','562':'NER','566':'NGA','578':'NOR',
+  '586':'PAK','591':'PAN','598':'PNG','600':'PRY','604':'PER','608':'PHL','616':'POL',
+  '620':'PRT','624':'GNB','630':'PRI','634':'QAT','642':'ROU','643':'RUS','646':'RWA',
+  '682':'SAU','686':'SEN','688':'SRB','703':'SVK','705':'SVN','706':'SOM','710':'ZAF',
+  '716':'ZWE','724':'ESP','729':'SDN','740':'SUR','748':'SWZ','752':'SWE','756':'CHE',
+  '762':'TJK','764':'THA','768':'TGO','780':'TTO','788':'TUN','792':'TUR','795':'TKM',
+  '800':'UGA','804':'UKR','784':'ARE','826':'GBR','834':'TZA','840':'USA','854':'BFA',
+  '858':'URY','860':'UZB','862':'VEN','887':'YEM','894':'ZMB','051':'ARM','031':'AZE',
+  '807':'MKD','704':'VNM','156':'CHN','344':'HKG','158':'TWN','702':'SGP',
+};
+
 const countryByIso = {};
-Object.entries(COUNTRY_META).forEach(([name,d])=>{
-  countryByIso[d.iso]={name,...d};
+Object.entries(COUNTRY_META).forEach(([name, d]) => {
+  if (d.iso) countryByIso[d.iso] = { name, ...d, flag: getFlag(name, d) };
 });
 
-// Colour scale: low=sage, mid=amber, high=red
+// Colour scale matching index.html
 const colorScale = d3.scaleLinear()
-  .domain([0.22, 0.32, 0.39])
-  .range(['#C8DDD0','#D4841A','#C0392B'])
+  .domain([0.18, 0.28, 0.40])
+  .range(['#2A6B4A','#C67B1A','#B03020'])
   .clamp(true);
 
-// Build world map with D3 + topojson
-const svg = d3.select('#world-map');
-const tt  = document.getElementById('tt');
+// ── MAP ───────────────────────────────────────────────────────────────────────
+let _worldData = null;
+function getWorldData() {
+  if (_worldData) return Promise.resolve(_worldData);
+  return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r => r.json()).then(d => { _worldData = d; return d; });
+}
 
-fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-  .then(r=>r.json())
-  .then(world=>{
-    const topojson = window.topojson || null;
-    // Fallback: use simplified inline render with just our 10 countries as circles on a basic map
-    // map drawn by initMap()
-  })
-  .catch(()=>drawFallbackMap(svg, tt));
-
-function drawFallbackMap(svg, tt) {
-  // Simple SVG world approximation with country polygons from topojson CDN
-  const w=960, h=500;
-  const proj = d3.geoNaturalEarth1().scale(153).translate([w/2, h/2]);
+function initMap() {
+  const svgEl = document.getElementById('world-map');
+  if (!svgEl) return;
+  const W = svgEl.closest('.map-wrap')?.offsetWidth || svgEl.offsetWidth || 960;
+  const H = 480;
+  const svg  = d3.select(svgEl).attr('viewBox', `0 0 ${W} ${H}`);
+  const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2]);
   const path = d3.geoPath().projection(proj);
+  const tt   = document.getElementById('tt');
 
   getWorldData().then(data => {
-    if (typeof topojson === 'undefined') { return; }
-    const countries = topojson.feature(data, data.objects.countries);
-    const numericToAlpha3 = buildNumericMap();
-    svg.selectAll('path')
-      .data(countries.features)
-      .enter().append('path')
+    if (typeof topojson === 'undefined') { console.warn('topojson not loaded'); return; }
+    svg.selectAll('*').remove();
+    svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#0D1220');
+    svg.append('path')
+      .datum(d3.geoGraticule()())
       .attr('d', path)
+      .attr('fill', 'none').attr('stroke', 'rgba(255,255,255,.03)').attr('stroke-width', .5);
+
+    const features = topojson.feature(data, data.objects.countries).features;
+    svg.selectAll('path.country')
+      .data(features).enter().append('path')
+      .attr('class','country')
+      .attr('d', path)
+      .attr('stroke', 'rgba(255,255,255,.07)').attr('stroke-width', .4)
       .attr('fill', d => {
-        const alpha3 = numericToAlpha3[d.id];
-        const c = countryByIso[alpha3];
+        const c = countryByIso[numericIso[d.id]];
         return c ? colorScale(c.avg_auto) : '#1C2235';
       })
-      .attr('stroke','#0D1220')
-      .attr('stroke-width','0.5')
-      .style('cursor', d => countryByIso[numericToAlpha3[d.id]] ? 'pointer' : 'default')
+      .style('cursor', d => countryByIso[numericIso[d.id]] ? 'pointer' : 'default')
       .on('mousemove', function(event, d) {
-        const alpha3 = numericToAlpha3[d.id];
-        const c = countryByIso[alpha3];
-        if (!c) { tt.style.opacity='0'; return; }
-        const [mx, my] = [event.clientX, event.clientY];
-        tt.style.opacity = '1';
-        tt.style.left = (mx + 14) + 'px';
-        tt.style.top  = (my - 10) + 'px';
-        tt.innerHTML = `<h4>${c.name}</h4>
-          <div class="tt-row"><span class="tt-label">Automation risk</span><span>${pctf(c.avg_auto)}</span></div>
-          <div class="tt-row"><span class="tt-label">Reskilling potential</span><span>${pctf(c.avg_resk)}</span></div>
-          <div class="tt-row"><span class="tt-label">AI adoption index</span><span>${(c.ai*100).toFixed(0)}/100</span></div>
-          <div class="tt-row"><span class="tt-label">Employment growth</span><span>${c.growth>=0?'+':''}${(c.growth*100).toFixed(1)}%</span></div>`;
-        d3.select(this).attr('fill', d3.color(colorScale(c.avg_auto)).brighter(0.5));
+        const c = countryByIso[numericIso[d.id]];
+        if (!c || !tt) return;
+        const riskCol = rc(c.avg_auto);
+        tt.innerHTML = `
+          <div class="map-tt-flag">${getFlag(c.name, c)}</div>
+          <div class="map-tt-name">${c.name}</div>
+          <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
+          <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto*100}%;background:${riskCol}"></div></div>
+          <div class="map-tt-row"><span class="map-tt-label">Reskilling potential</span><span class="map-tt-val" style="color:#7EC09A">${pctf(c.avg_resk)}</span></div>
+          <div class="map-tt-row"><span class="map-tt-label">AI adoption index</span><span class="map-tt-val">${(c.ai*100).toFixed(0)}/100</span></div>
+          <div class="map-tt-row"><span class="map-tt-label">Employment growth</span><span class="map-tt-val" style="color:${c.growth>=0?'#7EC09A':'#F5876A'}">${c.growth>=0?'+':''}${(c.growth*100).toFixed(1)}%</span></div>
+          <a href="index-deep.html?country=${encodeURIComponent(c.name)}" class="map-tt-cta">See profession breakdown →</a>`;
+        tt.style.left = (event.clientX + 16) + 'px';
+        tt.style.top  = (event.clientY - 10) + 'px';
+        tt.classList.add('visible');
+        d3.select(this).attr('fill', d3.color(colorScale(c.avg_auto)).brighter(0.55));
       })
       .on('mouseleave', function(event, d) {
-        tt.style.opacity = '0';
-        const c = countryByIso[numericToAlpha3[d.id]];
+        if (tt) tt.classList.remove('visible');
+        const c = countryByIso[numericIso[d.id]];
         d3.select(this).attr('fill', c ? colorScale(c.avg_auto) : '#1C2235');
       })
       .on('click', (event, d) => {
-        const c = countryByIso[numericToAlpha3[d.id]];
+        const c = countryByIso[numericIso[d.id]];
         if (c) window.location = 'index-deep.html?country=' + encodeURIComponent(c.name);
       });
   }).catch(err => console.warn('Map failed:', err));
 }
 
-function buildNumericMap(){
-  // ISO 3166-1 numeric to alpha-3 for our 10 countries
-  return {
-    '036':'AUS','076':'BRA','124':'CAN','156':'CHN',
-    '250':'FRA','276':'DEU','356':'IND','392':'JPN',
-    '826':'GBR','840':'USA'
-  };
-}
-
-// Country cards
-const sorted = Object.entries(COUNTRY_META).sort((a,b)=>b[1].avg_auto-a[1].avg_auto);
-document.getElementById('ccards').innerHTML = sorted.map(([name,d])=>{
-  const lv=rl(d.avg_auto),col=rc(d.avg_auto);
-  const growth = d.growth>=0?`+${(d.growth*100).toFixed(1)}%`:`${(d.growth*100).toFixed(1)}%`;
-  const growthColor = d.growth>=0?'var(--sage)':'var(--red)';
-  return`<a class="ccard" href="index-deep.html?country=${encodeURIComponent(name)}">
+// ── COUNTRY CARDS ─────────────────────────────────────────────────────────────
+const sorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].avg_auto - a[1].avg_auto);
+document.getElementById('ccards').innerHTML = sorted.map(([name, d]) => {
+  const lv = rl(d.avg_auto), col = rc(d.avg_auto);
+  const flag = getFlag(name, d);
+  const growth = d.growth >= 0 ? `+${(d.growth*100).toFixed(1)}%` : `${(d.growth*100).toFixed(1)}%`;
+  const growthColor = d.growth >= 0 ? '#7EC09A' : '#F5876A';
+  return `<a class="ccard" href="index-deep.html?country=${encodeURIComponent(name)}">
     <div class="cc-head">
-      <div class="cc-flag">${d.flag}</div>
+      <div class="cc-flag">${flag}</div>
       <div><div class="cc-name">${name}</div><div class="cc-sub"><span class="badge ${lv}">${rlabel(d.avg_auto)}</span></div></div>
     </div>
     <div class="cc-scores">
-      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Automation Risk (avg)</span><span class="cc-val" style="color:${col}">${pct(d.avg_auto)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_auto)}%;background:${col}"></div></div></div>
-      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Reskilling Potential</span><span class="cc-val" style="color:var(--sage)">${pct(d.avg_resk)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_resk)}%;background:var(--sage)"></div></div></div>
+      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Automation Risk</span><span class="cc-val" style="color:${col}">${pct(d.avg_auto)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_auto)}%;background:${col}"></div></div></div>
+      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Reskilling Potential</span><span class="cc-val" style="color:#7EC09A">${pct(d.avg_resk)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_resk)}%;background:#7EC09A"></div></div></div>
     </div>
     <div class="cc-meta">
-      <div class="cc-meta-item"><strong style="color:var(--sage)">${(d.ai*100).toFixed(0)}/100</strong>AI Adoption Index</div>
+      <div class="cc-meta-item"><strong style="color:#7EC09A">${(d.ai*100).toFixed(0)}/100</strong>AI Adoption</div>
       <div class="cc-meta-item"><strong style="color:${growthColor}">${growth}</strong>Employment Growth</div>
     </div>
   </a>`;
 }).join('');
 
-// AI adoption bars
-const aiSorted = Object.entries(COUNTRY_META).sort((a,b)=>b[1].ai-a[1].ai);
-document.getElementById('ai-bars').innerHTML = aiSorted.map(([name,d])=>{
-  const w = d.ai*100;
-  const col = d.ai>=.85?'#3D6B4F':d.ai>=.75?'#D4841A':'#8A8880';
-  return`<div class="ai-row">
-    <div class="ai-flag">${d.flag}</div>
+// ── AI ADOPTION BARS ──────────────────────────────────────────────────────────
+const aiSorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].ai - a[1].ai);
+document.getElementById('ai-bars').innerHTML = aiSorted.map(([name, d]) => {
+  const w   = d.ai * 100;
+  const col = d.ai >= .85 ? '#7EC09A' : d.ai >= .70 ? '#F5C87A' : '#9CA3AF';
+  const flag = getFlag(name, d);
+  return `<div class="ai-row">
+    <div class="ai-flag">${flag}</div>
     <div class="ai-name">${name}</div>
     <div class="ai-track"><div class="ai-fill" style="width:${w}%;background:${col}"><span>${w.toFixed(0)}/100</span></div></div>
-    <div class="ai-val">${w.toFixed(0)}</div>
+    <div class="ai-val" style="color:${col}">${w.toFixed(0)}</div>
   </div>`;
 }).join('');
 
+// ── INIT MAP ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  requestAnimationFrame(() => setTimeout(() => {
-    const mapEl = document.getElementById('world-map');
-    if (mapEl && typeof d3 !== 'undefined') initMap();
-  }, 150));
+  requestAnimationFrame(() => setTimeout(initMap, 150));
 });
 </script>
 </body>
