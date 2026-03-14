@@ -264,7 +264,7 @@
     .map-dash-badges { display: flex; gap: 8px; flex-wrap: wrap; }
     .mdb { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; }
     .mdb-source { background: var(--mist); color: var(--text-dim); border: 1px solid rgba(255,255,255,.08); }
-    .map-dash-body { display: grid; grid-template-columns: 1fr 320px; min-height: 480px; }
+    .map-dash-body { display: grid; grid-template-columns: 1fr 300px; min-height: 520px; }
     .map-area {
       position: relative; border-right: 1px solid var(--mist);
       background: radial-gradient(ellipse at center, #1A2030 0%, var(--surface2) 100%);
@@ -310,10 +310,17 @@
     .legend-ramp { width: 80px; height: 8px; border-radius: 100px; background: linear-gradient(to right,#4A8B62,#E8922A,#D94F3D); }
 
     /* Sidebar */
-    .map-sidebar { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    .map-sidebar { padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; height: 520px; }
     .sidebar-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--paper); margin-bottom: 4px; }
     .sidebar-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 12px; }
-    .country-rank-list { display: flex; flex-direction: column; gap: 6px; }
+    .country-rank-list {
+      display: flex; flex-direction: column; gap: 4px;
+      overflow-y: auto; flex: 1;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent;
+    }
+    .country-rank-list::-webkit-scrollbar { width: 4px; }
+    .country-rank-list::-webkit-scrollbar-track { background: transparent; }
+    .country-rank-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 100px; }
     .cr-item {
       display: grid; grid-template-columns: 24px 28px 1fr 44px;
       align-items: center; gap: 8px;
@@ -514,7 +521,57 @@
 
     /* ── RESPONSIVE ── */
 
+    /* ── HERO CARD CAROUSEL ── */
+    .hero-card-wrap { position: relative; }
+    .hrc-carousel-wrap {
+      position: relative; overflow: hidden; border-radius: 24px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
+      touch-action: pan-y;
+    }
+    .hrc-carousel {
+      display: flex; transition: transform .45s cubic-bezier(.22,1,.36,1);
+      will-change: transform;
+    }
+    .hrc-slide {
+      flex: 0 0 100%; min-width: 0;
+      background: var(--surface2);
+      border-radius: 24px;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+    /* Dot indicators */
+    .hrc-dots {
+      display: flex; justify-content: center; gap: 6px;
+      margin-top: 14px;
+    }
+    .hrc-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,.2); cursor: pointer;
+      transition: all .2s;
+    }
+    .hrc-dot.active { background: var(--sage-lt); width: 20px; border-radius: 3px; }
+    /* Swipe hint — fades after first swipe */
+    .hrc-swipe-hint {
+      text-align: center; font-size: 11px; color: rgba(255,255,255,.2);
+      margin-top: 6px; letter-spacing: 1px; transition: opacity .5s;
+    }
+    .hrc-swipe-hint.hidden { opacity: 0; pointer-events: none; }
+    /* Prev/next nav arrows */
+    .hrc-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 14px; color: var(--text-dim);
+      transition: all .2s; z-index: 10; user-select: none;
+    }
+    .hrc-nav:hover { background: rgba(255,255,255,.15); color: var(--paper); }
+    .hrc-nav-prev { left: -16px; }
+    .hrc-nav-next { right: -16px; }
+    @media(max-width:900px){ .hrc-nav { display: none; } }
+
     /* ── HERO RISK CARD ── */
+
     .hero-card-wrap { position: relative; }
     .hero-risk-card {
       background: var(--surface2);
@@ -665,44 +722,19 @@
       </div>
     </div>
 
-    <!-- Hero risk card -->
+    <!-- Hero risk card — swipeable carousel -->
     <div class="hero-card-wrap">
-      <div class="hero-risk-card" id="hero-card">
-        <div class="hrc-header">
-          <div class="hrc-pulse"></div>
-          <span class="hrc-live">LIVE RISK SNAPSHOT</span>
-          <span class="hrc-rotate" onclick="rotateCard()">↻</span>
+      <div class="hrc-carousel-wrap">
+        <div class="hrc-carousel" id="hrc-carousel">
+          <!-- Cards injected by JS -->
         </div>
-        <div class="hrc-prof" id="hrc-prof">Radiologist</div>
-        <div class="hrc-sector" id="hrc-sector">Healthcare · 🇬🇧 United Kingdom</div>
-        <div class="hrc-scores" id="hrc-scores">
-          <div class="hrc-row">
-            <div class="hrc-lbl">Automation Risk</div>
-            <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:6%;background:#7EC09A"></div></div>
-            <div class="hrc-val" style="color:#7EC09A">6%</div>
-          </div>
-          <div class="hrc-row">
-            <div class="hrc-lbl">Reskilling Potential</div>
-            <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:56%;background:#F5C87A"></div></div>
-            <div class="hrc-val" style="color:#F5C87A">56%</div>
-          </div>
-          <div class="hrc-row">
-            <div class="hrc-lbl">AI Adoption (Country)</div>
-            <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:88%;background:#7EC09A"></div></div>
-            <div class="hrc-val" style="color:#7EC09A">88/100</div>
-          </div>
-        </div>
-        <div class="hrc-quadrant" id="hrc-quad" style="background:rgba(74,139,98,.15);border:1px solid rgba(74,139,98,.3)">
-          <span style="color:#7EC09A;font-weight:700;font-size:11px">STABLE</span>
-          <span style="color:rgba(245,242,236,.5);font-size:11px"> · Low automation · High reskilling capacity</span>
-        </div>
-        <div class="hrc-footer">
-          <a href="quiz.html" class="hrc-cta">Get my full brief →</a>
-          <a href="index-professions.html" class="hrc-explore">Explore 185 professions</a>
-        </div>
+        <!-- Dot indicators -->
+        <div class="hrc-dots" id="hrc-dots"></div>
+        <!-- Swipe hint -->
+        <div class="hrc-swipe-hint" id="hrc-swipe-hint">← swipe →</div>
       </div>
-      <div class="hrc-floating hrc-f1">🔴 Call Centre Agent · 96% risk</div>
-      <div class="hrc-floating hrc-f2">🟢 Psychiatrist · 0.2% risk</div>
+      <div class="hrc-floating hrc-f1" id="hrc-f1">🔴 Call Centre Agent · 96% risk</div>
+      <div class="hrc-floating hrc-f2" id="hrc-f2">🟢 Psychiatrist · 0.2% risk</div>
     </div>
   </div>
 </section>
@@ -963,9 +995,29 @@ const iso3={
   'United Kingdom':'GBR','United States':'USA'
 };
 const numericIso={
-  '036':'AUS','076':'BRA','124':'CAN','156':'CHN',
-  '250':'FRA','276':'DEU','356':'IND','392':'JPN',
-  '826':'GBR','840':'USA'
+  '004':'AFG','008':'ALB','012':'DZA','024':'AGO','032':'ARG','036':'AUS','040':'AUT',
+  '050':'BGD','056':'BEL','064':'BTN','068':'BOL','076':'BRA','100':'BGR','116':'KHM',
+  '124':'CAN','144':'LKA','152':'CHL','156':'CHN','170':'COL','191':'HRV','203':'CZE',
+  '208':'DNK','218':'ECU','818':'EGY','222':'SLV','231':'ETH','246':'FIN','250':'FRA',
+  '276':'DEU','288':'GHA','300':'GRC','320':'GTM','332':'HTI','348':'HUN','356':'IND',
+  '360':'IDN','364':'IRN','368':'IRQ','372':'IRL','376':'ISR','380':'ITA','388':'JAM',
+  '392':'JPN','400':'JOR','404':'KEN','410':'KOR','414':'KWT','422':'LBN','504':'MAR',
+  '484':'MEX','104':'MMR','524':'NPL','528':'NLD','554':'NZL','566':'NGA','578':'NOR',
+  '586':'PAK','604':'PER','608':'PHL','616':'POL','620':'PRT','630':'PRI','642':'ROU',
+  '643':'RUS','682':'SAU','686':'SEN','703':'SVK','705':'SVN','710':'ZAF','724':'ESP',
+  '752':'SWE','756':'CHE','158':'TWN','834':'TZA','764':'THA','788':'TUN','792':'TUR',
+  '800':'UGA','804':'UKR','784':'ARE','826':'GBR','840':'USA','858':'URY','862':'VEN',
+  '704':'VNM','894':'ZMB','716':'ZWE','630':'PRI','144':'LKA','051':'ARM','031':'AZE',
+  '112':'BLR','070':'BIH','398':'KAZ','417':'KGZ','440':'LTU','428':'LVA','498':'MDA',
+  '807':'MKD','496':'MNG','688':'SRB','762':'TJK','795':'TKM','860':'UZB','008':'ALB',
+  '020':'AND','470':'MLT','492':'MCO','674':'SMR','336':'VAT','372':'IRL','442':'LUX',
+  '703':'SVK','705':'SVN','191':'HRV','070':'BIH','499':'MNE','688':'SRB','807':'MKD',
+  '008':'ALB','624':'GNB','384':'CIV','288':'GHA','466':'MLI','562':'NER','686':'SEN',
+  '768':'TGO','204':'BEN','854':'BFA','818':'EGY','504':'MAR','434':'LBY','788':'TUN',
+  '012':'DZA','729':'SDN','706':'SOM','231':'ETH','404':'KEN','800':'UGA','646':'RWA',
+  '108':'BDI','834':'TZA','508':'MOZ','454':'MWI','894':'ZMB','716':'ZWE','710':'ZAF',
+  '426':'LSO','748':'SWZ','516':'NAM','072':'BWA','450':'MDG','480':'MUS','174':'COM',
+  '690':'SYC','646':'RWA','562':'NER','204':'BEN','768':'TGO','466':'MLI','854':'BFA',
 };
 const metaByIso={};
 Object.entries(COUNTRY_META).forEach(([n,d])=>{metaByIso[d.iso]={name:n,...d};});
@@ -1064,20 +1116,157 @@ function drawMap(svgEl, height, interactive) {
   }).catch(err => console.warn('Map load failed:', err));
 }
 
-// Rank list in sidebar
-const sorted=Object.entries(COUNTRY_META).sort((a,b)=>b[1].avg_auto-a[1].avg_auto);
-document.getElementById('rank-list').innerHTML=sorted.map(([name,d],i)=>{
-  const col=rc(d.avg_auto);
-  return`<a class="cr-item" href="index-countries.html">
-    <div class="cr-rank">${i+1}</div>
-    <div class="cr-flag">${d.flag||'🌍'}</div>
-    <div class="cr-info"><div class="cr-name">${name}</div><div class="cr-sub">AI: ${(d.ai*100).toFixed(0)}/100</div></div>
-    <div class="cr-score" style="color:${col}">${Math.round(d.avg_auto*100)}%</div>
-  </a>`;
-}).join('');
+// ── SIDEBAR RANK LIST — all countries from data.js ──────────────────────────
+(function buildRankList() {
+  const sorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].avg_auto - a[1].avg_auto);
+  const col = s => s >= .35 ? '#F5876A' : s >= .25 ? '#F5C87A' : '#7EC09A';
+  document.getElementById('rank-list').innerHTML = sorted.map(([name, d], i) => {
+    const flag = d.flag || '🌍';
+    const score = Math.round(d.avg_auto * 100);
+    const scoreCol = col(d.avg_auto);
+    return `<a class="cr-item" href="index-countries.html">
+      <div class="cr-rank">${i + 1}</div>
+      <div class="cr-flag">${flag}</div>
+      <div class="cr-info">
+        <div class="cr-name">${name}</div>
+        <div class="cr-sub">AI: ${Math.round(d.ai * 100)}/100</div>
+      </div>
+      <div class="cr-score" style="color:${scoreCol}">${score}%</div>
+    </a>`;
+  }).join('');
+})();
 
-// Init map after layout paint
+// ── HERO CARD CAROUSEL ────────────────────────────────────────────────────────
+const HERO_CARDS = [
+  { prof:'Radiologist',       sector:'Healthcare · 🇬🇧 UK',          auto:6,  resk:56, ai:88, quad:'STABLE',       qcol:'sage',  qdesc:'Low automation · High reskilling capacity' },
+  { prof:'Accountant',        sector:'Finance · 🇺🇸 United States',   auto:91, resk:32, ai:95, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Act now with upskilling' },
+  { prof:'Software Developer',sector:'Technology · 🇩🇪 Germany',      auto:4,  resk:52, ai:85, quad:'STABLE',       qcol:'sage',  qdesc:'Protected role · AI amplifies your output' },
+  { prof:'Call Centre Agent', sector:'Services · 🇨🇳 China',          auto:87, resk:24, ai:82, quad:'HIGH EXPOSURE', qcol:'amber', qdesc:'Strong pressure · Career pivot recommended' },
+  { prof:'Data Scientist',    sector:'Technology · 🇨🇦 Canada',       auto:3,  resk:64, ai:87, quad:'STABLE',       qcol:'sage',  qdesc:'Safest tech role · AI supercharges this job' },
+  { prof:'Bookkeeping Clerk', sector:'Administration · 🇬🇧 UK',       auto:84, resk:31, ai:88, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Pivot or reskill urgently' },
+];
+
+const qcols = {
+  sage:  { bg:'rgba(74,139,98,.15)',  border:'rgba(74,139,98,.3)',   text:'#7EC09A' },
+  red:   { bg:'rgba(217,79,61,.15)',  border:'rgba(217,79,61,.3)',   text:'#F5876A' },
+  amber: { bg:'rgba(232,146,42,.15)', border:'rgba(232,146,42,.3)',  text:'#F5C87A' },
+};
+const autoCol = a => a >= 65 ? '#F5876A' : a >= 35 ? '#F5C87A' : '#7EC09A';
+
+function buildCarousel() {
+  const track  = document.getElementById('hrc-carousel');
+  const dots   = document.getElementById('hrc-dots');
+  if (!track || !dots) return;
+
+  // Build slides
+  track.innerHTML = HERO_CARDS.map((d, i) => {
+    const ac = autoCol(d.auto);
+    const qc = qcols[d.qcol];
+    return `<div class="hrc-slide" data-idx="${i}">
+      <div class="hrc-header">
+        <div class="hrc-pulse"></div>
+        <span class="hrc-live">LIVE RISK SNAPSHOT</span>
+        <span style="font-size:11px;color:rgba(245,242,236,.3)">${i+1}/${HERO_CARDS.length}</span>
+      </div>
+      <div class="hrc-prof">${d.prof}</div>
+      <div class="hrc-sector">${d.sector}</div>
+      <div class="hrc-scores">
+        <div class="hrc-row">
+          <div class="hrc-lbl">Automation Risk</div>
+          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.auto}%;background:${ac}"></div></div>
+          <div class="hrc-val" style="color:${ac}">${d.auto}%</div>
+        </div>
+        <div class="hrc-row">
+          <div class="hrc-lbl">Reskilling Potential</div>
+          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.resk}%;background:#F5C87A"></div></div>
+          <div class="hrc-val" style="color:#F5C87A">${d.resk}%</div>
+        </div>
+        <div class="hrc-row">
+          <div class="hrc-lbl">AI Adoption (Country)</div>
+          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.ai}%;background:#7EC09A"></div></div>
+          <div class="hrc-val" style="color:#7EC09A">${d.ai}/100</div>
+        </div>
+      </div>
+      <div class="hrc-quadrant" style="background:${qc.bg};border:1px solid ${qc.border}">
+        <span style="color:${qc.text};font-weight:700;font-size:11px">${d.quad}</span>
+        <span style="color:rgba(245,242,236,.5);font-size:11px"> · ${d.qdesc}</span>
+      </div>
+      <div class="hrc-footer">
+        <a href="quiz.html" class="hrc-cta">Get my full brief →</a>
+        <a href="index-professions.html" class="hrc-explore">Explore ${HERO_CARDS.length} professions</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Dots
+  dots.innerHTML = HERO_CARDS.map((_, i) =>
+    `<div class="hrc-dot${i===0?' active':''}" onclick="goToSlide(${i})"></div>`
+  ).join('');
+
+  // Inject prev/next arrows into the wrap
+  const wrap = track.parentElement;
+  wrap.insertAdjacentHTML('beforeend',
+    '<button class="hrc-nav hrc-nav-prev" onclick="prevSlide()">‹</button>' +
+    '<button class="hrc-nav hrc-nav-next" onclick="nextSlide()">›</button>'
+  );
+}
+
+let currentSlide = 0;
+let autoSlideTimer;
+let touchStartX = 0;
+let hintHidden = false;
+
+function goToSlide(n) {
+  currentSlide = ((n % HERO_CARDS.length) + HERO_CARDS.length) % HERO_CARDS.length;
+  const track = document.getElementById('hrc-carousel');
+  if (track) track.style.transform = `translateX(-${currentSlide * 100}%)`;
+  // Update dots
+  document.querySelectorAll('.hrc-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === currentSlide)
+  );
+  // Hide swipe hint after first manual interaction
+  if (!hintHidden) {
+    const hint = document.getElementById('hrc-swipe-hint');
+    if (hint) { hint.classList.add('hidden'); hintHidden = true; }
+  }
+  resetAutoSlide();
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+function resetAutoSlide() {
+  clearInterval(autoSlideTimer);
+  autoSlideTimer = setInterval(() => goToSlide(currentSlide + 1), 5000);
+}
+
+function initCarousel() {
+  buildCarousel();
+  const track = document.getElementById('hrc-carousel');
+  if (!track) return;
+
+  // Touch/swipe support
+  const wrap = track.parentElement;
+  wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
+  });
+  // Mouse drag
+  let mouseDown = false, mouseStartX = 0;
+  wrap.addEventListener('mousedown', e => { mouseDown = true; mouseStartX = e.clientX; });
+  wrap.addEventListener('mouseup', e => {
+    if (!mouseDown) return; mouseDown = false;
+    const dx = e.clientX - mouseStartX;
+    if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
+  });
+
+  resetAutoSlide();
+}
+
+// Single DOMContentLoaded — init everything
 document.addEventListener('DOMContentLoaded', () => {
+  initCarousel();
   requestAnimationFrame(() => {
     setTimeout(() => {
       const mainMap = document.getElementById('world-map');
