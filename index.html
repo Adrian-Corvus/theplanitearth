@@ -535,8 +535,8 @@
     .hrc-slide {
       flex: 0 0 100%; min-width: 0;
       background: var(--surface2);
-      border-radius: 24px;
-      padding: 28px 32px;
+      border-radius: 20px;
+      padding: 20px 24px 16px;
       box-sizing: border-box;
     }
     /* Dot indicators */
@@ -573,52 +573,56 @@
     /* ── HERO RISK CARD ── */
 
     .hero-card-wrap { position: relative; }
-    .hero-risk-card {
-      background: var(--surface2);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 24px; padding: 28px 32px;
-      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
-      animation: float 5s ease-in-out infinite;
-    }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    /* compact card internals */
     .hrc-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
     }
     .hrc-pulse {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--sage-lt); animation: pulse 2s infinite;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--sage-lt); flex-shrink: 0; animation: pulse 2s infinite;
     }
     .hrc-live {
-      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
       color: var(--text-dim); text-transform: uppercase; flex: 1;
     }
-    .hrc-rotate {
-      font-size: 16px; color: var(--text-dim); cursor: pointer;
-      transition: transform .3s; user-select: none;
+    /* prof + sector + big score in one row */
+    .hrc-top-row {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px; margin-bottom: 4px;
     }
-    .hrc-rotate:hover { color: var(--paper); transform: rotate(180deg); }
     .hrc-prof {
-      font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800;
-      color: var(--paper); margin-bottom: 6px; transition: all .4s;
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
+      color: var(--paper); line-height: 1.1;
     }
-    .hrc-sector { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; transition: all .4s; }
-    .hrc-scores { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
-    .hrc-row { display: flex; align-items: center; gap: 10px; }
-    .hrc-lbl { font-size: 11px; color: var(--text-dim); font-weight: 500; width: 140px; flex-shrink: 0; }
-    .hrc-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,.08); border-radius: 100px; overflow: hidden; }
+    .hrc-big-score {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      line-height: 1; flex-shrink: 0; text-align: right;
+    }
+    .hrc-big-label { font-size: 9px; color: var(--text-dim); text-align: right; letter-spacing: .5px; }
+    .hrc-sector { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+    /* two mini bars side by side */
+    .hrc-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 10px; }
+    .hrc-row { display: flex; flex-direction: column; gap: 4px; }
+    .hrc-lbl { font-size: 9px; color: var(--text-dim); font-weight: 600; letter-spacing: .3px; text-transform: uppercase; }
+    .hrc-bar-wrap { height: 4px; background: rgba(255,255,255,.08); border-radius: 100px; overflow: hidden; }
     .hrc-bar { height: 100%; border-radius: 100px; transition: width .6s cubic-bezier(.22,1,.36,1); }
-    .hrc-val { font-size: 12px; font-weight: 700; width: 52px; text-align: right; }
-    .hrc-quadrant { border-radius: 10px; padding: 10px 14px; margin-bottom: 20px; transition: all .4s; }
-    .hrc-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .hrc-val { font-size: 11px; font-weight: 700; }
+    /* inline quadrant tag */
+    .hrc-quadrant {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 7px; padding: 5px 10px; margin-bottom: 12px;
+      font-size: 10px;
+    }
+    .hrc-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .hrc-cta {
-      display: inline-flex; align-items: center;
-      background: var(--sage); color: white; padding: 10px 20px;
-      border-radius: 100px; font-size: 13px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--sage); color: white; padding: 8px 16px;
+      border-radius: 100px; font-size: 12px; font-weight: 600;
       text-decoration: none; transition: all .2s;
-      box-shadow: 0 4px 16px rgba(74,139,98,.3);
+      box-shadow: 0 4px 12px rgba(74,139,98,.25);
     }
     .hrc-cta:hover { background: #3D7A53; transform: translateY(-1px); }
-    .hrc-explore { font-size: 12px; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+    .hrc-explore { font-size: 11px; color: var(--text-dim); text-decoration: none; transition: color .2s; }
     .hrc-explore:hover { color: var(--paper); }
     .hrc-floating {
       position: absolute; background: var(--surface);
@@ -1090,7 +1094,7 @@ function drawMap(svgEl, height, interactive) {
           if (!c) { tt.classList.remove('visible'); return; }
           const riskCol = rc(c.avg_auto);
           tt.innerHTML = `
-            <div class="map-tt-flag">${c.flag || '🌍'}</div>
+            <div class="map-tt-flag">${FLAG_BY_NAME[c.name] || c.flag || '🌍'}</div>
             <div class="map-tt-name">${c.name}</div>
             <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
             <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto * 100}%;background:${riskCol}"></div></div>
@@ -1116,12 +1120,44 @@ function drawMap(svgEl, height, interactive) {
   }).catch(err => console.warn('Map load failed:', err));
 }
 
+// Comprehensive flag lookup by country name for sidebar
+const FLAG_BY_NAME = {
+  'Afghanistan':'🇦🇫','Albania':'🇦🇱','Algeria':'🇩🇿','Angola':'🇦🇴','Argentina':'🇦🇷',
+  'Armenia':'🇦🇲','Australia':'🇦🇺','Austria':'🇦🇹','Azerbaijan':'🇦🇿','Bangladesh':'🇧🇩',
+  'Belarus':'🇧🇾','Belgium':'🇧🇪','Bolivia':'🇧🇴','Bosnia and Herzegovina':'🇧🇦',
+  'Botswana':'🇧🇼','Brazil':'🇧🇷','Bulgaria':'🇧🇬','Burkina Faso':'🇧🇫','Burundi':'🇧🇮',
+  'Cambodia':'🇰🇭','Cameroon':'🇨🇲','Canada':'🇨🇦','Chile':'🇨🇱','China':'🇨🇳',
+  'Colombia':'🇨🇴','Congo':'🇨🇬','Costa Rica':'🇨🇷','Croatia':'🇭🇷','Czech Republic':'🇨🇿',
+  'Denmark':'🇩🇰','Dominican Republic':'🇩🇴','Ecuador':'🇪🇨','Egypt':'🇪🇬',
+  'El Salvador':'🇸🇻','Estonia':'🇪🇪','Ethiopia':'🇪🇹','Finland':'🇫🇮','France':'🇫🇷',
+  'Georgia':'🇬🇪','Germany':'🇩🇪','Ghana':'🇬🇭','Greece':'🇬🇷','Guatemala':'🇬🇹',
+  'Honduras':'🇭🇳','Hungary':'🇭🇺','India':'🇮🇳','Indonesia':'🇮🇩','Iran':'🇮🇷',
+  'Iraq':'🇮🇶','Ireland':'🇮🇪','Israel':'🇮🇱','Italy':'🇮🇹','Jamaica':'🇯🇲',
+  'Japan':'🇯🇵','Jordan':'🇯🇴','Kazakhstan':'🇰🇿','Kenya':'🇰🇪','Kosovo':'🇽🇰',
+  'Kuwait':'🇰🇼','Kyrgyzstan':'🇰🇬','Latvia':'🇱🇻','Lebanon':'🇱🇧','Lithuania':'🇱🇹',
+  'Luxembourg':'🇱🇺','Madagascar':'🇲🇬','Malawi':'🇲🇼','Malaysia':'🇲🇾','Mali':'🇲🇱',
+  'Malta':'🇲🇹','Mauritius':'🇲🇺','Mexico':'🇲🇽','Moldova':'🇲🇩','Mongolia':'🇲🇳',
+  'Montenegro':'🇲🇪','Morocco':'🇲🇦','Mozambique':'🇲🇿','Myanmar':'🇲🇲','Namibia':'🇳🇦',
+  'Nepal':'🇳🇵','Netherlands':'🇳🇱','New Zealand':'🇳🇿','Nicaragua':'🇳🇮','Niger':'🇳🇪',
+  'Nigeria':'🇳🇬','North Macedonia':'🇲🇰','Norway':'🇳🇴','Pakistan':'🇵🇰','Panama':'🇵🇦',
+  'Paraguay':'🇵🇾','Peru':'🇵🇪','Philippines':'🇵🇭','Poland':'🇵🇱','Portugal':'🇵🇹',
+  'Romania':'🇷🇴','Russia':'🇷🇺','Rwanda':'🇷🇼','Saudi Arabia':'🇸🇦','Senegal':'🇸🇳',
+  'Serbia':'🇷🇸','Singapore':'🇸🇬','Slovakia':'🇸🇰','Slovenia':'🇸🇮','Somalia':'🇸🇴',
+  'South Africa':'🇿🇦','South Korea':'🇰🇷','Spain':'🇪🇸','Sri Lanka':'🇱🇰','Sudan':'🇸🇩',
+  'Swaziland':'🇸🇿','Eswatini':'🇸🇿','Sweden':'🇸🇪','Switzerland':'🇨🇭','Taiwan':'🇹🇼',
+  'Tajikistan':'🇹🇯','Tanzania':'🇹🇿','Thailand':'🇹🇭','Togo':'🇹🇬','Tunisia':'🇹🇳',
+  'Turkey':'🇹🇷','Turkmenistan':'🇹🇲','UAE':'🇦🇪','Uganda':'🇺🇬','Ukraine':'🇺🇦',
+  'United Kingdom':'🇬🇧','United States':'🇺🇸','Uruguay':'🇺🇾','Uzbekistan':'🇺🇿',
+  'Venezuela':'🇻🇪','Vietnam':'🇻🇳','Zambia':'🇿🇲','Zimbabwe':'🇿🇼',
+  'Comoros':'🇰🇲','Lesotho':'🇱🇸','Seychelles':'🇸🇨',
+};
+
 // ── SIDEBAR RANK LIST — all countries from data.js ──────────────────────────
 (function buildRankList() {
   const sorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].avg_auto - a[1].avg_auto);
   const col = s => s >= .35 ? '#F5876A' : s >= .25 ? '#F5C87A' : '#7EC09A';
   document.getElementById('rank-list').innerHTML = sorted.map(([name, d], i) => {
-    const flag = d.flag || '🌍';
+    const flag = FLAG_BY_NAME[name] || d.flag || '🌍';
     const score = Math.round(d.avg_auto * 100);
     const scoreCol = col(d.avg_auto);
     return `<a class="cr-item" href="index-countries.html">
@@ -1138,12 +1174,12 @@ function drawMap(svgEl, height, interactive) {
 
 // ── HERO CARD CAROUSEL ────────────────────────────────────────────────────────
 const HERO_CARDS = [
-  { prof:'Radiologist',       sector:'Healthcare · 🇬🇧 UK',          auto:6,  resk:56, ai:88, quad:'STABLE',       qcol:'sage',  qdesc:'Low automation · High reskilling capacity' },
-  { prof:'Accountant',        sector:'Finance · 🇺🇸 United States',   auto:91, resk:32, ai:95, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Act now with upskilling' },
-  { prof:'Software Developer',sector:'Technology · 🇩🇪 Germany',      auto:4,  resk:52, ai:85, quad:'STABLE',       qcol:'sage',  qdesc:'Protected role · AI amplifies your output' },
-  { prof:'Call Centre Agent', sector:'Services · 🇨🇳 China',          auto:87, resk:24, ai:82, quad:'HIGH EXPOSURE', qcol:'amber', qdesc:'Strong pressure · Career pivot recommended' },
-  { prof:'Data Scientist',    sector:'Technology · 🇨🇦 Canada',       auto:3,  resk:64, ai:87, quad:'STABLE',       qcol:'sage',  qdesc:'Safest tech role · AI supercharges this job' },
-  { prof:'Bookkeeping Clerk', sector:'Administration · 🇬🇧 UK',       auto:84, resk:31, ai:88, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Pivot or reskill urgently' },
+  { prof:'Radiologist',       sector:'Healthcare · 🇬🇧 United Kingdom', auto:6,  resk:56, ai:88, skill:72, quad:'STABLE',       qcol:'sage',  qdesc:'Low automation · High reskilling capacity' },
+  { prof:'Accountant',        sector:'Finance · 🇺🇸 United States',     auto:91, resk:32, ai:95, skill:45, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Act now with upskilling' },
+  { prof:'Software Developer',sector:'Technology · 🇩🇪 Germany',        auto:4,  resk:52, ai:85, skill:88, quad:'STABLE',       qcol:'sage',  qdesc:'Protected role · AI amplifies your output' },
+  { prof:'Call Centre Agent', sector:'Services · 🇨🇳 China',            auto:87, resk:24, ai:82, skill:38, quad:'HIGH EXPOSURE', qcol:'amber', qdesc:'Strong pressure · Career pivot recommended' },
+  { prof:'Data Scientist',    sector:'Technology · 🇨🇦 Canada',         auto:3,  resk:64, ai:87, skill:91, quad:'STABLE',       qcol:'sage',  qdesc:'Safest tech role · AI supercharges this job' },
+  { prof:'Bookkeeping Clerk', sector:'Administration · 🇬🇧 United Kingdom', auto:84, resk:31, ai:88, skill:41, quad:'DANGER ZONE', qcol:'red', qdesc:'High automation · Pivot or reskill urgently' },
 ];
 
 const qcols = {
@@ -1160,40 +1196,53 @@ function buildCarousel() {
 
   // Build slides
   track.innerHTML = HERO_CARDS.map((d, i) => {
-    const ac = autoCol(d.auto);
-    const qc = qcols[d.qcol];
+    const ac  = autoCol(d.auto);
+    const qc  = qcols[d.qcol];
     return `<div class="hrc-slide" data-idx="${i}">
       <div class="hrc-header">
         <div class="hrc-pulse"></div>
-        <span class="hrc-live">LIVE RISK SNAPSHOT</span>
-        <span style="font-size:11px;color:rgba(245,242,236,.3)">${i+1}/${HERO_CARDS.length}</span>
+        <span class="hrc-live">AI Risk Snapshot</span>
+        <span style="font-size:9px;color:rgba(245,242,236,.25);letter-spacing:.5px">${i+1} / ${HERO_CARDS.length}</span>
       </div>
-      <div class="hrc-prof">${d.prof}</div>
-      <div class="hrc-sector">${d.sector}</div>
+      <div class="hrc-top-row">
+        <div>
+          <div class="hrc-prof">${d.prof}</div>
+          <div class="hrc-sector">${d.sector}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="hrc-big-score" style="color:${ac}">${d.auto}%</div>
+          <div class="hrc-big-label">AUTO RISK</div>
+        </div>
+      </div>
       <div class="hrc-scores">
         <div class="hrc-row">
-          <div class="hrc-lbl">Automation Risk</div>
+          <div class="hrc-lbl">Automation</div>
           <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.auto}%;background:${ac}"></div></div>
           <div class="hrc-val" style="color:${ac}">${d.auto}%</div>
         </div>
         <div class="hrc-row">
-          <div class="hrc-lbl">Reskilling Potential</div>
+          <div class="hrc-lbl">Reskilling</div>
           <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.resk}%;background:#F5C87A"></div></div>
           <div class="hrc-val" style="color:#F5C87A">${d.resk}%</div>
         </div>
         <div class="hrc-row">
-          <div class="hrc-lbl">AI Adoption (Country)</div>
+          <div class="hrc-lbl">AI Adoption</div>
           <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.ai}%;background:#7EC09A"></div></div>
           <div class="hrc-val" style="color:#7EC09A">${d.ai}/100</div>
         </div>
+        <div class="hrc-row">
+          <div class="hrc-lbl">Skill Change</div>
+          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.skill||50}%;background:#A78BFA"></div></div>
+          <div class="hrc-val" style="color:#A78BFA">${d.skill||'—'}%</div>
+        </div>
       </div>
       <div class="hrc-quadrant" style="background:${qc.bg};border:1px solid ${qc.border}">
-        <span style="color:${qc.text};font-weight:700;font-size:11px">${d.quad}</span>
-        <span style="color:rgba(245,242,236,.5);font-size:11px"> · ${d.qdesc}</span>
+        <span style="color:${qc.text};font-weight:700">${d.quad}</span>
+        <span style="color:rgba(245,242,236,.4)"> · ${d.qdesc}</span>
       </div>
       <div class="hrc-footer">
-        <a href="quiz.html" class="hrc-cta">Get my full brief →</a>
-        <a href="index-professions.html" class="hrc-explore">Explore ${HERO_CARDS.length} professions</a>
+        <a href="quiz.html" class="hrc-cta">Get my brief →</a>
+        <a href="index-professions.html" class="hrc-explore">185 professions ↗</a>
       </div>
     </div>`;
   }).join('');
