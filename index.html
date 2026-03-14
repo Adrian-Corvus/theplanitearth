@@ -83,7 +83,7 @@
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh;
+      min-height: auto;
       display: grid;
       grid-template-rows: auto 1fr;
       position: relative;
@@ -110,9 +110,9 @@
 
     .hero-content {
       position: relative; z-index: 10;
-      display: grid; grid-template-columns: 1fr 1.4fr;
-      gap: 48px; align-items: center;
-      padding: 60px 52px 40px;
+      display: grid; grid-template-columns: 1fr minmax(520px, 600px);
+      gap: 20px; align-items: center;
+      padding: 20px 40px 20px;
       max-width: 1400px; margin: 0 auto; width: 100%;
     }
 
@@ -522,120 +522,90 @@
     /* ── RESPONSIVE ── */
 
     /* ── HERO CARD CAROUSEL ── */
-    .hero-card-wrap { position: relative; }
-    .hrc-carousel-wrap {
-      position: relative; overflow: hidden; border-radius: 24px;
-      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
-      touch-action: pan-y;
-    }
-    .hrc-carousel {
-      display: flex; transition: transform .45s cubic-bezier(.22,1,.36,1);
-      will-change: transform;
-    }
-    .hrc-slide {
-      flex: 0 0 100%; min-width: 0;
-      background: var(--surface2);
-      border-radius: 20px;
-      padding: 20px 24px 16px;
-      box-sizing: border-box;
-    }
-    /* Dot indicators */
-    .hrc-dots {
-      display: flex; justify-content: center; gap: 6px;
-      margin-top: 14px;
-    }
-    .hrc-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(255,255,255,.2); cursor: pointer;
-      transition: all .2s;
-    }
-    .hrc-dot.active { background: var(--sage-lt); width: 20px; border-radius: 3px; }
-    /* Swipe hint — fades after first swipe */
-    .hrc-swipe-hint {
-      text-align: center; font-size: 11px; color: rgba(255,255,255,.2);
-      margin-top: 6px; letter-spacing: 1px; transition: opacity .5s;
-    }
-    .hrc-swipe-hint.hidden { opacity: 0; pointer-events: none; }
-    /* Prev/next nav arrows */
-    .hrc-nav {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 32px; height: 32px; border-radius: 50%;
-      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 14px; color: var(--text-dim);
-      transition: all .2s; z-index: 10; user-select: none;
-    }
-    .hrc-nav:hover { background: rgba(255,255,255,.15); color: var(--paper); }
-    .hrc-nav-prev { left: -16px; }
-    .hrc-nav-next { right: -16px; }
-    @media(max-width:900px){ .hrc-nav { display: none; } }
-
-    /* ── HERO RISK CARD ── */
-
-    .hero-card-wrap { position: relative; }
-    /* compact card internals */
-    .hrc-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
-    }
-    .hrc-pulse {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--sage-lt); flex-shrink: 0; animation: pulse 2s infinite;
-    }
-    .hrc-live {
-      font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
-      color: var(--text-dim); text-transform: uppercase; flex: 1;
-    }
-    /* prof + sector + big score in one row */
-    .hrc-top-row {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 12px; margin-bottom: 4px;
-    }
-    .hrc-prof {
-      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
-      color: var(--paper); line-height: 1.1;
-    }
-    .hrc-big-score {
-      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
-      line-height: 1; flex-shrink: 0; text-align: right;
-    }
-    .hrc-big-label { font-size: 9px; color: var(--text-dim); text-align: right; letter-spacing: .5px; }
-    .hrc-sector { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
-    /* two mini bars side by side */
-    .hrc-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 10px; }
-    .hrc-row { display: flex; flex-direction: column; gap: 4px; }
-    .hrc-lbl { font-size: 9px; color: var(--text-dim); font-weight: 600; letter-spacing: .3px; text-transform: uppercase; }
-    .hrc-bar-wrap { height: 4px; background: rgba(255,255,255,.08); border-radius: 100px; overflow: hidden; }
-    .hrc-bar { height: 100%; border-radius: 100px; transition: width .6s cubic-bezier(.22,1,.36,1); }
-    .hrc-val { font-size: 11px; font-weight: 700; }
-    /* inline quadrant tag */
-    .hrc-quadrant {
-      display: inline-flex; align-items: center; gap: 6px;
-      border-radius: 7px; padding: 5px 10px; margin-bottom: 12px;
-      font-size: 10px;
-    }
-    .hrc-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .hrc-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--sage); color: white; padding: 8px 16px;
-      border-radius: 100px; font-size: 12px; font-weight: 600;
-      text-decoration: none; transition: all .2s;
-      box-shadow: 0 4px 12px rgba(74,139,98,.25);
-    }
-    .hrc-cta:hover { background: #3D7A53; transform: translateY(-1px); }
-    .hrc-explore { font-size: 11px; color: var(--text-dim); text-decoration: none; transition: color .2s; }
-    .hrc-explore:hover { color: var(--paper); }
-    .hrc-floating {
-      position: absolute; background: var(--surface);
+    /* ── HERO RISK CARD (single card, fade transition) ── */
+    .hero-card-wrap { position: relative; padding: 24px 0 0; }
+    .hero-risk-card {
+      background: linear-gradient(145deg,#1C2235 0%,#151929 100%);
       border: 1px solid rgba(255,255,255,.1);
-      border-radius: 100px; padding: 9px 16px;
-      font-size: 12px; font-weight: 600; color: var(--text);
-      box-shadow: 0 8px 24px rgba(0,0,0,.3); white-space: nowrap;
+      border-radius: 24px; padding: 24px 28px 22px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
+      position: relative; overflow: visible;
+      animation: float 6s ease-in-out infinite;
     }
-    .hrc-f1 { top: -18px; right: -10px; animation: floatPill1 4s ease-in-out infinite; }
-    .hrc-f2 { bottom: 28px; left: -24px; animation: floatPill2 5s ease-in-out infinite; }
-    @keyframes floatPill1 { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-7px) rotate(-2deg)} }
-    @keyframes floatPill2 { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-6px) rotate(1deg)} }
-    @media(max-width:900px){.hero-card-wrap{display:none;}}
+    .hero-risk-card::before {
+      content:''; position:absolute; top:-50px; right:-50px;
+      width:220px; height:220px; border-radius:50%;
+      background:radial-gradient(circle,var(--card-glow,rgba(74,139,98,.15)) 0%,transparent 70%);
+      pointer-events:none; transition:background .6s;
+    }
+    .hrc-header { display:flex; align-items:center; gap:8px; margin-bottom:18px; }
+    .hrc-pulse {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--sage-lt); animation:pulse 2s infinite;
+      box-shadow:0 0 8px var(--sage-lt); flex-shrink:0;
+    }
+    .hrc-live { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; flex:1; }
+    .hrc-counter { font-size:10px; color:rgba(255,255,255,.2); font-weight:500; }
+    /* top row: name left, big % right */
+    .hrc-top-row { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:4px; }
+    .hrc-prof {
+      font-family:'Syne',sans-serif; font-size:clamp(22px,2.5vw,30px);
+      font-weight:800; color:var(--paper); line-height:1.05; letter-spacing:-1px;
+      transition:opacity .35s;
+    }
+    .hrc-score-block { text-align:right; flex-shrink:0; }
+    .hrc-big-score {
+      font-family:'Syne',sans-serif; font-size:clamp(36px,3.5vw,48px);
+      font-weight:800; line-height:1; letter-spacing:-2px;
+      transition:color .35s, opacity .35s;
+    }
+    .hrc-big-label { font-size:9px; color:var(--text-dim); text-align:right; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+    .hrc-sector { font-size:12px; color:var(--text-dim); margin-bottom:22px; font-weight:300; transition:opacity .35s; }
+    /* 2×2 metric grid */
+    .hrc-scores { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; margin-bottom:20px; }
+    .hrc-row { display:flex; flex-direction:column; gap:5px; min-width:0; }
+    .hrc-row-top { display:flex; justify-content:space-between; align-items:baseline; }
+    .hrc-lbl { font-size:10px; color:var(--text-dim); font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .hrc-val { font-size:13px; font-weight:800; transition:color .35s; }
+    .hrc-bar-wrap { height:5px; background:rgba(255,255,255,.07); border-radius:100px; overflow:hidden; width:100%; }
+    .hrc-bar { height:100%; border-radius:100px; transition:width .7s cubic-bezier(.22,1,.36,1), background .4s; box-shadow:0 0 6px currentColor; }
+    /* quadrant pill */
+    .hrc-quadrant {
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius:10px; padding:9px 14px; margin-bottom:20px;
+      font-size:11px; width:100%; transition:background .4s, border-color .4s;
+    }
+    .hrc-q-tag { font-weight:800; }
+    .hrc-q-desc { color:rgba(245,242,236,.4); }
+    /* footer */
+    .hrc-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .hrc-cta {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--sage); color:white; padding:11px 22px;
+      border-radius:100px; font-size:13px; font-weight:700;
+      text-decoration:none; transition:all .2s;
+      box-shadow:0 4px 20px rgba(74,139,98,.35);
+    }
+    .hrc-cta:hover { background:#3D7A53; transform:translateY(-2px); }
+    .hrc-explore { font-size:12px; color:var(--text-dim); text-decoration:none; transition:color .2s; }
+    .hrc-explore:hover { color:var(--paper); }
+    /* dot strip */
+    .hrc-dots { display:flex; gap:7px; margin-top:16px; }
+    .hrc-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.15); cursor:pointer; transition:all .25s; }
+    .hrc-dot.active { background:var(--sage-lt); width:22px; border-radius:3px; }
+    /* floating pills */
+    .hrc-floating {
+      position:absolute; background:rgba(13,15,20,.88);
+      backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.12);
+      border-radius:100px; padding:9px 16px; font-size:12px;
+      font-weight:600; color:var(--text); box-shadow:0 8px 28px rgba(0,0,0,.4);
+      white-space:nowrap; z-index:10;
+    }
+    .hrc-f1 { top:-16px; right:20px; animation:floatPill1 4s ease-in-out infinite; }
+    .hrc-f2 { bottom:-14px; left:24px; transform:rotate(-3deg); animation:floatPill2 5.5s ease-in-out infinite; }
+    @keyframes floatPill1 { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(-2deg)} }
+    @keyframes floatPill2 { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-6px) rotate(-3deg)} }
+    @media(max-width:900px){ .hero-card-wrap { display:none; } }
 
     @media (max-width: 1100px) {
       .map-dash-body { grid-template-columns: 1fr 280px; }
@@ -726,19 +696,56 @@
       </div>
     </div>
 
-    <!-- Hero risk card — swipeable carousel -->
+    <!-- Hero risk card — single card, JS fades content -->
     <div class="hero-card-wrap">
-      <div class="hrc-carousel-wrap">
-        <div class="hrc-carousel" id="hrc-carousel">
-          <!-- Cards injected by JS -->
+      <div class="hero-risk-card" id="hero-risk-card">
+        <div class="hrc-header">
+          <div class="hrc-pulse"></div>
+          <span class="hrc-live">AI Risk Snapshot</span>
+          <span class="hrc-counter" id="hrc-counter">1 / 6</span>
         </div>
-        <!-- Dot indicators -->
-        <div class="hrc-dots" id="hrc-dots"></div>
-        <!-- Swipe hint -->
-        <div class="hrc-swipe-hint" id="hrc-swipe-hint">← swipe →</div>
+        <div class="hrc-top-row">
+          <div>
+            <div class="hrc-prof" id="hrc-prof">Radiologist</div>
+            <div class="hrc-sector" id="hrc-sector">Healthcare · 🇬🇧 United Kingdom</div>
+          </div>
+          <div class="hrc-score-block">
+            <div class="hrc-big-score" id="hrc-big-score" style="color:#7EC09A">6%</div>
+            <div class="hrc-big-label">Auto Risk</div>
+          </div>
+        </div>
+        <div class="hrc-scores">
+          <div class="hrc-row">
+            <div class="hrc-row-top"><span class="hrc-lbl">Automation</span><span class="hrc-val" id="v-auto" style="color:#7EC09A">6%</span></div>
+            <div class="hrc-bar-wrap"><div class="hrc-bar" id="b-auto" style="width:6%;background:#7EC09A;color:#7EC09A"></div></div>
+          </div>
+          <div class="hrc-row">
+            <div class="hrc-row-top"><span class="hrc-lbl">Reskilling</span><span class="hrc-val" id="v-resk" style="color:#F5C87A">56%</span></div>
+            <div class="hrc-bar-wrap"><div class="hrc-bar" id="b-resk" style="width:56%;background:#F5C87A;color:#F5C87A"></div></div>
+          </div>
+          <div class="hrc-row">
+            <div class="hrc-row-top"><span class="hrc-lbl">AI Adoption</span><span class="hrc-val" id="v-ai" style="color:#7EC09A">88/100</span></div>
+            <div class="hrc-bar-wrap"><div class="hrc-bar" id="b-ai" style="width:88%;background:#7EC09A;color:#7EC09A"></div></div>
+          </div>
+          <div class="hrc-row">
+            <div class="hrc-row-top"><span class="hrc-lbl">Skill Change</span><span class="hrc-val" id="v-skill" style="color:#A78BFA">72%</span></div>
+            <div class="hrc-bar-wrap"><div class="hrc-bar" id="b-skill" style="width:72%;background:#A78BFA;color:#A78BFA"></div></div>
+          </div>
+        </div>
+        <div class="hrc-quadrant" id="hrc-quad" style="background:rgba(74,139,98,.15);border:1px solid rgba(74,139,98,.3)">
+          <span class="hrc-q-tag" id="hrc-q-tag" style="color:#7EC09A">STABLE</span>
+          <span class="hrc-q-desc" id="hrc-q-desc">· Low automation · High reskilling capacity</span>
+        </div>
+        <div class="hrc-footer">
+          <a href="quiz.html" class="hrc-cta">Get my brief →</a>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div class="hrc-dots" id="hrc-dots"></div>
+            <a href="index-professions.html" class="hrc-explore">185 professions ↗</a>
+          </div>
+        </div>
+        <div class="hrc-floating hrc-f1">🔴 Call Centre Agent · 96%</div>
+        <div class="hrc-floating hrc-f2">🟢 Psychiatrist · 0.2%</div>
       </div>
-      <div class="hrc-floating hrc-f1" id="hrc-f1">🔴 Call Centre Agent · 96% risk</div>
-      <div class="hrc-floating hrc-f2" id="hrc-f2">🟢 Psychiatrist · 0.2% risk</div>
     </div>
   </div>
 </section>
@@ -1174,148 +1181,91 @@ const FLAG_BY_NAME = {
 
 // ── HERO CARD CAROUSEL ────────────────────────────────────────────────────────
 const HERO_CARDS = [
-  { prof:'Radiologist',       sector:'Healthcare · 🇬🇧 United Kingdom', auto:6,  resk:56, ai:88, skill:72, quad:'STABLE',       qcol:'sage',  qdesc:'Low automation · High reskilling capacity' },
-  { prof:'Accountant',        sector:'Finance · 🇺🇸 United States',     auto:91, resk:32, ai:95, skill:45, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Act now with upskilling' },
-  { prof:'Software Developer',sector:'Technology · 🇩🇪 Germany',        auto:4,  resk:52, ai:85, skill:88, quad:'STABLE',       qcol:'sage',  qdesc:'Protected role · AI amplifies your output' },
-  { prof:'Call Centre Agent', sector:'Services · 🇨🇳 China',            auto:87, resk:24, ai:82, skill:38, quad:'HIGH EXPOSURE', qcol:'amber', qdesc:'Strong pressure · Career pivot recommended' },
-  { prof:'Data Scientist',    sector:'Technology · 🇨🇦 Canada',         auto:3,  resk:64, ai:87, skill:91, quad:'STABLE',       qcol:'sage',  qdesc:'Safest tech role · AI supercharges this job' },
-  { prof:'Bookkeeping Clerk', sector:'Administration · 🇬🇧 United Kingdom', auto:84, resk:31, ai:88, skill:41, quad:'DANGER ZONE', qcol:'red', qdesc:'High automation · Pivot or reskill urgently' },
+  { prof:'Radiologist',        sector:'Healthcare · 🇬🇧 United Kingdom',    auto:6,  resk:56, ai:88, skill:72, quad:'STABLE',       qcol:'sage',  qdesc:'Low automation · High reskilling capacity' },
+  { prof:'Accountant',         sector:'Finance · 🇺🇸 United States',        auto:91, resk:32, ai:95, skill:45, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Act now with upskilling' },
+  { prof:'Software Developer', sector:'Technology · 🇩🇪 Germany',           auto:4,  resk:52, ai:85, skill:88, quad:'STABLE',       qcol:'sage',  qdesc:'Protected role · AI amplifies your output' },
+  { prof:'Call Centre Agent',  sector:'Services · 🇨🇳 China',               auto:87, resk:24, ai:82, skill:38, quad:'HIGH EXPOSURE', qcol:'amber', qdesc:'Strong pressure · Career pivot recommended' },
+  { prof:'Data Scientist',     sector:'Technology · 🇨🇦 Canada',            auto:3,  resk:64, ai:87, skill:91, quad:'STABLE',       qcol:'sage',  qdesc:'Safest tech role · AI supercharges this job' },
+  { prof:'Bookkeeping Clerk',  sector:'Administration · 🇬🇧 United Kingdom', auto:84, resk:31, ai:88, skill:41, quad:'DANGER ZONE',  qcol:'red',   qdesc:'High automation · Pivot or reskill urgently' },
 ];
-
 const qcols = {
-  sage:  { bg:'rgba(74,139,98,.15)',  border:'rgba(74,139,98,.3)',   text:'#7EC09A' },
-  red:   { bg:'rgba(217,79,61,.15)',  border:'rgba(217,79,61,.3)',   text:'#F5876A' },
-  amber: { bg:'rgba(232,146,42,.15)', border:'rgba(232,146,42,.3)',  text:'#F5C87A' },
+  sage:  { bg:'rgba(74,139,98,.15)',  border:'rgba(74,139,98,.3)',  text:'#7EC09A' },
+  red:   { bg:'rgba(217,79,61,.15)',  border:'rgba(217,79,61,.3)',  text:'#F5876A' },
+  amber: { bg:'rgba(232,146,42,.15)', border:'rgba(232,146,42,.3)', text:'#F5C87A' },
 };
 const autoCol = a => a >= 65 ? '#F5876A' : a >= 35 ? '#F5C87A' : '#7EC09A';
 
-function buildCarousel() {
-  const track  = document.getElementById('hrc-carousel');
-  const dots   = document.getElementById('hrc-dots');
-  if (!track || !dots) return;
+let hrcIdx = 0;
+let hrcTimer;
+let hrcFading = false;
 
-  // Build slides
-  track.innerHTML = HERO_CARDS.map((d, i) => {
-    const ac  = autoCol(d.auto);
-    const qc  = qcols[d.qcol];
-    return `<div class="hrc-slide" data-idx="${i}">
-      <div class="hrc-header">
-        <div class="hrc-pulse"></div>
-        <span class="hrc-live">AI Risk Snapshot</span>
-        <span style="font-size:9px;color:rgba(245,242,236,.25);letter-spacing:.5px">${i+1} / ${HERO_CARDS.length}</span>
-      </div>
-      <div class="hrc-top-row">
-        <div>
-          <div class="hrc-prof">${d.prof}</div>
-          <div class="hrc-sector">${d.sector}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div class="hrc-big-score" style="color:${ac}">${d.auto}%</div>
-          <div class="hrc-big-label">AUTO RISK</div>
-        </div>
-      </div>
-      <div class="hrc-scores">
-        <div class="hrc-row">
-          <div class="hrc-lbl">Automation</div>
-          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.auto}%;background:${ac}"></div></div>
-          <div class="hrc-val" style="color:${ac}">${d.auto}%</div>
-        </div>
-        <div class="hrc-row">
-          <div class="hrc-lbl">Reskilling</div>
-          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.resk}%;background:#F5C87A"></div></div>
-          <div class="hrc-val" style="color:#F5C87A">${d.resk}%</div>
-        </div>
-        <div class="hrc-row">
-          <div class="hrc-lbl">AI Adoption</div>
-          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.ai}%;background:#7EC09A"></div></div>
-          <div class="hrc-val" style="color:#7EC09A">${d.ai}/100</div>
-        </div>
-        <div class="hrc-row">
-          <div class="hrc-lbl">Skill Change</div>
-          <div class="hrc-bar-wrap"><div class="hrc-bar" style="width:${d.skill||50}%;background:#A78BFA"></div></div>
-          <div class="hrc-val" style="color:#A78BFA">${d.skill||'—'}%</div>
-        </div>
-      </div>
-      <div class="hrc-quadrant" style="background:${qc.bg};border:1px solid ${qc.border}">
-        <span style="color:${qc.text};font-weight:700">${d.quad}</span>
-        <span style="color:rgba(245,242,236,.4)"> · ${d.qdesc}</span>
-      </div>
-      <div class="hrc-footer">
-        <a href="quiz.html" class="hrc-cta">Get my brief →</a>
-        <a href="index-professions.html" class="hrc-explore">185 professions ↗</a>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Dots
-  dots.innerHTML = HERO_CARDS.map((_, i) =>
-    `<div class="hrc-dot${i===0?' active':''}" onclick="goToSlide(${i})"></div>`
+function buildDots() {
+  const el = document.getElementById('hrc-dots');
+  if (!el) return;
+  el.innerHTML = HERO_CARDS.map((_, i) =>
+    `<div class="hrc-dot${i===0?' active':''}" onclick="hrcGoTo(${i})"></div>`
   ).join('');
-
-  // Inject prev/next arrows into the wrap
-  const wrap = track.parentElement;
-  wrap.insertAdjacentHTML('beforeend',
-    '<button class="hrc-nav hrc-nav-prev" onclick="prevSlide()">‹</button>' +
-    '<button class="hrc-nav hrc-nav-next" onclick="nextSlide()">›</button>'
-  );
 }
 
-let currentSlide = 0;
-let autoSlideTimer;
-let touchStartX = 0;
-let hintHidden = false;
+function hrcUpdate(d, animate) {
+  const card   = document.getElementById('hero-risk-card');
+  const ac     = autoCol(d.auto);
+  const qc     = qcols[d.qcol];
+  const glows  = { sage:'rgba(74,139,98,.18)', red:'rgba(217,79,61,.18)', amber:'rgba(232,146,42,.18)' };
 
-function goToSlide(n) {
-  currentSlide = ((n % HERO_CARDS.length) + HERO_CARDS.length) % HERO_CARDS.length;
-  const track = document.getElementById('hrc-carousel');
-  if (track) track.style.transform = `translateX(-${currentSlide * 100}%)`;
-  // Update dots
-  document.querySelectorAll('.hrc-dot').forEach((d, i) =>
-    d.classList.toggle('active', i === currentSlide)
-  );
-  // Hide swipe hint after first manual interaction
-  if (!hintHidden) {
-    const hint = document.getElementById('hrc-swipe-hint');
-    if (hint) { hint.classList.add('hidden'); hintHidden = true; }
-  }
-  resetAutoSlide();
+  const set = () => {
+    document.getElementById('hrc-prof').textContent      = d.prof;
+    document.getElementById('hrc-sector').textContent    = d.sector;
+    document.getElementById('hrc-counter').textContent   = `${hrcIdx+1} / ${HERO_CARDS.length}`;
+    document.getElementById('hrc-big-score').textContent = d.auto + '%';
+    document.getElementById('hrc-big-score').style.color = ac;
+    document.getElementById('v-auto').textContent  = d.auto  + '%'; document.getElementById('v-auto').style.color  = ac;
+    document.getElementById('v-resk').textContent  = d.resk  + '%';
+    document.getElementById('v-ai').textContent    = d.ai    + '/100';
+    document.getElementById('v-skill').textContent = d.skill + '%';
+    document.getElementById('b-auto').style.cssText  = `width:${d.auto}%;background:${ac};color:${ac}`;
+    document.getElementById('b-resk').style.cssText  = `width:${d.resk}%;background:#F5C87A;color:#F5C87A`;
+    document.getElementById('b-ai').style.cssText    = `width:${d.ai}%;background:#7EC09A;color:#7EC09A`;
+    document.getElementById('b-skill').style.cssText = `width:${d.skill}%;background:#A78BFA;color:#A78BFA`;
+    const quad = document.getElementById('hrc-quad');
+    quad.style.background  = qc.bg; quad.style.borderColor = qc.border;
+    document.getElementById('hrc-q-tag').textContent  = d.quad;  document.getElementById('hrc-q-tag').style.color = qc.text;
+    document.getElementById('hrc-q-desc').textContent = '· ' + d.qdesc;
+    if (card) card.style.setProperty('--card-glow', glows[d.qcol]);
+    // Update dots
+    document.querySelectorAll('.hrc-dot').forEach((dot, i) => dot.classList.toggle('active', i === hrcIdx));
+  };
+
+  if (!animate || !card) { card.style.transition='none'; set(); requestAnimationFrame(()=>{card.style.transition='opacity .3s';}); return; }
+
+  // Fade out → update → fade in
+  hrcFading = true;
+  card.style.transition = 'opacity .3s';
+  card.style.opacity    = '0';
+  setTimeout(() => { set(); card.style.opacity = '1'; hrcFading = false; }, 320);
 }
 
-function nextSlide() { goToSlide(currentSlide + 1); }
-function prevSlide() { goToSlide(currentSlide - 1); }
-
-function resetAutoSlide() {
-  clearInterval(autoSlideTimer);
-  autoSlideTimer = setInterval(() => goToSlide(currentSlide + 1), 5000);
+function hrcGoTo(n) {
+  if (hrcFading) return;
+  hrcIdx = ((n % HERO_CARDS.length) + HERO_CARDS.length) % HERO_CARDS.length;
+  hrcUpdate(HERO_CARDS[hrcIdx], true);
+  hrcResetTimer();
 }
 
-function initCarousel() {
-  buildCarousel();
-  const track = document.getElementById('hrc-carousel');
-  if (!track) return;
+function hrcResetTimer() {
+  clearInterval(hrcTimer);
+  hrcTimer = setInterval(() => hrcGoTo(hrcIdx + 1), 4500);
+}
 
-  // Touch/swipe support
-  const wrap = track.parentElement;
-  wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  wrap.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
-  });
-  // Mouse drag
-  let mouseDown = false, mouseStartX = 0;
-  wrap.addEventListener('mousedown', e => { mouseDown = true; mouseStartX = e.clientX; });
-  wrap.addEventListener('mouseup', e => {
-    if (!mouseDown) return; mouseDown = false;
-    const dx = e.clientX - mouseStartX;
-    if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
-  });
-
-  resetAutoSlide();
+function initCard() {
+  buildDots();
+  hrcUpdate(HERO_CARDS[0], false);
+  hrcResetTimer();
 }
 
 // Single DOMContentLoaded — init everything
 document.addEventListener('DOMContentLoaded', () => {
-  initCarousel();
+  initCard();
   requestAnimationFrame(() => {
     setTimeout(() => {
       const mainMap = document.getElementById('world-map');
