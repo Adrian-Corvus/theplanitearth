@@ -94,7 +94,6 @@
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:10px;}
     .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
     .logo span{color:var(--sage);}
-    .logo-text-short{display:none;}
     .nav-r{display:flex;gap:24px;align-items:center;}
     .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s;}
     .nav-r a:hover,.nav-r a.active{color:var(--paper);}
@@ -198,7 +197,7 @@
     /* ── MOBILE SIDEBAR ── */
     .hamburger {
       display: none; flex-direction: column; justify-content: center;
-      gap: 5px; cursor: pointer; padding: 6px; z-index: 300;
+      gap: 5px; cursor: pointer; padding: 8px; z-index: 500; position: relative;
       background: none; border: none; flex-shrink: 0;
     }
     .hamburger span {
@@ -291,7 +290,7 @@
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/><span class="logo-text-full">The PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span><span class="logo-text-short">PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span></a>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span style="color:var(--sage-lt,#7EC09A)">Earth</span></a>
   <button class="hamburger" id="sb-hamburger" onclick="openSidebar()" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
