@@ -336,7 +336,7 @@
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/><span class="logo-text-full">The PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span><span class="logo-text-short" style="display:none">PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span></a>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/><span class="logo-text-full">The PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span><span class="logo-text-short">PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span></a>
   <button class="hamburger" id="sb-hamburger" onclick="openSidebar()" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
@@ -374,7 +374,7 @@
     <div class="sb-divider"></div>
     <div class="sb-section-label">Other</div>
     <a href="/#faq-section" class="sb-link"><span class="sb-icon">❓</span>FAQ</a>
-    <a href="mailto:hello@theplanitearth.com" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
+    <a href="/cdn-cgi/l/email-protection#6b030e0707042b1f030e1b070a05021f0e0a191f0345080406" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
   </nav>
   <div class="sb-cta-wrap">
     <a href="quiz.html" class="sb-cta">Analyse My Career — Free →</a>
@@ -492,7 +492,7 @@
   <div class="fl"><a href="index-professions.html">Professions</a><a href="index-sectors.html">Sectors</a><a href="index-countries.html">Countries</a><a href="index.html">Home</a></div>
 </footer>
 
-<script src="data.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="data.js"></script>
 <script>
 const BACKEND_URL='https://theplanitearth-backend.vercel.app';
 
@@ -726,11 +726,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar
 (function() {
   const path = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.getAttribute('href').split('/').pop().split('#')[0] || 'index.html';
-    if (href === path) a.classList.add('active');
-  });
-})();
-</script>
-
-</body>
-</html>
+    const href = a.get

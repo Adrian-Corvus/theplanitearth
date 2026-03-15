@@ -226,7 +226,7 @@
 <nav>
   <a href="/" class="logo">
     <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth" />
-    <span class="logo-text-full">The PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span><span class="logo-text-short" style="display:none">PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span>
+    <span class="logo-text-full">The PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span><span class="logo-text-short">PlanIt<span style="color:var(--sage-lt,var(--sage))">Earth</span></span>
   </a>
   <a href="index.html" class="back">← Back to home</a>
 </nav>
@@ -256,7 +256,7 @@
     <div class="sb-divider"></div>
     <div class="sb-section-label">Other</div>
     <a href="/#faq-section" class="sb-link"><span class="sb-icon">❓</span>FAQ</a>
-    <a href="mailto:hello@theplanitearth.com" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
+    <a href="/cdn-cgi/l/email-protection#f69e939a9a99b6829e93869a97989f82939784829ed895999b" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
   </nav>
   <div class="sb-cta-wrap">
     <a href="quiz.html" class="sb-cta">Analyse My Career — Free →</a>
@@ -424,7 +424,7 @@
   <div class="load-sub">This takes about 20 seconds</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
 
 const state = {
@@ -599,11 +599,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar
 (function() {
   const path = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.getAttribute('href').split('/').pop().split('#')[0] || 'index.html';
-    if (href === path) a.classList.add('active');
-  });
-})();
-</script>
-
-</body>
-</html>
+    const href = a.get
