@@ -356,7 +356,7 @@
       <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
       The PlanIt<span>Earth</span>
     </a>
-    <button class="sb-close" onclick="closeSidebar()" aria-label="Close menu">✕</button>
+    <button class="sb-close"  aria-label="Close menu">✕</button>
   </div>
   <nav class="sb-nav">
     <div class="sb-section-label">Main</div>
@@ -705,24 +705,627 @@ function renderTable(){
 
 checkAccess();
 </script>
+E html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Risk Deep Index — Profession × Country · ThePlanItEarth</title>
+  <meta name="description" content="The most precise AI automation risk database. See exact risk scores for any profession in any country — built from Frey & Osborne, Oxford Insights, World Bank and UNDP data."/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --ink:#0D0F14; --surface:#131620; --surface2:#1A1F2E; --surface3:#222840;
+      --paper:#F5F2EC;
+      --sage:#4A8B62; --sage-lt:#7EC09A; --sage-dim:rgba(74,139,98,.15);
+      --amber:#E8922A; --amber-lt:#F5C87A; --amber-dim:rgba(232,146,42,.15);
+      --red:#D94F3D; --red-lt:#FDECEA; --red-dim:rgba(217,79,61,.15);
+      --mist:rgba(255,255,255,.08); --mist2:rgba(255,255,255,.04);
+      --mid:#9CA3AF; --white:#fff;
+      --text:rgba(245,242,236,.9); --text-dim:rgba(245,242,236,.5);
+      --text-muted:rgba(245,242,236,.3);
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--text);overflow-x:hidden;}
+    /* Dark mode card/surface overrides */
+    .input-card,.gate-card,.method-card,.pcard,.scard,.ccard,.proof-card,
+    .report-preview,.archetype-card,.urgency-card,.step,.sector-card,
+    .country-card,.faq-item{background:var(--surface2)!important;border-color:rgba(255,255,255,.08)!important;}
+    h1,h2,h3,h4,h5,h6,.section-title,.section-title-h2,.pc-name,.pname,
+    .card-name,.sc-name,.cc-name,.sidebar-title,.gate-card h1,
+    strong,.prof-name,.country-name-wrap h3{color:var(--paper)!important;}
+    p,.hero-sub,.section-sub,.step p,.method-card p,.archetype-card p,
+    .proof-card p,.pc-sec,.psec,.sc-count,.cc-sub,.sc-lbl,
+    .urgency-desc,.section-sub-p{color:var(--text-dim)!important;}
+    input,select,.text-input,.filter-col select,.filter-col input,
+    .ts-inp,.ts-sel,.sortsel,.sort-select{
+      background:var(--surface2)!important;color:var(--paper)!important;
+      border-color:rgba(255,255,255,.12)!important;
+    }
+    table thead th{color:var(--text-dim)!important;border-color:rgba(255,255,255,.08)!important;}
+    table tbody tr{border-color:rgba(255,255,255,.06)!important;}
+    table tbody tr:hover{background:var(--surface2)!important;}
+    table td{color:var(--text)!important;}
+    .badge.H{background:rgba(217,79,61,.2)!important;color:#F5876A!important;}
+    .badge.M{background:rgba(232,146,42,.2)!important;color:#F5C87A!important;}
+    .badge.L{background:rgba(74,139,98,.2)!important;color:#7EC09A!important;}
+    .risk-badge.high{background:rgba(217,79,61,.2)!important;color:#F5876A!important;}
+    .risk-badge.med{background:rgba(232,146,42,.2)!important;color:#F5C87A!important;}
+    .risk-badge.low{background:rgba(74,139,98,.2)!important;color:#7EC09A!important;}
+    .fbtn,.filter-btn,.view-btn,.vbtn{background:var(--surface2)!important;color:var(--text-dim)!important;border-color:rgba(255,255,255,.1)!important;}
+    .fbtn.on,.fbtn:hover,.filter-btn.active,.vbtn.on{background:var(--surface3)!important;color:var(--paper)!important;}
+    .bartrack,.btrack,.mini-track,.bar-track,.pc-bar,.card-bar,.chart-bar-track,
+    .mb-track,.rc-bar-track,.comp-track,.ai-track,.cbar-track{background:rgba(255,255,255,.08)!important;}
+    .upsell,.gate-hook{background:var(--surface2)!important;border:1px solid rgba(255,255,255,.08)!important;}
+    .upsell h3{color:var(--paper)!important;}
+    .source-chip,.mdb-source,.lk-field label,.field-label{color:var(--text-dim)!important;background:rgba(255,255,255,.05)!important;}
+    footer{background:var(--surface)!important;border-top:1px solid rgba(255,255,255,.06)!important;color:var(--text-dim)!important;}
+    footer a{color:var(--text-dim)!important;}
+    footer a:hover{color:var(--paper)!important;}
+    details summary{color:var(--text)!important;}
+    details p{color:var(--text-dim)!important;}
+    .faq-item{border-color:rgba(255,255,255,.08)!important;}
+    .btn-go,.btn-analyse,.gate-btn,.lk-go{background:var(--sage)!important;color:white!important;}
+    .nav-cta{background:var(--sage)!important;color:white!important;}
+    .cr-item{background:var(--surface2)!important;border-color:rgba(255,255,255,.06)!important;}
+    .cr-name{color:var(--paper)!important;}
+    .cr-sub{color:var(--text-dim)!important;}
+    .sidebar-cta{background:var(--amber-dim)!important;border-color:rgba(232,146,42,.25)!important;}
+    .sidebar-cta-title{color:var(--paper)!important;}
+    .sidebar-cta-desc{color:var(--text-dim)!important;}
+    .upload-zone{background:var(--surface2)!important;border-color:rgba(255,255,255,.1)!important;}
+    .upload-zone h3{color:var(--paper)!important;}
+    .upload-zone p{color:var(--text-dim)!important;}
+    .privacy-note{color:var(--text-dim)!important;}
+    .plan-card,.compare-alt{background:var(--surface2)!important;border-color:rgba(255,255,255,.1)!important;}
+    .plan-card .plan-label{color:var(--sage-lt)!important;}
+    .plan-card .plan-price,.plan-card .plan-desc{color:var(--paper)!important;}
+    .plan-card .plan-desc{color:var(--text-dim)!important;}
+    .method-tab{color:var(--text-dim)!important;background:none!important;}
+    .method-tab.active{background:var(--surface3)!important;color:var(--paper)!important;}
+    .method-toggle{background:var(--surface2)!important;}
+    .country-btn{background:var(--surface2)!important;color:var(--paper)!important;border-color:rgba(255,255,255,.1)!important;}
+    .country-btn.selected{background:var(--sage-dim)!important;border-color:var(--sage)!important;color:var(--sage-lt)!important;}
+    .loading-stage,.load-stage{color:var(--paper)!important;}
+    .loading-sub,.load-sub{color:var(--text-dim)!important;}
+    .results-hero{background:var(--surface)!important;}
+    .metric-top span:first-child{color:var(--text-dim)!important;}
+    .metric-top span:last-child{color:var(--paper)!important;}
+    .archetype-badge{background:var(--surface3)!important;}
+    .archetype-badge .name{color:var(--paper)!important;}
+    .archetype-badge .label{color:var(--sage-lt)!important;}
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,15,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--mist);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
+    .logo span{color:var(--sage);}
+    .nav-r{display:flex;gap:24px;align-items:center;}
+    .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
+    .nav-r a:hover,.nav-r a.active{color:var(--paper);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
+    @media(max-width:900px){nav{padding:10px 14px;}.nav-r a{display:none!important;}.nav-cta{padding:8px 12px;font-size:11px!important;white-space:nowrap;}.logo{font-size:14px;white-space:nowrap;}.logo img{width:24px;height:24px;}}
+
+    /* GATE */
+    #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px;}
+    .gate-card{background:var(--surface2);border-radius:24px;padding:48px 44px;max-width:580px;width:100%;box-shadow:0 24px 80px rgba(13,15,20,.10);}
+    .gate-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#1A2E4A,#3D6B4F);color:white;padding:7px 16px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1.5px;margin-bottom:24px;}
+    .gate-card h1{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;line-height:1.15;}
+    .gate-card>p{font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.65;margin-bottom:28px;}
+    .gate-hook{background:var(--ink);border-radius:16px;padding:20px 24px;margin-bottom:28px;}
+    .gate-hook h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:14px;}
+    .hook-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+    .hook-row:last-child{border-bottom:none;}
+    .hook-prof{font-size:13px;color:rgba(245,242,236,.7);}
+    .hook-compare{display:flex;gap:16px;}
+    .hook-c{text-align:center;}
+    .hook-c .flag{font-size:16px;}
+    .hook-c .score{font-size:12px;font-weight:700;}
+    .hook-c .score.hi{color:#F5A47A;}
+    .hook-c .score.lo{color:#C8DDD0;}
+    .gate-feats{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+    .gate-feat{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:var(--ink);border-radius:10px;}
+    .gate-feat-icon{font-size:16px;flex-shrink:0;}
+    .gate-feat strong{display:block;font-size:13px;font-weight:600;margin-bottom:1px;}
+    .gate-feat span{font-size:12px;color:var(--mid);}
+    .gate-price{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .gate-was{font-size:17px;color:var(--mid);text-decoration:line-through;}
+    .gate-now{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;}
+    .gate-note{font-size:12px;color:var(--mid);margin-bottom:20px;}
+    .gate-btn{display:block;width:100%;padding:17px;background:var(--ink);color:white;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
+    .gate-btn:hover{background:var(--sage);transform:translateY(-1px);}
+    .gate-trust{font-size:11px;color:var(--mid);text-align:center;margin-top:12px;}
+    .gate-free{margin-top:18px;text-align:center;font-size:12px;color:var(--mid);}
+    .gate-free a{color:var(--sage);text-decoration:none;}
+
+    /* DEEP APP */
+    #app{display:none;padding-top:80px;}
+    .deep-hero{background:var(--ink);padding:36px 48px 28px;}
+    .deep-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sage);color:white;padding:5px 14px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:16px;}
+    .deep-hero h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1.5px;color:white;margin-bottom:6px;}
+    .deep-hero p{font-size:14px;color:rgba(245,242,236,.55);font-weight:300;}
+
+    /* LOOKUP TOOL */
+    .lookup-section{background:var(--surface2);border-bottom:1px solid var(--mist);padding:24px 48px;position:sticky;top:80px;z-index:50;}
+    .lookup-section h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:14px;}
+    .lookup-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;}
+    .lk-field{display:flex;flex-direction:column;gap:5px;}
+    .lk-field label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mid);}
+    .lk-field select,.lk-field input{padding:11px 14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--ink);outline:none;transition:border .2s;}
+    .lk-field select:focus,.lk-field input:focus{border-color:var(--sage);}
+    .lk-go{padding:11px 24px;background:var(--ink);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap;}
+    .lk-go:hover{background:var(--sage);}
+
+    /* RESULT CARD */
+    .result-section{padding:28px 48px;}
+    .result-card{background:var(--ink);border-radius:20px;padding:32px;color:white;max-width:720px;position:relative;overflow:hidden;}
+    .result-card::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(61,107,79,.3),transparent 70%);pointer-events:none;}
+    .rc-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,242,236,.4);margin-bottom:16px;}
+    .rc-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+    .rc-sub{font-size:14px;color:rgba(245,242,236,.5);margin-bottom:24px;}
+    .rc-scores{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+    .rc-score{background:rgba(255,255,255,.06);border-radius:14px;padding:18px;}
+    .rc-score-label{font-size:11px;color:rgba(245,242,236,.4);font-weight:600;letter-spacing:.5px;margin-bottom:6px;}
+    .rc-score-val{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:4px;}
+    .rc-score-sub{font-size:11px;color:rgba(245,242,236,.4);}
+    .rc-bar-track{height:6px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden;margin-top:8px;}
+    .rc-bar-fill{height:100%;border-radius:100px;}
+    .rc-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+    .rc-meta-item{background:rgba(255,255,255,.04);border-radius:10px;padding:12px;}
+    .rc-meta-label{font-size:10px;color:rgba(245,242,236,.35);font-weight:600;letter-spacing:.5px;margin-bottom:4px;}
+    .rc-meta-val{font-size:16px;font-weight:700;color:white;}
+
+    /* QUADRANT */
+    .rc-quadrant{border-radius:12px;padding:16px 18px;margin-bottom:24px;}
+    .rc-q-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+    .rc-q-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;}
+    .rc-q-desc{font-size:13px;line-height:1.6;font-weight:300;}
+    .q-danger{background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.3);}
+    .q-danger .rc-q-label{color:#F5A47A;}
+    .q-adapt{background:rgba(212,132,26,.15);border:1px solid rgba(212,132,26,.25);}
+    .q-adapt .rc-q-label{color:var(--amber-lt);}
+    .q-stable{background:rgba(61,107,79,.2);border:1px solid rgba(61,107,79,.3);}
+    .q-stable .rc-q-label{color:var(--sage-lt);}
+    .q-watch{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);}
+    .q-watch .rc-q-label{color:rgba(245,242,236,.4);}
+
+    /* COUNTRY COMPARISON */
+    .rc-comparison{margin-top:4px;}
+    .rc-comp-title{font-size:12px;color:rgba(245,242,236,.4);font-weight:600;margin-bottom:12px;}
+    .comp-bars{display:flex;flex-direction:column;gap:7px;}
+    .comp-row{display:grid;grid-template-columns:28px 130px 1fr 44px;align-items:center;gap:8px;}
+    .comp-flag{font-size:16px;text-align:center;}
+    .comp-name{font-size:12px;color:rgba(245,242,236,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .comp-track{height:20px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+    .comp-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:7px;}
+    .comp-fill span{font-size:10px;font-weight:700;color:white;}
+    .comp-val{font-size:11px;font-weight:700;text-align:right;}
+
+    .rc-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .rc-btn{padding:11px 22px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;}
+    .rc-btn-primary{background:var(--sage);color:white;border:none;}
+    .rc-btn-primary:hover{background:#2E5340;}
+    .rc-btn-ghost{background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.15);}
+    .rc-btn-ghost:hover{background:rgba(255,255,255,.14);}
+
+    /* FULL TABLE */
+    .table-section{padding:0 48px 32px;}
+    .ts-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+    .ts-head h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-1px;}
+    .ts-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .ts-sel{padding:8px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--surface2);outline:none;}
+    .ts-inp{padding:8px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--surface2);outline:none;width:160px;}
+    .ts-inp:focus,.ts-sel:focus{border-color:var(--sage);}
+    .rc-pill{background:var(--sage-lt);color:var(--sage);padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;}
+    table{width:100%;border-collapse:collapse;}
+    thead th{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mid);padding:9px 12px;text-align:left;border-bottom:2px solid var(--mist);white-space:nowrap;}
+    tbody tr{border-bottom:1px solid var(--mist);transition:background .15s;cursor:pointer;}
+    tbody tr:hover{background:var(--surface2);}
+    td{padding:11px 12px;font-size:13px;vertical-align:middle;}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+    .badge.H{background:var(--red-lt);color:var(--red);}
+    .badge.M{background:var(--amber-lt);color:var(--amber);}
+    .badge.L{background:var(--sage-lt);color:var(--sage);}
+    .mini-bar{display:flex;align-items:center;gap:6px;}
+    .mini-track{width:80px;height:5px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .mini-fill{height:100%;border-radius:100px;}
+    .quadtag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;}
+    .q1{background:#FDECEA;color:#C0392B;}.q2{background:#FFF4E0;color:#D4841A;}.q3{background:#EEF7F2;color:#3D6B4F;}.q4{background:var(--mist);color:var(--mid);}
+
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+    footer a{color:rgba(245,242,236,.4);font-size:12px;text-decoration:none;}footer a:hover{color:var(--paper);}
+    .fl{display:flex;gap:20px;}
+    @media(max-width:900px){
+      #gate{padding:80px 16px;}
+      .gate-card{padding:32px 22px;}
+      .deep-hero,.lookup-section,.result-section,.table-section{padding-left:20px;padding-right:20px;}
+      .lookup-grid{grid-template-columns:1fr;}
+      .rc-scores{grid-template-columns:1fr;}
+      .rc-meta{grid-template-columns:1fr 1fr;}
+      .comp-row{grid-template-columns:24px 80px 1fr 36px;}
+      footer{padding:32px 20px;}
+    }
+
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span style="color:var(--sage-lt,#7EC09A)">Earth</span></a>
+  
+  <div class="nav-r">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html">Countries</a>
+    <a href="index-deep.html" class="active" style="color:var(--amber);font-weight:600">Deep Index ✦</a>
+    <a href="quiz.html" class="nav-cta">Get My Brief →</a>
+  </div>
+</nav>
+
+<!-- ── MOBILE SIDEBAR ── -->
+
+
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">✦ DEEP INDEX · 1,850 DATA POINTS</div>
+    <h1>Your exact risk.<br>Your profession, your country.</h1>
+    <p>The only tool that shows you the precise, country-adjusted automation risk for any of 185 professions across 10 major economies — built from four independent academic and institutional datasets.</p>
+
+    <div class="gate-hook">
+      <h3>Same profession. Radically different risk.</h3>
+      <div class="hook-row">
+        <span class="hook-prof">💼 Accountant</span>
+        <div class="hook-compare">
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score hi">91%</div></div>
+          <div class="hook-c"><div class="flag">🇮🇳</div><div class="score">55%</div></div>
+          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">54%</div></div>
+        </div>
+      </div>
+      <div class="hook-row">
+        <span class="hook-prof">📞 Telemarketer</span>
+        <div class="hook-compare">
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score hi">96%</div></div>
+          <div class="hook-c"><div class="flag">🇩🇪</div><div class="score">80%</div></div>
+          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">56%</div></div>
+        </div>
+      </div>
+      <div class="hook-row">
+        <span class="hook-prof">💻 Software Developer</span>
+        <div class="hook-compare">
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score">4.6%</div></div>
+          <div class="hook-c"><div class="flag">🇯🇵</div><div class="score">3.9%</div></div>
+          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">2.7%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-feats">
+      <div class="gate-feat"><div class="gate-feat-icon">🔍</div><div><strong>Precise profession × country lookup</strong><span>185 professions × 10 countries. Every combination with full score breakdown.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">📊</div><div><strong>Quadrant analysis</strong><span>Danger Zone · Adapt Now · Stable · Watch. Understand your strategic position, not just a number.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">🌍</div><div><strong>Country comparison for your profession</strong><span>See all 10 countries ranked for your specific job — side by side.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">🔢</div><div><strong>Full underlying indicators</strong><span>See automation probability, AI adoption index, employment growth, and skill change rate — not just the composite score.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">📋</div><div><strong>Complete searchable table</strong><span>Filter all 1,850 data points by profession, country, sector, and risk level.</span></div></div>
+    </div>
+
+    <div class="gate-price"><span class="gate-was">€8</span><span class="gate-now">€4.99</span></div>
+    <div class="gate-note">One-time · Instant access · No account needed · No subscription</div>
+
+    <button class="gate-btn" onclick="startCheckout()">Unlock the Deep Index →</button>
+    <div class="gate-trust">🔒 Stripe checkout · Instant access after payment</div>
+    <div class="gate-free">Free version: <a href="index-professions.html">professions</a> · <a href="index-sectors.html">sectors</a> · <a href="index-countries.html">countries</a></div>
+  </div>
+</div>
+
+<!-- DEEP APP -->
+<div id="app">
+  <div class="deep-hero">
+    <div class="deep-badge">✦ DEEP INDEX · UNLOCKED</div>
+    <h1>Profession × Country Risk Database</h1>
+    <p>1,850 data points · Frey & Osborne · Oxford Insights AI Index · World Bank · UNDP HDI</p>
+  </div>
+
+  <!-- LOOKUP -->
+  <div class="lookup-section">
+    <h2>Look up your exact risk score</h2>
+    <div class="lookup-grid">
+      <div class="lk-field"><label>Profession</label><select id="lk-prof"><option value="">Select a profession…</option></select></div>
+      <div class="lk-field"><label>Country</label><select id="lk-country"><option value="">Select a country…</option></select></div>
+      <button class="lk-go" onclick="lookup()">Look up →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-section" id="result-section" style="display:none">
+    <div class="result-card" id="result-card"></div>
+  </div>
+
+  <!-- FULL TABLE -->
+  <div class="table-section">
+    <div class="ts-head">
+      <h2>Full dataset</h2>
+      <div class="ts-controls">
+        <input class="ts-inp" id="t-srch" placeholder="Search profession…" oninput="renderTable()"/>
+        <select class="ts-sel" id="t-country" onchange="renderTable()"><option value="">All countries</option></select>
+        <select class="ts-sel" id="t-sector" onchange="renderTable()"><option value="">All sectors</option></select>
+        <select class="ts-sel" id="t-sort" onchange="renderTable()">
+          <option value="auto-d">Highest risk</option>
+          <option value="auto-a">Lowest risk</option>
+          <option value="resk-d">Highest reskilling</option>
+          <option value="az">A→Z</option>
+        </select>
+        <div class="rc-pill" id="t-count">—</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Profession</th><th>Country</th><th>Sector</th>
+          <th>Automation Risk</th><th>Reskilling</th><th>Raw Probability</th><th>Skill Change</th><th>Quadrant</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:11px">Data: Frey &amp; Osborne (2013) · Oxford Insights · World Bank · UNDP. Relative risk indicators, not forecasts.</p>
+  <div class="fl"><a href="index-professions.html">Professions</a><a href="index-sectors.html">Sectors</a><a href="index-countries.html">Countries</a><a href="index.html">Home</a></div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="data.js"></script>
 <script>
-// ── SIDEBAR ──────────────────────────────────────────────────────────────────
-function openSidebar() {
-  document.getElementById('mobile-sidebar').classList.add('open');
-  document.getElementById('sb-overlay').classList.add('open');
-  document.getElementById('sb-hamburger').classList.add('open');
-  document.body.style.overflow = 'hidden';
+const BACKEND_URL='https://theplanitearth-backend.vercel.app';
+
+// Flatten PROFESSIONS into rows
+const ALL_ROWS=[];
+PROFESSIONS.forEach(p=>{
+  Object.entries(p.c).forEach(([country,vals])=>{
+    ALL_ROWS.push({
+      profession:p.name, sector:p.sector, country,
+      auto:vals[0], resk:vals[1], prob:vals[2], skill:vals[3]
+    });
+  });
+});
+
+function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
+function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
+function rc(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function pct(s){return Math.round(s*100);}
+function pctf(s){return(s*100).toFixed(1)+'%';}
+
+function quadrant(auto, resk){
+  const hi_auto=auto>=.35, hi_resk=resk>=.25;
+  if(hi_auto&&hi_resk) return{cls:'q1',tag:'Danger Zone',label:'HIGH AUTO · HIGH RESK',desc:'Strong displacement pressure — but your country has capacity to reskill. Act now with structured upskilling.'};
+  if(hi_auto&&!hi_resk) return{cls:'q2',tag:'High Exposure',label:'HIGH AUTO · LOW RESK',desc:'Highest risk zone. Strong automation pressure with limited structural reskilling capacity. Requires proactive career pivoting.'};
+  if(!hi_auto&&hi_resk) return{cls:'q3',tag:'Stable',label:'LOW AUTO · HIGH RESK',desc:'Your role is well-protected. Strong reskilling capacity means you can keep growing and adapting without urgency.'};
+  return{cls:'q4',tag:'Monitor',label:'LOW AUTO · LOW RESK',desc:'Limited immediate automation risk. Worth monitoring as AI capabilities expand to your domain over the medium term.'};
 }
-function closeSidebar() {
-  document.getElementById('mobile-sidebar').classList.remove('open');
-  document.getElementById('sb-overlay').classList.remove('open');
-  document.getElementById('sb-hamburger').classList.remove('open');
-  document.body.style.overflow = '';
+
+// Check access
+function checkAccess(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('unlocked')==='true'||sessionStorage.getItem('deep_ok')==='true'){
+    sessionStorage.setItem('deep_ok','true');
+    openApp();
+    // Pre-fill from URL params
+    const prof=p.get('p')||p.get('profession');
+    const country=p.get('country');
+    if(prof){
+      setTimeout(()=>{
+        const sel=document.getElementById('lk-prof');
+        if(sel){sel.value=prof;if(country){document.getElementById('lk-country').value=country;}lookup();}
+      },100);
+    }
+  }
 }
-// Close on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-// Mark active link
+
+async function startCheckout(){
+  const btn=document.querySelector('.gate-btn');
+  btn.textContent='Redirecting…';btn.disabled=true;
+  try{
+    const res=await fetch(`${BACKEND_URL}/api/create-checkout`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({plan:'deep-index',email:'',name:'',answers:{},scores:{},archetype:{name:''},profession:'',inputMethod:'deep-index',cvQualityIssues:[]})
+    });
+    const data=await res.json();
+    if(data.url)window.location.href=data.url;
+    else throw new Error(data.error||'failed');
+  }catch(e){
+    btn.textContent='Unlock the Deep Index →';btn.disabled=false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+function openApp(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+  buildSelects();
+  renderTable();
+}
+
+function buildSelects(){
+  const profNames=[...new Set(ALL_ROWS.map(r=>r.profession))].sort();
+  const countries=[...new Set(ALL_ROWS.map(r=>r.country))].sort();
+  const sectors=[...new Set(ALL_ROWS.map(r=>r.sector))].sort();
+  const lkp=document.getElementById('lk-prof');
+  profNames.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;lkp.appendChild(o);});
+  const lkc=document.getElementById('lk-country');
+  countries.forEach(c=>{
+    const meta=COUNTRY_META[c];
+    const o=document.createElement('option');o.value=c;o.textContent=(meta?meta.flag+' ':'')+c;lkc.appendChild(o);
+  });
+  const tc=document.getElementById('t-country');
+  countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;tc.appendChild(o);});
+  const ts=document.getElementById('t-sector');
+  sectors.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;ts.appendChild(o);});
+}
+
+function lookup(){
+  const prof=document.getElementById('lk-prof').value;
+  const country=document.getElementById('lk-country').value;
+  if(!prof||!country)return;
+  const row=ALL_ROWS.find(r=>r.profession===prof&&r.country===country);
+  if(!row)return;
+  const cmeta=COUNTRY_META[country]||{flag:'🌍',ai:0.7,growth:0};
+  const q=quadrant(row.auto,row.resk);
+  const rc_col=rc(row.auto);
+  // Country comparison
+  const allForProf=ALL_ROWS.filter(r=>r.profession===prof).sort((a,b)=>b.auto-a.auto);
+  const compBars=allForProf.map(r=>{
+    const cm=COUNTRY_META[r.country]||{flag:'🌍'};
+    const isSelected=r.country===country;
+    return`<div class="comp-row" style="${isSelected?'background:rgba(255,255,255,.06);border-radius:6px;':''}"}>
+      <div class="comp-flag">${cm.flag||'🌍'}</div>
+      <div class="comp-name" style="${isSelected?'color:white;font-weight:600;':''}">${r.country}</div>
+      <div class="comp-track"><div class="comp-fill" style="width:${pct(r.auto)}%;background:${rc(r.auto)}"><span>${pct(r.auto)}%</span></div></div>
+      <div class="comp-val" style="color:${rc(r.auto)}">${pct(r.auto)}%</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('result-section').style.display='block';
+  document.getElementById('result-card').innerHTML=`
+    <div class="rc-eyebrow">YOUR RISK PROFILE</div>
+    <div class="rc-title">${prof}</div>
+    <div class="rc-sub">${row.sector} · ${cmeta.flag||''} ${country}</div>
+    <div class="rc-scores">
+      <div class="rc-score">
+        <div class="rc-score-label">AUTOMATION RISK</div>
+        <div class="rc-score-val" style="color:${rc_col}">${pctf(row.auto)}</div>
+        <div class="rc-score-sub">Country-adjusted composite score</div>
+        <div class="rc-bar-track"><div class="rc-bar-fill" style="width:${pct(row.auto)}%;background:${rc_col}"></div></div>
+      </div>
+      <div class="rc-score">
+        <div class="rc-score-label">RESKILLING POTENTIAL</div>
+        <div class="rc-score-val" style="color:var(--sage-lt)">${pctf(row.resk)}</div>
+        <div class="rc-score-sub">Workforce adaptability composite</div>
+        <div class="rc-bar-track"><div class="rc-bar-fill" style="width:${pct(row.resk)*1.46}%;background:var(--sage)"></div></div>
+      </div>
+    </div>
+    <div class="rc-meta">
+      <div class="rc-meta-item"><div class="rc-meta-label">RAW AUTO PROB</div><div class="rc-meta-val">${pctf(row.prob)}</div></div>
+      <div class="rc-meta-item"><div class="rc-meta-label">AI ADOPTION</div><div class="rc-meta-val">${(cmeta.ai*100).toFixed(0)}/100</div></div>
+      <div class="rc-meta-item"><div class="rc-meta-label">SKILL CHANGE</div><div class="rc-meta-val">${pctf(row.skill)}</div></div>
+    </div>
+    <div class="rc-quadrant q-${q.cls.replace('q','')==='1'?'danger':q.cls.replace('q','')==='2'?'adapt':q.cls.replace('q','')==='3'?'stable':'watch'}">
+      <div class="rc-q-label">${q.label}</div>
+      <div class="rc-q-title">${q.tag}</div>
+      <div class="rc-q-desc">${q.desc}</div>
+    </div>
+    <div class="rc-comparison">
+      <div class="rc-comp-title">YOUR PROFESSION ACROSS ALL 10 COUNTRIES</div>
+      <div class="comp-bars">${compBars}</div>
+    </div>
+    <div class="rc-actions" style="margin-top:20px">
+      <a href="quiz.html" class="rc-btn rc-btn-primary">Get my personalised Career Brief →</a>
+      <button class="rc-btn rc-btn-ghost" onclick="shareResult('${prof}','${country}',${pct(row.auto)})">Share this result</button>
+    </div>
+  `;
+  document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function shareResult(prof, country, score){
+  const text=`My profession (${prof}) faces a ${score}% AI automation risk in ${country}. See the full AI Risk Deep Index → ${window.location.origin}/index-deep.html`;
+  if(navigator.share){navigator.share({title:'AI Risk Deep Index',text,url:window.location.origin+'/index-deep.html'});}
+  else{navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard! Share it anywhere.'));}
+}
+
+function renderTable(){
+  const srch=document.getElementById('t-srch').value.toLowerCase();
+  const country=document.getElementById('t-country').value;
+  const sector=document.getElementById('t-sector').value;
+  const sort=document.getElementById('t-sort').value;
+  let rows=[...ALL_ROWS].filter(r=>{
+    if(srch&&!r.profession.toLowerCase().includes(srch))return false;
+    if(country&&r.country!==country)return false;
+    if(sector&&r.sector!==sector)return false;
+    return true;
+  });
+  rows.sort((a,b)=>{
+    if(sort==='auto-d')return b.auto-a.auto;
+    if(sort==='auto-a')return a.auto-b.auto;
+    if(sort==='resk-d')return b.resk-a.resk;
+    return a.profession.localeCompare(b.profession);
+  });
+  document.getElementById('t-count').textContent=rows.length+' rows';
+  const display=rows.slice(0,500);
+  const lv=s=>s>=.65?'H':s>=.35?'M':'L';
+  const qlabel=r=>{
+    const q=quadrant(r.auto,r.resk);
+    const qmap={'q1':'q1','q2':'q2','q3':'q3','q4':'q4'};
+    return`<span class="quadtag ${qmap[q.cls]}">${q.tag}</span>`;
+  };
+  document.getElementById('tbody').innerHTML=display.map((r,i)=>{
+    const cm=COUNTRY_META[r.country]||{flag:''};
+    return`<tr onclick="document.getElementById('lk-prof').value='${r.profession}';document.getElementById('lk-country').value='${r.country}';lookup()">
+      <td style="font-size:11px;color:var(--mid)">${i+1}</td>
+      <td><strong style="font-size:13px">${r.profession}</strong></td>
+      <td style="white-space:nowrap">${cm.flag||''} ${r.country}</td>
+      <td style="font-size:11px;color:var(--mid)">${r.sector}</td>
+      <td>
+        <div class="mini-bar">
+          <div class="mini-track"><div class="mini-fill" style="width:${pct(r.auto)}%;background:${rc(r.auto)}"></div></div>
+          <span style="font-size:11px;font-weight:700;color:${rc(r.auto)}">${pctf(r.auto)}</span>
+        </div>
+        <span class="badge ${lv(r.auto)}">${rlabel(r.auto)}</span>
+      </td>
+      <td>
+        <div class="mini-bar">
+          <div class="mini-track"><div class="mini-fill" style="width:${pct(r.resk)*1.46}%;background:var(--sage)"></div></div>
+          <span style="font-size:11px;font-weight:700;color:var(--sage)">${pctf(r.resk)}</span>
+        </div>
+      </td>
+      <td style="font-size:12px;color:var(--mid)">${pctf(r.prob)}</td>
+      <td style="font-size:12px;color:var(--mid)">${pctf(r.skill)}</td>
+      <td>${qlabel(r)}</td>
+    </tr>`;
+  }).join('');
+  if(rows.length>500){
+    document.getElementById('tbody').innerHTML+=`<tr><td colspan="9" style="text-align:center;padding:16px;font-size:12px;color:var(--mid)">Showing top 500 of ${rows.length}. Use filters to narrow.</td></tr>`;
+  }
+}
+
+checkAccess();
+</script>
+<script>
 (function() {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.get
+  function openSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.add('open');
+    if(o)o.classList.add('open');
+    if(h)h.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.remove('open');
+    if(o)o.classList.remove('open');
+    if(h)h.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  window.openSidebar=openSidebar;
+  window.closeSidebar=closeSidebar;
+  document.addEventListener('DOMContentLoaded',function(){
+    var ham=document.getElementById('sb-hamburger');
+    var ov=document.getElementById('sb-overlay');
+    if(ham)ham.addEventListener('click',openSidebar);
+    if(ov)ov.addEventListener('click',closeSidebar);
+    var path=window.location.pathname.split('/').pop()||'index.html';
+    document.querySelectorAll('.sb-link').forEach(function(a){
+      var href=(a.getAttribute('href')||'').split('/').pop().split('#')[0]||'index.html';
+      if(href===path)a.classList.add('active');
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+  });
+})();
+</script>
+</body>
+</html>

@@ -293,7 +293,7 @@
       <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
       The PlanIt<span>Earth</span>
     </a>
-    <button class="sb-close" onclick="closeSidebar()" aria-label="Close menu">✕</button>
+    <button class="sb-close"  aria-label="Close menu">✕</button>
   </div>
   <nav class="sb-nav">
     <div class="sb-section-label">Main</div>
@@ -561,24 +561,483 @@ document.addEventListener('DOMContentLoaded', () => {
   requestAnimationFrame(() => setTimeout(initMap, 150));
 });
 </script>
+E html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Job Automation Risk by Country 2025 — Interactive World Map</title>
+  <meta name="description" content="Interactive world map of AI automation risk by country. See which countries face the highest job displacement pressure — built from Oxford Insights, World Bank and UNDP data."/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --ink:#0D0F14; --surface:#131620; --surface2:#1A1F2E; --surface3:#222840;
+      --paper:#F5F2EC;
+      --sage:#4A8B62; --sage-lt:#7EC09A; --sage-dim:rgba(74,139,98,.15);
+      --amber:#E8922A; --amber-lt:#F5C87A; --amber-dim:rgba(232,146,42,.15);
+      --red:#D94F3D; --red-lt:#FDECEA; --red-dim:rgba(217,79,61,.15);
+      --mist:rgba(255,255,255,.08); --mist2:rgba(255,255,255,.04);
+      --mid:#9CA3AF; --white:#fff;
+      --text:rgba(245,242,236,.9); --text-dim:rgba(245,242,236,.5);
+      --text-muted:rgba(245,242,236,.3);
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--text);overflow-x:hidden;}
+    /* Dark mode card/surface overrides */
+    .input-card,.gate-card,.method-card,.pcard,.scard,.ccard,.proof-card,
+    .report-preview,.archetype-card,.urgency-card,.step,.sector-card,
+    .country-card,.faq-item{background:var(--surface2)!important;border-color:rgba(255,255,255,.08)!important;}
+    h1,h2,h3,h4,h5,h6,.section-title,.section-title-h2,.pc-name,.pname,
+    .card-name,.sc-name,.cc-name,.sidebar-title,.gate-card h1,
+    strong,.prof-name,.country-name-wrap h3{color:var(--paper)!important;}
+    p,.hero-sub,.section-sub,.step p,.method-card p,.archetype-card p,
+    .proof-card p,.pc-sec,.psec,.sc-count,.cc-sub,.sc-lbl,
+    .urgency-desc,.section-sub-p{color:var(--text-dim)!important;}
+    input,select,.text-input,.filter-col select,.filter-col input,
+    .ts-inp,.ts-sel,.sortsel,.sort-select{
+      background:var(--surface2)!important;color:var(--paper)!important;
+      border-color:rgba(255,255,255,.12)!important;
+    }
+    table thead th{color:var(--text-dim)!important;border-color:rgba(255,255,255,.08)!important;}
+    table tbody tr{border-color:rgba(255,255,255,.06)!important;}
+    table tbody tr:hover{background:var(--surface2)!important;}
+    table td{color:var(--text)!important;}
+    .badge.H{background:rgba(217,79,61,.2)!important;color:#F5876A!important;}
+    .badge.M{background:rgba(232,146,42,.2)!important;color:#F5C87A!important;}
+    .badge.L{background:rgba(74,139,98,.2)!important;color:#7EC09A!important;}
+    .risk-badge.high{background:rgba(217,79,61,.2)!important;color:#F5876A!important;}
+    .risk-badge.med{background:rgba(232,146,42,.2)!important;color:#F5C87A!important;}
+    .risk-badge.low{background:rgba(74,139,98,.2)!important;color:#7EC09A!important;}
+    .fbtn,.filter-btn,.view-btn,.vbtn{background:var(--surface2)!important;color:var(--text-dim)!important;border-color:rgba(255,255,255,.1)!important;}
+    .fbtn.on,.fbtn:hover,.filter-btn.active,.vbtn.on{background:var(--surface3)!important;color:var(--paper)!important;}
+    .bartrack,.btrack,.mini-track,.bar-track,.pc-bar,.card-bar,.chart-bar-track,
+    .mb-track,.rc-bar-track,.comp-track,.ai-track,.cbar-track{background:rgba(255,255,255,.08)!important;}
+    .upsell,.gate-hook{background:var(--surface2)!important;border:1px solid rgba(255,255,255,.08)!important;}
+    .upsell h3{color:var(--paper)!important;}
+    .source-chip,.mdb-source,.lk-field label,.field-label{color:var(--text-dim)!important;background:rgba(255,255,255,.05)!important;}
+    footer{background:var(--surface)!important;border-top:1px solid rgba(255,255,255,.06)!important;color:var(--text-dim)!important;}
+    footer a{color:var(--text-dim)!important;}
+    footer a:hover{color:var(--paper)!important;}
+    details summary{color:var(--text)!important;}
+    details p{color:var(--text-dim)!important;}
+    .faq-item{border-color:rgba(255,255,255,.08)!important;}
+    .btn-go,.btn-analyse,.gate-btn,.lk-go{background:var(--sage)!important;color:white!important;}
+    .nav-cta{background:var(--sage)!important;color:white!important;}
+    .cr-item{background:var(--surface2)!important;border-color:rgba(255,255,255,.06)!important;}
+    .cr-name{color:var(--paper)!important;}
+    .cr-sub{color:var(--text-dim)!important;}
+    .sidebar-cta{background:var(--amber-dim)!important;border-color:rgba(232,146,42,.25)!important;}
+    .sidebar-cta-title{color:var(--paper)!important;}
+    .sidebar-cta-desc{color:var(--text-dim)!important;}
+    .upload-zone{background:var(--surface2)!important;border-color:rgba(255,255,255,.1)!important;}
+    .upload-zone h3{color:var(--paper)!important;}
+    .upload-zone p{color:var(--text-dim)!important;}
+    .privacy-note{color:var(--text-dim)!important;}
+    .plan-card,.compare-alt{background:var(--surface2)!important;border-color:rgba(255,255,255,.1)!important;}
+    .plan-card .plan-label{color:var(--sage-lt)!important;}
+    .plan-card .plan-price,.plan-card .plan-desc{color:var(--paper)!important;}
+    .plan-card .plan-desc{color:var(--text-dim)!important;}
+    .method-tab{color:var(--text-dim)!important;background:none!important;}
+    .method-tab.active{background:var(--surface3)!important;color:var(--paper)!important;}
+    .method-toggle{background:var(--surface2)!important;}
+    .country-btn{background:var(--surface2)!important;color:var(--paper)!important;border-color:rgba(255,255,255,.1)!important;}
+    .country-btn.selected{background:var(--sage-dim)!important;border-color:var(--sage)!important;color:var(--sage-lt)!important;}
+    .loading-stage,.load-stage{color:var(--paper)!important;}
+    .loading-sub,.load-sub{color:var(--text-dim)!important;}
+    .results-hero{background:var(--surface)!important;}
+    .metric-top span:first-child{color:var(--text-dim)!important;}
+    .metric-top span:last-child{color:var(--paper)!important;}
+    .archetype-badge{background:var(--surface3)!important;}
+    .archetype-badge .name{color:var(--paper)!important;}
+    .archetype-badge .label{color:var(--sage-lt)!important;}
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    nav{background:rgba(13,15,20,.9)!important;backdrop-filter:blur(20px);position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--ink);border-bottom:1px solid var(--mist);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .logo img{width:34px;height:34px;object-fit:contain;border-radius:6px;}
+    .logo span{color:var(--sage);}
+    .nav-r{display:flex;gap:24px;align-items:center;}
+    .nav-r a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
+    .nav-r a:hover,.nav-r a.active{color:var(--paper);}
+    .nav-cta{background:var(--ink);color:var(--paper)!important;padding:9px 20px;border-radius:100px;white-space:nowrap;}
+    @media(max-width:900px){nav{padding:10px 14px;}.nav-r a{display:none!important;}.nav-cta{padding:8px 12px;font-size:11px!important;white-space:nowrap;}.logo{font-size:14px;white-space:nowrap;}.logo img{width:24px;height:24px;}}
+
+    .hero{padding:110px 48px 40px;max-width:800px;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--sage-lt);color:var(--sage);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:22px;}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.06;margin-bottom:18px;}
+    h1 em{font-style:normal;color:var(--sage);}
+    .hero-sub{font-size:16px;color:#4A4845;font-weight:300;line-height:1.65;max-width:580px;margin-bottom:28px;}
+    .index-tabs{display:flex;gap:10px;flex-wrap:wrap;}
+    .itab{padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--mist);color:var(--mid);transition:all .2s;}
+    .itab:hover{border-color:var(--paper);color:var(--paper);}
+    .itab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .itab.premium{border-color:var(--amber);color:var(--amber);}
+
+    /* MAP */
+    .map-section{padding:32px 48px;}
+    .map-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;}
+    .map-note{font-size:12px;color:var(--mid);margin-bottom:20px;}
+    .map-wrap{background:var(--surface,#131620);border-radius:20px;border:1.5px solid var(--mist);overflow:hidden;position:relative;}
+    #world-map{width:100%;display:block;}
+    .map-legend{display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--mist);flex-wrap:wrap;}
+    .map-legend span{font-size:11px;color:var(--mid);font-weight:500;}
+    .legend-grad{display:flex;align-items:center;gap:6px;}
+    .grad-bar{width:120px;height:10px;border-radius:100px;background:linear-gradient(to right,#C8DDD0,#D4841A,#C0392B);}
+    .map-tooltip{position:absolute;background:var(--ink);color:white;padding:12px 16px;border-radius:12px;font-size:12px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;min-width:180px;}
+    .map-tooltip h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-bottom:8px;}
+    .map-tooltip .tt-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:3px;}
+    .map-tooltip .tt-label{color:rgba(255,255,255,.55);}
+    .map-disclaimer{padding:8px 20px;font-size:11px;color:var(--mid);font-style:italic;}
+
+    /* COUNTRY CARDS */
+    .countries-section{padding:12px 48px 48px;}
+    .countries-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:20px;}
+    .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+    .ccard{background:var(--surface,#131620);border-radius:18px;padding:24px;border:1.5px solid var(--mist);transition:all .2s;text-decoration:none;display:block;color:inherit;}
+    .ccard:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(13,15,20,.08);border-color:transparent;}
+    .cc-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+    .cc-flag{font-size:36px;line-height:1;}
+    .cc-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:2px;}
+    .cc-sub{font-size:11px;color:var(--mid);}
+    .cc-scores{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;}
+    .cc-row{display:flex;flex-direction:column;gap:3px;}
+    .cc-top{display:flex;justify-content:space-between;font-size:11px;}
+    .cc-lbl{font-weight:600;color:var(--mid);}
+    .cc-val{font-weight:700;}
+    .btrack{height:6px;background:var(--mist);border-radius:100px;overflow:hidden;}
+    .bfill{height:100%;border-radius:100px;}
+    .cc-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--mist);padding-top:14px;}
+    .cc-meta-item{font-size:11px;}
+    .cc-meta-item strong{display:block;font-size:13px;font-weight:700;margin-bottom:1px;}
+    .badge{display:inline-flex;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+    .badge.H{background:var(--red-lt);color:var(--red);}
+    .badge.M{background:var(--amber-lt);color:var(--amber);}
+    .badge.L{background:var(--sage-lt);color:var(--sage);}
+
+    /* AI ADOPTION RANKING */
+    .ai-section{padding:0 48px 48px;background:var(--ink);margin:0;}
+    .ai-section{padding:48px;}
+    .ai-section h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;color:white;margin-bottom:6px;}
+    .ai-section p{font-size:13px;color:rgba(245,242,236,.55);margin-bottom:24px;}
+    .ai-bars{display:flex;flex-direction:column;gap:10px;}
+    .ai-row{display:grid;grid-template-columns:28px 140px 1fr 60px;align-items:center;gap:12px;}
+    .ai-flag{font-size:20px;text-align:center;}
+    .ai-name{font-size:13px;font-weight:500;color:rgba(245,242,236,.85);}
+    .ai-track{height:28px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;}
+    .ai-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;transition:width 1s cubic-bezier(.22,1,.36,1);}
+    .ai-fill span{font-size:11px;font-weight:700;color:white;}
+    .ai-val{font-size:13px;font-weight:700;color:var(--sage-lt);text-align:right;}
+
+    .upsell{margin:48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+    .upsell h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;margin-bottom:5px;}
+    .upsell p{font-size:13px;color:rgba(245,242,236,.55);font-weight:300;}
+    .upsell a{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:white;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+    footer{background:var(--ink);color:rgba(245,242,236,.4);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;border-top:1px solid rgba(255,255,255,.06);}
+    footer a{color:rgba(245,242,236,.4);font-size:12px;text-decoration:none;}footer a:hover{color:var(--paper);}
+    .fl{display:flex;gap:20px;}
+    @media(max-width:900px){.hero,.map-section,.countries-section{padding-left:20px;padding-right:20px;}.ai-section,.upsell{padding:28px 20px;}.cgrid{grid-template-columns:1fr;}.ai-row{grid-template-columns:24px 90px 1fr 46px;}footer{padding:32px 20px;}}
+
+
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span style="color:var(--sage-lt,#7EC09A)">Earth</span></a>
+  
+  <div class="nav-r">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html" class="active">Countries</a>
+    <a href="index-deep.html" style="color:var(--amber);font-weight:600">Deep Index ✦</a>
+    <a href="quiz.html" class="nav-cta">Get My Brief →</a>
+  </div>
+</nav>
+
+<!-- ── MOBILE SIDEBAR ── -->
+
+
+
+<div class="hero">
+  <div class="eyebrow">2025 Country Risk Index</div>
+  <h1>AI job exposure<br>by <em>country.</em></h1>
+  <p class="hero-sub">Country-level automation pressure scores built from Oxford Insights AI Readiness, World Bank employment data, and UNDP education indices — for 10 major economies.</p>
+  <div class="index-tabs">
+    <a href="index-professions.html" class="itab">185 Professions</a>
+    <a href="index-sectors.html" class="itab">9 Sectors</a>
+    <a href="index-countries.html" class="itab active">Countries + Map</a>
+    <a href="index-deep.html" class="itab premium">✦ Deep Index</a>
+  </div>
+</div>
+
+<div class="map-section">
+  <h2>Automation risk world map</h2>
+  <p class="map-note">Hover or tap a country to see scores. Colour = average automation risk across all 185 professions.</p>
+  <div class="map-wrap">
+    <svg id="world-map" viewBox="0 0 960 500"></svg>
+    <div id="tt" class="map-tooltip"></div>
+    <div class="map-legend">
+      <span>Automation risk:</span>
+      <div class="legend-grad"><span style="font-size:10px;color:var(--sage)">Low</span><div class="grad-bar"></div><span style="font-size:10px;color:var(--red)">High</span></div>
+      <span style="margin-left:12px">⬜ = Not in dataset</span>
+    </div>
+    <div class="map-disclaimer">Coloured countries have data. Grey = outside dataset. Click any country to explore profession-level breakdown.</div>
+  </div>
+</div>
+
+<div class="countries-section">
+  <h2>Country breakdown</h2>
+  <div class="cgrid" id="ccards"></div>
+</div>
+
+<div class="ai-section">
+  <h2>AI Adoption Index ranking</h2>
+  <p>Oxford Insights Government AI Readiness Index — higher score = greater structural readiness for AI-driven automation. Source of the ai_adoption_index in the automation formula.</p>
+  <div class="ai-bars" id="ai-bars"></div>
+  <div class="upsell" style="margin:32px 0 0">
+    <div>
+      <h3>See any profession's risk in any country</h3>
+      <p>A Software Developer faces 4.6% risk in the US but 2.8% in India. The Deep Index unlocks every profession × country combination.</p>
+    </div>
+    <a href="index-deep.html">Unlock Deep Index · <s style="opacity:.4">€8</s> €4.99 →</a>
+  </div>
+</div>
+
+<footer>
+  <a href="/" style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--paper);text-decoration:none;">The PlanIt<span style="color:#C8DDD0">Earth</span></a>
+  <p style="font-size:11px">Data: Oxford Insights AI Index · World Bank Employment · UNDP HDI. Country scores are weighted averages across 185 professions.</p>
+  <div class="fl"><a href="index-professions.html">Professions</a><a href="index-sectors.html">Sectors</a><a href="index-deep.html">Deep Index</a><a href="index.html">Home</a></div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="data.js"></script>
 <script>
-// ── SIDEBAR ──────────────────────────────────────────────────────────────────
-function openSidebar() {
-  document.getElementById('mobile-sidebar').classList.add('open');
-  document.getElementById('sb-overlay').classList.add('open');
-  document.getElementById('sb-hamburger').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
+function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
+function rc(s){return s>=.65?'#F5876A':s>=.35?'#F5C87A':'#7EC09A';}
+function pct(s){return Math.round(s*100);}
+function pctf(s){return(s*100).toFixed(1)+'%';}
+
+// Flag lookup — covers all countries the converter may produce
+const FLAG_BY_NAME = {
+  'Afghanistan':'🇦🇫','Albania':'🇦🇱','Algeria':'🇩🇿','Angola':'🇦🇴','Argentina':'🇦🇷',
+  'Armenia':'🇦🇲','Australia':'🇦🇺','Austria':'🇦🇹','Azerbaijan':'🇦🇿','Bangladesh':'🇧🇩',
+  'Belarus':'🇧🇾','Belgium':'🇧🇪','Bolivia':'🇧🇴','Bosnia and Herzegovina':'🇧🇦',
+  'Botswana':'🇧🇼','Brazil':'🇧🇷','Bulgaria':'🇧🇬','Burkina Faso':'🇧🇫','Burundi':'🇧🇮',
+  'Cambodia':'🇰🇭','Cameroon':'🇨🇲','Canada':'🇨🇦','Chile':'🇨🇱','China':'🇨🇳',
+  'Colombia':'🇨🇴','Congo':'🇨🇬','Costa Rica':'🇨🇷','Croatia':'🇭🇷','Czech Republic':'🇨🇿',
+  'Denmark':'🇩🇰','Dominican Republic':'🇩🇴','Ecuador':'🇪🇨','Egypt':'🇪🇬',
+  'El Salvador':'🇸🇻','Estonia':'🇪🇪','Ethiopia':'🇪🇹','Finland':'🇫🇮','France':'🇫🇷',
+  'Georgia':'🇬🇪','Germany':'🇩🇪','Ghana':'🇬🇭','Greece':'🇬🇷','Guatemala':'🇬🇹',
+  'Honduras':'🇭🇳','Hungary':'🇭🇺','India':'🇮🇳','Indonesia':'🇮🇩','Iran':'🇮🇷',
+  'Iraq':'🇮🇶','Ireland':'🇮🇪','Israel':'🇮🇱','Italy':'🇮🇹','Jamaica':'🇯🇲',
+  'Japan':'🇯🇵','Jordan':'🇯🇴','Kazakhstan':'🇰🇿','Kenya':'🇰🇪','Kuwait':'🇰🇼',
+  'Latvia':'🇱🇻','Lebanon':'🇱🇧','Lithuania':'🇱🇹','Luxembourg':'🇱🇺',
+  'Madagascar':'🇲🇬','Malawi':'🇲🇼','Malaysia':'🇲🇾','Mali':'🇲🇱','Malta':'🇲🇹',
+  'Mauritius':'🇲🇺','Mexico':'🇲🇽','Moldova':'🇲🇩','Mongolia':'🇲🇳','Montenegro':'🇲🇪',
+  'Morocco':'🇲🇦','Mozambique':'🇲🇿','Myanmar':'🇲🇲','Namibia':'🇳🇦','Nepal':'🇳🇵',
+  'Netherlands':'🇳🇱','New Zealand':'🇳🇿','Nicaragua':'🇳🇮','Niger':'🇳🇪',
+  'Nigeria':'🇳🇬','North Macedonia':'🇲🇰','Norway':'🇳🇴','Pakistan':'🇵🇰',
+  'Panama':'🇵🇦','Paraguay':'🇵🇾','Peru':'🇵🇪','Philippines':'🇵🇭','Poland':'🇵🇱',
+  'Portugal':'🇵🇹','Romania':'🇷🇴','Russia':'🇷🇺','Rwanda':'🇷🇼',
+  'Saudi Arabia':'🇸🇦','Senegal':'🇸🇳','Serbia':'🇷🇸','Singapore':'🇸🇬',
+  'Slovakia':'🇸🇰','Slovenia':'🇸🇮','Somalia':'🇸🇴','South Africa':'🇿🇦',
+  'South Korea':'🇰🇷','Spain':'🇪🇸','Sri Lanka':'🇱🇰','Sudan':'🇸🇩',
+  'Eswatini':'🇸🇿','Swaziland':'🇸🇿','Sweden':'🇸🇪','Switzerland':'🇨🇭',
+  'Taiwan':'🇹🇼','Tajikistan':'🇹🇯','Tanzania':'🇹🇿','Thailand':'🇹🇭',
+  'Togo':'🇹🇬','Tunisia':'🇹🇳','Turkey':'🇹🇷','Turkmenistan':'🇹🇲',
+  'UAE':'🇦🇪','Uganda':'🇺🇬','Ukraine':'🇺🇦','United Kingdom':'🇬🇧',
+  'United States':'🇺🇸','Uruguay':'🇺🇾','Uzbekistan':'🇺🇿','Venezuela':'🇻🇪',
+  'Vietnam':'🇻🇳','Zambia':'🇿🇲','Zimbabwe':'🇿🇼','Armenia':'🇦🇲',
+  'Kosovo':'🇽🇰','Libya':'🇱🇾','Lesotho':'🇱🇸','Seychelles':'🇸🇨',
+};
+function getFlag(name, d) { return FLAG_BY_NAME[name] || (d && d.flag) || '🌍'; }
+
+// ── Build countryByIso lookup from COUNTRY_META ───────────────────────────────
+// Full ISO numeric → alpha-3 map
+const numericIso = {
+  '004':'AFG','008':'ALB','012':'DZA','024':'AGO','032':'ARG','036':'AUS','040':'AUT',
+  '050':'BGD','056':'BEL','064':'BTN','068':'BOL','070':'BIH','076':'BRA','100':'BGR',
+  '104':'MMR','108':'BDI','112':'BLR','116':'KHM','124':'CAN','144':'LKA','152':'CHL',
+  '156':'CHN','170':'COL','174':'COM','191':'HRV','203':'CZE','204':'BEN','208':'DNK',
+  '218':'ECU','222':'SLV','231':'ETH','246':'FIN','250':'FRA','276':'DEU','288':'GHA',
+  '300':'GRC','320':'GTM','332':'HTI','340':'HND','348':'HUN','356':'IND','360':'IDN',
+  '364':'IRN','368':'IRQ','372':'IRL','376':'ISR','380':'ITA','388':'JAM','392':'JPN',
+  '398':'KAZ','400':'JOR','404':'KEN','408':'PRK','410':'KOR','414':'KWT','417':'KGZ',
+  '422':'LBN','426':'LSO','428':'LVA','434':'LBY','440':'LTU','442':'LUX','450':'MDG',
+  '454':'MWI','458':'MYS','466':'MLI','470':'MLT','480':'MUS','484':'MEX','496':'MNG',
+  '498':'MDA','499':'MNE','504':'MAR','508':'MOZ','516':'NAM','524':'NPL','528':'NLD',
+  '540':'NCL','548':'VUT','554':'NZL','558':'NIC','562':'NER','566':'NGA','578':'NOR',
+  '586':'PAK','591':'PAN','598':'PNG','600':'PRY','604':'PER','608':'PHL','616':'POL',
+  '620':'PRT','624':'GNB','630':'PRI','634':'QAT','642':'ROU','643':'RUS','646':'RWA',
+  '682':'SAU','686':'SEN','688':'SRB','703':'SVK','705':'SVN','706':'SOM','710':'ZAF',
+  '716':'ZWE','724':'ESP','729':'SDN','740':'SUR','748':'SWZ','752':'SWE','756':'CHE',
+  '762':'TJK','764':'THA','768':'TGO','780':'TTO','788':'TUN','792':'TUR','795':'TKM',
+  '800':'UGA','804':'UKR','784':'ARE','826':'GBR','834':'TZA','840':'USA','854':'BFA',
+  '858':'URY','860':'UZB','862':'VEN','887':'YEM','894':'ZMB','051':'ARM','031':'AZE',
+  '807':'MKD','704':'VNM','156':'CHN','344':'HKG','158':'TWN','702':'SGP',
+};
+
+const countryByIso = {};
+Object.entries(COUNTRY_META).forEach(([name, d]) => {
+  if (d.iso) countryByIso[d.iso] = { name, ...d, flag: getFlag(name, d) };
+});
+
+// Colour scale matching index.html
+const colorScale = d3.scaleLinear()
+  .domain([0.18, 0.28, 0.40])
+  .range(['#2A6B4A','#C67B1A','#B03020'])
+  .clamp(true);
+
+// ── MAP ───────────────────────────────────────────────────────────────────────
+let _worldData = null;
+function getWorldData() {
+  if (_worldData) return Promise.resolve(_worldData);
+  return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r => r.json()).then(d => { _worldData = d; return d; });
 }
-function closeSidebar() {
-  document.getElementById('mobile-sidebar').classList.remove('open');
-  document.getElementById('sb-overlay').classList.remove('open');
-  document.getElementById('sb-hamburger').classList.remove('open');
-  document.body.style.overflow = '';
+
+function initMap() {
+  const svgEl = document.getElementById('world-map');
+  if (!svgEl) return;
+  const W = svgEl.closest('.map-wrap')?.offsetWidth || svgEl.offsetWidth || 960;
+  const H = 480;
+  const svg  = d3.select(svgEl).attr('viewBox', `0 0 ${W} ${H}`);
+  const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2]);
+  const path = d3.geoPath().projection(proj);
+  const tt   = document.getElementById('tt');
+
+  getWorldData().then(data => {
+    if (typeof topojson === 'undefined') { console.warn('topojson not loaded'); return; }
+    svg.selectAll('*').remove();
+    svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#0D1220');
+    svg.append('path')
+      .datum(d3.geoGraticule()())
+      .attr('d', path)
+      .attr('fill', 'none').attr('stroke', 'rgba(255,255,255,.03)').attr('stroke-width', .5);
+
+    const features = topojson.feature(data, data.objects.countries).features;
+    svg.selectAll('path.country')
+      .data(features).enter().append('path')
+      .attr('class','country')
+      .attr('d', path)
+      .attr('stroke', 'rgba(255,255,255,.07)').attr('stroke-width', .4)
+      .attr('fill', d => {
+        const c = countryByIso[numericIso[d.id]];
+        return c ? colorScale(c.avg_auto) : '#1C2235';
+      })
+      .style('cursor', d => countryByIso[numericIso[d.id]] ? 'pointer' : 'default')
+      .on('mousemove', function(event, d) {
+        const c = countryByIso[numericIso[d.id]];
+        if (!c || !tt) return;
+        const riskCol = rc(c.avg_auto);
+        tt.innerHTML = `
+          <div class="map-tt-flag">${getFlag(c.name, c)}</div>
+          <div class="map-tt-name">${c.name}</div>
+          <div class="map-tt-row"><span class="map-tt-label">Avg. automation risk</span><span class="map-tt-val" style="color:${riskCol}">${pctf(c.avg_auto)}</span></div>
+          <div class="map-tt-bar"><div class="map-tt-bar-fill" style="width:${c.avg_auto*100}%;background:${riskCol}"></div></div>
+          <div class="map-tt-row"><span class="map-tt-label">Reskilling potential</span><span class="map-tt-val" style="color:#7EC09A">${pctf(c.avg_resk)}</span></div>
+          <div class="map-tt-row"><span class="map-tt-label">AI adoption index</span><span class="map-tt-val">${(c.ai*100).toFixed(0)}/100</span></div>
+          <div class="map-tt-row"><span class="map-tt-label">Employment growth</span><span class="map-tt-val" style="color:${c.growth>=0?'#7EC09A':'#F5876A'}">${c.growth>=0?'+':''}${(c.growth*100).toFixed(1)}%</span></div>
+          <a href="index-deep.html?country=${encodeURIComponent(c.name)}" class="map-tt-cta">See profession breakdown →</a>`;
+        tt.style.left = (event.clientX + 16) + 'px';
+        tt.style.top  = (event.clientY - 10) + 'px';
+        tt.classList.add('visible');
+        d3.select(this).attr('fill', d3.color(colorScale(c.avg_auto)).brighter(0.55));
+      })
+      .on('mouseleave', function(event, d) {
+        if (tt) tt.classList.remove('visible');
+        const c = countryByIso[numericIso[d.id]];
+        d3.select(this).attr('fill', c ? colorScale(c.avg_auto) : '#1C2235');
+      })
+      .on('click', (event, d) => {
+        const c = countryByIso[numericIso[d.id]];
+        if (c) window.location = 'index-deep.html?country=' + encodeURIComponent(c.name);
+      });
+  }).catch(err => console.warn('Map failed:', err));
 }
-// Close on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-// Mark active link
+
+// ── COUNTRY CARDS ─────────────────────────────────────────────────────────────
+const sorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].avg_auto - a[1].avg_auto);
+document.getElementById('ccards').innerHTML = sorted.map(([name, d]) => {
+  const lv = rl(d.avg_auto), col = rc(d.avg_auto);
+  const flag = getFlag(name, d);
+  const growth = d.growth >= 0 ? `+${(d.growth*100).toFixed(1)}%` : `${(d.growth*100).toFixed(1)}%`;
+  const growthColor = d.growth >= 0 ? '#7EC09A' : '#F5876A';
+  return `<a class="ccard" href="index-deep.html?country=${encodeURIComponent(name)}">
+    <div class="cc-head">
+      <div class="cc-flag">${flag}</div>
+      <div><div class="cc-name">${name}</div><div class="cc-sub"><span class="badge ${lv}">${rlabel(d.avg_auto)}</span></div></div>
+    </div>
+    <div class="cc-scores">
+      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Automation Risk</span><span class="cc-val" style="color:${col}">${pct(d.avg_auto)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_auto)}%;background:${col}"></div></div></div>
+      <div class="cc-row"><div class="cc-top"><span class="cc-lbl">Reskilling Potential</span><span class="cc-val" style="color:#7EC09A">${pct(d.avg_resk)}%</span></div><div class="btrack"><div class="bfill" style="width:${pct(d.avg_resk)}%;background:#7EC09A"></div></div></div>
+    </div>
+    <div class="cc-meta">
+      <div class="cc-meta-item"><strong style="color:#7EC09A">${(d.ai*100).toFixed(0)}/100</strong>AI Adoption</div>
+      <div class="cc-meta-item"><strong style="color:${growthColor}">${growth}</strong>Employment Growth</div>
+    </div>
+  </a>`;
+}).join('');
+
+// ── AI ADOPTION BARS ──────────────────────────────────────────────────────────
+const aiSorted = Object.entries(COUNTRY_META).sort((a,b) => b[1].ai - a[1].ai);
+document.getElementById('ai-bars').innerHTML = aiSorted.map(([name, d]) => {
+  const w   = d.ai * 100;
+  const col = d.ai >= .85 ? '#7EC09A' : d.ai >= .70 ? '#F5C87A' : '#9CA3AF';
+  const flag = getFlag(name, d);
+  return `<div class="ai-row">
+    <div class="ai-flag">${flag}</div>
+    <div class="ai-name">${name}</div>
+    <div class="ai-track"><div class="ai-fill" style="width:${w}%;background:${col}"><span>${w.toFixed(0)}/100</span></div></div>
+    <div class="ai-val" style="color:${col}">${w.toFixed(0)}</div>
+  </div>`;
+}).join('');
+
+// ── INIT MAP ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  requestAnimationFrame(() => setTimeout(initMap, 150));
+});
+</script>
+<script>
 (function() {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.ge
+  function openSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.add('open');
+    if(o)o.classList.add('open');
+    if(h)h.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.remove('open');
+    if(o)o.classList.remove('open');
+    if(h)h.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  window.openSidebar=openSidebar;
+  window.closeSidebar=closeSidebar;
+  document.addEventListener('DOMContentLoaded',function(){
+    var ham=document.getElementById('sb-hamburger');
+    var ov=document.getElementById('sb-overlay');
+    if(ham)ham.addEventListener('click',openSidebar);
+    if(ov)ov.addEventListener('click',closeSidebar);
+    var path=window.location.pathname.split('/').pop()||'index.html';
+    document.querySelectorAll('.sb-link').forEach(function(a){
+      var href=(a.getAttribute('href')||'').split('/').pop().split('#')[0]||'index.html';
+      if(href===path)a.classList.add('active');
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+  });
+})();
+</script>
+</body>
+</html>

@@ -2525,31 +2525,88 @@ function shareResult() {
 })();
 </script>
 
+
+
+
 <script>
-// ── SIDEBAR ──────────────────────────────────────────────────────────────────
-function openSidebar() {
-  document.getElementById('mobile-sidebar').classList.add('open');
-  document.getElementById('sb-overlay').classList.add('open');
-  document.getElementById('sb-hamburger').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSidebar() {
-  document.getElementById('mobile-sidebar').classList.remove('open');
-  document.getElementById('sb-overlay').classList.remove('open');
-  document.getElementById('sb-hamburger').classList.remove('open');
-  document.body.style.overflow = '';
-}
-// Close on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-// Mark active link
+// Sidebar — inline so it's always available before any onclick fires
 (function() {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.getAttribute('href').split('/').pop().split('#')[0] || 'index.html';
-    if (href === path) a.classList.add('active');
+  function openSidebar() {
+    var s = document.getElementById('mobile-sidebar');
+    var o = document.getElementById('sb-overlay');
+    var h = document.getElementById('sb-hamburger');
+    if (s) s.classList.add('open');
+    if (o) o.classList.add('open');
+    if (h) h.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    var s = document.getElementById('mobile-sidebar');
+    var o = document.getElementById('sb-overlay');
+    var h = document.getElementById('sb-hamburger');
+    if (s) s.classList.remove('open');
+    if (o) o.classList.remove('open');
+    if (h) h.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // Expose globally
+  window.openSidebar  = openSidebar;
+  window.closeSidebar = closeSidebar;
+
+  // Attach listeners after DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    var ham = document.getElementById('sb-hamburger');
+    var ov  = document.getElementById('sb-overlay');
+    var cls = document.getElementById('sb-close');
+    if (ham) ham.addEventListener('click', openSidebar);
+    if (ov)  ov.addEventListener('click',  closeSidebar);
+    if (cls) cls.addEventListener('click',  closeSidebar);
+    // Mark active link
+    var path = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.sb-link').forEach(function(a) {
+      var href = (a.getAttribute('href') || '').split('/').pop().split('#')[0] || 'index.html';
+      if (href === path) a.classList.add('active');
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeSidebar();
+    });
+  });
+})();</script>
+<script>
+(function() {
+  function openSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.add('open');
+    if(o)o.classList.add('open');
+    if(h)h.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.remove('open');
+    if(o)o.classList.remove('open');
+    if(h)h.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  window.openSidebar=openSidebar;
+  window.closeSidebar=closeSidebar;
+  document.addEventListener('DOMContentLoaded',function(){
+    var ham=document.getElementById('sb-hamburger');
+    var ov=document.getElementById('sb-overlay');
+    if(ham)ham.addEventListener('click',openSidebar);
+    if(ov)ov.addEventListener('click',closeSidebar);
+    var path=window.location.pathname.split('/').pop()||'index.html';
+    document.querySelectorAll('.sb-link').forEach(function(a){
+      var href=(a.getAttribute('href')||'').split('/').pop().split('#')[0]||'index.html';
+      if(href===path)a.classList.add('active');
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
   });
 })();
 </script>
-
 </body>
 </html>

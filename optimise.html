@@ -239,7 +239,7 @@
       <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
       The PlanIt<span>Earth</span>
     </a>
-    <button class="sb-close" onclick="closeSidebar()" aria-label="Close menu">✕</button>
+    <button class="sb-close"  aria-label="Close menu">✕</button>
   </div>
   <nav class="sb-nav">
     <div class="sb-section-label">Main</div>
@@ -579,24 +579,503 @@ async function completePurchase() {
   }
 }
 </script>
+E html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Optimisation Report · ThePlanItEarth</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0D0F14; --sage: #3D6B4F; --amber: #D4841A; --red: #C0392B;
+      --mid: #8A8880; --mist: #E8E4DC; --paper: #F5F2EC; --white: #FFFFFF;
+      --bg2: #FAFAF8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--paper); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; background: var(--ink); border-bottom: 1px solid var(--mist);
+    }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+      color: var(--paper); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo img { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; }
+    .logo span { color: var(--sage); }
+    nav a.back { font-size: 13px; color: var(--mid); text-decoration: none; }
+    nav a.back:hover { color: var(--paper); }
+
+    /* SCREENS */
+    .screen { display: none; min-height: 100vh; padding-top: 80px; }
+    .screen.active { display: flex; }
+    .screen-center { align-items: center; justify-content: center; flex-direction: column; padding: 100px 24px 60px; }
+
+    /* CARDS */
+    .input-card {
+      background: var(--surface2); border-radius: 20px; padding: 40px 36px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06); width: 100%; max-width: 520px;
+    }
+    .input-card h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--mid); margin-bottom: 8px; margin-top: 18px; }
+    .text-input {
+      width: 100%; padding: 14px 16px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--ink);
+      color: var(--text); outline: none; transition: border .2s;
+    }
+    .text-input:focus { border-color: var(--sage); background: var(--surface2); }
+    .btn-go {
+      display: block; width: 100%; margin-top: 24px; padding: 16px;
+      background: var(--ink); color: white; border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background .2s, transform .15s; text-align: center;
+    }
+    .btn-go:hover { background: var(--sage); transform: translateY(-1px); }
+    .btn-go:disabled { opacity: .4; pointer-events: none; }
+    .privacy-note { font-size: 12px; color: var(--mid); margin-top: 12px; text-align: center; }
+    .error-msg { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+      border: 2px dashed var(--mist); border-radius: 16px; padding: 32px 24px;
+      text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 4px;
+    }
+    .upload-zone:hover, .upload-zone.drag { border-color: var(--sage); background: #F0F7F3; }
+    .upload-zone .up-icon { font-size: 40px; margin-bottom: 10px; }
+    .upload-zone h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .upload-zone p { font-size: 13px; color: var(--mid); }
+    #cv-file { display: none; }
+
+    /* COUNTRY GRID */
+    .country-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+    .country-btn {
+      padding: 12px 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+      background: var(--surface2); cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--paper); text-align: center; transition: all .15s; font-family: 'DM Sans', sans-serif;
+    }
+    .country-btn:hover { border-color: var(--sage); background: #F0F7F3; }
+    .country-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--sage); font-weight: 700; }
+
+    /* METHOD TOGGLE */
+    .method-toggle { display: flex; gap: 8px; margin-bottom: 20px; background: var(--mist); border-radius: 100px; padding: 4px; }
+    .method-tab {
+      flex: 1; padding: 10px; text-align: center; border: none; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer;
+      background: none; color: var(--mid); transition: all .2s;
+    }
+    .method-tab.active { background: var(--surface2); color: var(--paper); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+    /* PLAN CARDS */
+    .plan-cards { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+    .plan-card {
+      flex: 1; min-width: 160px; padding: 18px 16px; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; cursor: pointer; background: var(--surface2); transition: all .15s; text-align: left;
+    }
+    .plan-card:hover { border-color: var(--sage); }
+    .plan-card.selected { border-color: var(--sage); background: #F0F7F3; }
+    .plan-card .plan-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
+    .plan-card.bundle .plan-label { color: var(--amber); }
+    .plan-card.bundle.selected { border-color: var(--amber); background: #FFF8F0; }
+    .plan-card .plan-price { font-size: 22px; font-weight: 700; color: var(--paper); }
+    .plan-card .plan-desc { font-size: 11px; color: var(--mid); margin-top: 3px; }
+    .plan-card .plan-badge { display: inline-block; font-size: 10px; background: var(--amber); color: white; padding: 2px 8px; border-radius: 100px; margin-top: 6px; }
+
+    /* LOADING */
+    #screen-loading { align-items: center; justify-content: center; flex-direction: column; }
+    .orbit { position: relative; width: 90px; height: 90px; margin-bottom: 32px; }
+    .orbit-ring { position: absolute; border-radius: 50%; border: 2px solid transparent; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    .orbit-ring-1 { width: 90px; height: 90px; border-top-color: var(--sage); animation: spin 1.2s linear infinite; }
+    .orbit-ring-2 { width: 66px; height: 66px; border-right-color: var(--amber); animation: spin 1.8s linear infinite reverse; }
+    .orbit-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 24px; }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    .load-stage { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--paper); margin-bottom: 8px; }
+    .load-sub { font-size: 14px; color: var(--mid); }
+
+    /* STEP INDICATOR */
+    .step-bar { display: flex; gap: 6px; margin-bottom: 28px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mist); transition: background .3s; }
+    .step-dot.active { background: var(--sage); }
+    .step-dot.done { background: var(--sage); opacity: .4; }
+
+    @media (max-width: 600px) {
+      nav { padding: 10px 14px; }
+      .input-card { padding: 28px 20px; border-radius: 16px; }
+      .country-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .plan-cards { flex-direction: column; }
+    }
+
+
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">
+    <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth" />
+    The PlanIt<span style="color:var(--sage-lt,#7EC09A)">Earth</span>
+  </a>
+  <a href="index.html" class="back">← Back to home</a>
+</nav>
+
+<!-- ── MOBILE SIDEBAR ── -->
+
+
+
+<!-- ── SCREEN 1: INPUT METHOD ── -->
+<div class="screen screen-center active" id="screen-input">
+  <div class="input-card">
+    <div style="display:flex;gap:6px;margin-bottom:20px" id="step-bar">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+    </div>
+
+    <h2>Profile Optimisation Report</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 24px;line-height:1.6">
+      We'll analyse your CV or LinkedIn and generate a personalised report with a headline rewrite, CV bullet transformations, ATS keywords, and a positioning strategy — tailored to your target country.
+    </p>
+
+    <!-- Method toggle -->
+    <div class="method-toggle">
+      <button class="method-tab active" id="tab-cv" onclick="switchMethod('cv')">Upload CV</button>
+      <button class="method-tab" id="tab-li" onclick="switchMethod('linkedin')">LinkedIn URL</button>
+    </div>
+
+    <!-- CV upload -->
+    <div id="cv-section">
+      <div class="upload-zone" id="upload-zone"
+        onclick="document.getElementById('cv-file').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div class="up-icon" id="up-icon">📎</div>
+        <h3 id="up-title">Drop your CV here</h3>
+        <p id="up-sub">or click to browse · PDF, Word, or TXT · Max 5MB</p>
+      </div>
+      <input type="file" id="cv-file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile(this)" />
+    </div>
+
+    <!-- LinkedIn URL -->
+    <div id="li-section" style="display:none">
+      <input class="text-input" id="li-url" type="url"
+        placeholder="https://linkedin.com/in/yourname"
+        oninput="onLiInput(this.value)" />
+      <div id="li-hint" style="display:none;font-size:12px;color:var(--amber);margin-top:6px">
+        URL should look like: linkedin.com/in/your-name
+      </div>
+      <div style="margin-top:14px;padding:12px 14px;background:var(--mist);border-radius:10px;font-size:12px;color:var(--mid);line-height:1.6">
+        <strong style="color:var(--paper)">Set profile to public first:</strong>
+        LinkedIn → Me → Settings &amp; Privacy → Visibility → Public
+      </div>
+    </div>
+
+    <label class="field-label" for="user-name">Your name</label>
+    <input class="text-input" id="user-name" type="text" placeholder="Your name"
+      oninput="checkInputReady()" />
+
+    <button class="btn-go" id="btn-input-next" disabled onclick="goToContext()">
+      Continue →
+    </button>
+    <div class="privacy-note">🔒 Your data is only used to generate your report. Never stored.</div>
+    <div class="error-msg" id="input-error"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: COUNTRY + TARGET ── -->
+<div class="screen screen-center" id="screen-context">
+  <div class="input-card">
+    <div style="display:flex;gap:6px;margin-bottom:20px">
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <h2>Where are you applying?</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 20px;line-height:1.6">
+      CV norms vary significantly by country — length, photos, personal info, format. We tailor the report to local hiring expectations.
+    </p>
+
+    <label class="field-label">Target country</label>
+    <div class="country-grid">
+      <button class="country-btn" onclick="pickCountry('United Kingdom', this)">🇬🇧 UK</button>
+      <button class="country-btn" onclick="pickCountry('United States', this)">🇺🇸 USA</button>
+      <button class="country-btn" onclick="pickCountry('France', this)">🇫🇷 France</button>
+      <button class="country-btn" onclick="pickCountry('Germany', this)">🇩🇪 Germany</button>
+      <button class="country-btn" onclick="pickCountry('Netherlands', this)">🇳🇱 Netherlands</button>
+      <button class="country-btn" onclick="pickCountry('Canada', this)">🇨🇦 Canada</button>
+      <button class="country-btn" onclick="pickCountry('Australia', this)">🇦🇺 Australia</button>
+      <button class="country-btn" onclick="pickCountry('UAE', this)">🇦🇪 UAE</button>
+      <button class="country-btn" onclick="pickCountry('other', this)">🌍 Other</button>
+    </div>
+    <div id="other-country-wrap" style="display:none;margin-top:8px">
+      <input class="text-input" id="other-country-input" type="text" placeholder="Type your country…"
+        oninput="state.targetCountry = this.value.trim(); checkContextReady()" />
+    </div>
+
+    <label class="field-label" style="margin-top:20px">
+      Target company <span style="font-weight:300;color:var(--mid)">(optional)</span>
+    </label>
+    <input class="text-input" id="ctx-company" type="text"
+      placeholder="e.g. Spotify, HSBC, McKinsey — or leave blank" />
+
+    <label class="field-label" style="margin-top:14px">
+      Target role <span style="font-weight:300;color:var(--mid)">(optional)</span>
+    </label>
+    <input class="text-input" id="ctx-role" type="text"
+      placeholder="e.g. Senior Product Manager, Data Analyst" />
+
+    <button class="btn-go" id="btn-context-next" disabled onclick="goToPayment()">
+      Continue to Payment →
+    </button>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: PAYMENT ── -->
+<div class="screen screen-center" id="screen-payment">
+  <div class="input-card">
+    <div style="display:flex;gap:6px;margin-bottom:20px">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+    </div>
+
+    <h2>Get your report</h2>
+    <p style="font-size:14px;color:var(--mid);font-weight:300;margin:8px 0 20px;line-height:1.6">
+      Your personalised Profile Optimisation Report will be emailed as a PDF immediately after payment.
+    </p>
+
+    <!-- Plan selector -->
+    <div class="plan-cards">
+      <div class="plan-card selected" id="plan-opt" onclick="setPlan('opt-only')">
+        <div class="plan-label">Profile Optimisation</div>
+        <div class="plan-price"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€8</span><span style="font-size:22px;font-weight:700">€4.99</span></div>
+        <div class="plan-desc">LinkedIn rewrite · CV bullets · ATS keywords · Quick wins</div>
+      </div>
+      <div class="plan-card bundle" id="plan-bundle" onclick="setPlan('opt-bundle')">
+        <div class="plan-label">+ Career Brief</div>
+        <div class="plan-price"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€14</span><span style="font-size:22px;font-weight:700">€9.99</span></div>
+        <div class="plan-desc">Everything above + full AI career analysis PDF</div>
+        <div class="plan-badge">Best value</div>
+      </div>
+    </div>
+
+    <label class="field-label" for="pay-email">Email address</label>
+    <input class="text-input" id="pay-email" type="email" placeholder="you@example.com" />
+
+    <button class="btn-go" id="btn-pay" onclick="completePurchase()">
+      Continue to Payment →
+    </button>
+    <div class="privacy-note">🔒 Secure checkout via Stripe · PDF delivered instantly</div>
+    <div class="error-msg" id="pay-error"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN: LOADING ── -->
+<div class="screen screen-center" id="screen-loading">
+  <div class="orbit">
+    <div class="orbit-ring orbit-ring-1"></div>
+    <div class="orbit-ring orbit-ring-2"></div>
+    <div class="orbit-core">✏️</div>
+  </div>
+  <div class="load-stage" id="load-stage">Analysing your profile…</div>
+  <div class="load-sub">This takes about 20 seconds</div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const BACKEND_URL = 'https://theplanitearth-backend.vercel.app';
+
+const state = {
+  method: 'cv',
+  cvFile: null,
+  liUrl: '',
+  name: '',
+  email: '',
+  plan: 'opt-only',
+  targetCountry: '',
+  targetCompany: '',
+  targetRole: '',
+};
+
+// ── METHOD SWITCH ──
+function switchMethod(m) {
+  state.method = m;
+  document.getElementById('tab-cv').classList.toggle('active', m === 'cv');
+  document.getElementById('tab-li').classList.toggle('active', m === 'linkedin');
+  document.getElementById('cv-section').style.display  = m === 'cv' ? 'block' : 'none';
+  document.getElementById('li-section').style.display  = m === 'linkedin' ? 'block' : 'none';
+  checkInputReady();
+}
+
+// ── FILE HANDLING ──
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  state.cvFile = file;
+  document.getElementById('up-icon').textContent  = '✅';
+  document.getElementById('up-title').textContent = file.name;
+  document.getElementById('up-sub').textContent   = `${(file.size/1024).toFixed(0)} KB · Ready`;
+  checkInputReady();
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const dt = new DataTransfer(); dt.items.add(file);
+    document.getElementById('cv-file').files = dt.files;
+    handleFile({ files: [file] });
+  }
+}
+function onLiInput(val) {
+  state.liUrl = val.trim();
+  const ok = val.includes('linkedin.com/in/');
+  document.getElementById('li-hint').style.display = val && !ok ? 'block' : 'none';
+  checkInputReady();
+}
+function checkInputReady() {
+  const name = document.getElementById('user-name').value.trim();
+  const cvOk  = state.method === 'cv'       && !!state.cvFile;
+  const liOk  = state.method === 'linkedin' && state.liUrl.includes('linkedin.com/in/');
+  const ok    = name && (cvOk || liOk);
+  const btn   = document.getElementById('btn-input-next');
+  btn.disabled = !ok;
+}
+
+// ── COUNTRY SELECTION ──
+function pickCountry(val, el) {
+  state.targetCountry = val;
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  document.getElementById('other-country-wrap').style.display = val === 'other' ? 'block' : 'none';
+  if (val !== 'other') checkContextReady();
+}
+function checkContextReady() {
+  const hasCountry = state.targetCountry && state.targetCountry !== 'other'
+    || (state.targetCountry === 'other' && document.getElementById('other-country-input').value.trim());
+  const btn = document.getElementById('btn-context-next');
+  btn.disabled = !hasCountry;
+}
+
+// ── PLAN SELECTION ──
+function setPlan(plan) {
+  state.plan = plan;
+  document.getElementById('plan-opt').classList.toggle('selected',    plan === 'opt-only');
+  document.getElementById('plan-bundle').classList.toggle('selected', plan === 'opt-bundle');
+  const btn = document.getElementById('btn-pay');
+  btn.textContent = plan === 'opt-bundle'
+    ? 'Continue to Payment — €9.99 →'
+    : 'Continue to Payment — €4.99 →';
+}
+
+// ── NAVIGATION ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goToContext() {
+  state.name = document.getElementById('user-name').value.trim();
+  showScreen('screen-context');
+}
+
+function goToPayment() {
+  if (state.targetCountry === 'other') {
+    state.targetCountry = document.getElementById('other-country-input').value.trim();
+  }
+  state.targetCompany = document.getElementById('ctx-company').value.trim();
+  state.targetRole    = document.getElementById('ctx-role').value.trim();
+  showScreen('screen-payment');
+}
+
+// ── CHECKOUT ──
+async function completePurchase() {
+  const email = document.getElementById('pay-email').value.trim();
+  const errEl = document.getElementById('pay-error');
+  const btn   = document.getElementById('btn-pay');
+
+  errEl.style.display = 'none';
+  if (!email || !email.includes('@')) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.textContent = 'Redirecting…'; btn.disabled = true;
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:           state.name,
+        email,
+        plan:           state.plan,
+        inputMethod:    state.method,
+        targetCountry:  state.targetCountry,
+        targetCompany:  state.targetCompany,
+        targetRole:     state.targetRole,
+        // Pass minimal answers for the brief (only used if bundle)
+        answers:        { profession_cat: 'other', job_title: '', experience: 'mid', tasks: 'judgment', ai_exposure: 'aware', concern: 'growth' },
+        scores:         { automation: 55, augmentation: 70, income: 60, regulatory: 55, skill_pressure: 65, ai_adoption: 55 },
+        archetype:      { name: 'Strategic Adapter' },
+        profession:     state.targetRole || 'Professional',
+        cvQualityIssues: [],
+        // Pass the CV/LinkedIn content via the parse step at webhook time
+        liUrl:          state.liUrl || '',
+        sourceFromOptimise: true,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || 'Checkout failed');
+    window.location.href = data.url;
+  } catch (err) {
+    errEl.textContent = 'Something went wrong — please try again.';
+    errEl.style.display = 'block';
+    btn.textContent = state.plan === 'opt-bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €4.99 →';
+    btn.disabled = false;
+  }
+}
+</script>
 <script>
-// ── SIDEBAR ──────────────────────────────────────────────────────────────────
-function openSidebar() {
-  document.getElementById('mobile-sidebar').classList.add('open');
-  document.getElementById('sb-overlay').classList.add('open');
-  document.getElementById('sb-hamburger').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSidebar() {
-  document.getElementById('mobile-sidebar').classList.remove('open');
-  document.getElementById('sb-overlay').classList.remove('open');
-  document.getElementById('sb-hamburger').classList.remove('open');
-  document.body.style.overflow = '';
-}
-// Close on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-// Mark active link
 (function() {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.get
+  function openSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.add('open');
+    if(o)o.classList.add('open');
+    if(h)h.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSidebar() {
+    var s=document.getElementById('mobile-sidebar');
+    var o=document.getElementById('sb-overlay');
+    var h=document.getElementById('sb-hamburger');
+    if(s)s.classList.remove('open');
+    if(o)o.classList.remove('open');
+    if(h)h.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  window.openSidebar=openSidebar;
+  window.closeSidebar=closeSidebar;
+  document.addEventListener('DOMContentLoaded',function(){
+    var ham=document.getElementById('sb-hamburger');
+    var ov=document.getElementById('sb-overlay');
+    if(ham)ham.addEventListener('click',openSidebar);
+    if(ov)ov.addEventListener('click',closeSidebar);
+    var path=window.location.pathname.split('/').pop()||'index.html';
+    document.querySelectorAll('.sb-link').forEach(function(a){
+      var href=(a.getAttribute('href')||'').split('/').pop().split('#')[0]||'index.html';
+      if(href===path)a.classList.add('active');
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+  });
+})();
+</script>
+</body>
+</html>
