@@ -127,14 +127,20 @@
       font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400;
       color: var(--paper);
     }
-    .option-btn:hover { border-color: var(--sage); background: #F0F7F3; transform: translateX(4px); }
-    .option-btn.selected { border-color: var(--sage); background: #F0F7F3; }
+    .option-btn:hover {
+      border-color: var(--sage); background: #F0F7F3; color: var(--ink);
+      transform: translateX(4px);
+    }
+    .option-btn.selected { border-color: var(--sage); background: #F0F7F3; color: var(--ink); }
     .option-btn.selected .opt-letter { display: none; }
     .opt-letter {
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--mist); display: flex; align-items: center; justify-content: center;
       font-size: 13px; font-weight: 700; flex-shrink: 0;
       transition: background .15s, color .15s;
+    }
+    .option-btn:hover .opt-letter {
+      background: var(--sage); color: var(--paper);
     }
     .quiz-nav {
       display: flex; justify-content: space-between; align-items: center;
@@ -430,20 +436,98 @@
       margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
 
+    /* ── SHARE CARD (upgraded) ── */
     .share-card {
-      background: var(--surface2); border-radius: 20px; padding: 24px;
-      border: 1px solid rgba(255,255,255,.08);
+      background: var(--ink); border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,.10);
     }
-    .share-card h4 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .share-card p { font-size: 13px; color: var(--mid); font-weight: 300; margin-bottom: 16px; line-height: 1.5; }
-    .share-btn {
-      width: 100%; padding: 12px; border-radius: 100px;
-      border: 1px solid rgba(255,255,255,.08); background: var(--ink);
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      cursor: pointer; transition: border-color .2s, background .2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+    .share-card-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
     }
-    .share-btn:hover { border-color: var(--paper); background: var(--mist); }
+    .share-card-header h4 {
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      color: var(--paper); margin-bottom: 3px;
+    }
+    .share-card-header p { font-size: 12px; color: var(--mid); font-weight: 300; line-height: 1.4; }
+
+    /* Mini archetype preview card */
+    .share-preview {
+      margin: 14px 14px 0;
+      background: linear-gradient(135deg, #1a2e22 0%, #0f1c17 100%);
+      border-radius: 14px; padding: 16px 18px;
+      border: 1px solid rgba(61,107,79,.35);
+      position: relative; overflow: hidden;
+    }
+    .share-preview::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(61,107,79,.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .share-preview-logo {
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 800;
+      color: var(--sage-lt); letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 10px; opacity: .7;
+    }
+    .share-preview-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .share-preview-emoji { font-size: 32px; flex-shrink: 0; }
+    .share-preview-text { flex: 1; }
+    .share-preview-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--sage-lt); margin-bottom: 3px; opacity: .8;
+    }
+    .share-preview-name {
+      font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800;
+      color: white; letter-spacing: -0.3px; line-height: 1.1;
+    }
+    .share-preview-score {
+      text-align: right; flex-shrink: 0;
+    }
+    .share-preview-score-num {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      color: white; line-height: 1;
+    }
+    .share-preview-score-lbl {
+      font-size: 8px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 2px;
+    }
+    .share-preview-sub {
+      margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.45);
+      font-weight: 300; line-height: 1.4;
+    }
+    .share-preview-url {
+      margin-top: 8px; font-size: 10px; color: var(--sage-lt);
+      font-weight: 600; letter-spacing: .5px;
+    }
+
+    /* Social share buttons grid */
+    .share-socials {
+      padding: 14px 14px 14px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .share-social-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 13px; border-radius: 10px; border: none;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 600; transition: transform .15s, opacity .15s;
+      text-decoration: none; color: white;
+    }
+    .share-social-btn:hover { transform: translateY(-2px); opacity: .88; }
+    .share-social-btn svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+    .ssb-x        { background: #000; border: 1px solid rgba(255,255,255,.15); }
+    .ssb-linkedin { background: #0077B5; }
+    .ssb-whatsapp { background: #25D366; }
+    .ssb-facebook { background: #1877F2; }
+    .ssb-copy {
+      grid-column: span 2; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1); color: var(--paper);
+      justify-content: center; font-size: 13px;
+    }
+    .ssb-copy:hover { background: rgba(255,255,255,.1); transform: none; }
+    .ssb-copy.copied { background: rgba(61,107,79,.25); border-color: var(--sage); color: var(--sage-lt); }
 
     /* ── PAYMENT SCREEN ── */
     #screen-payment {
@@ -853,7 +937,7 @@
   </div>
   <div class="sb-links">
     <div class="sb-cat">Main</div>
-    <a href="index.html" class="sb-a"><span class="sb-icon">�</span>Home</a>
+    <a href="index.html" class="sb-a"><span class="sb-icon">�</span>Home</a>
     <a href="quiz.html" class="sb-a"><span class="sb-icon">?</span>Analyse My Career</a>
     <a href="optimise.html" class="sb-a"><span class="sb-icon">?</span>Profile Optimisation</a>
     <div class="sb-hr"></div>
@@ -1176,10 +1260,54 @@
         <div class="secure-note">🔒 Secure checkout · Instant delivery</div>
       </div>
 
+      <!-- ── SHARE CARD ── -->
       <div class="share-card">
-        <h4>Know someone who should see this?</h4>
-        <p>Share the free preview. Help them plan ahead too.</p>
-        <button class="share-btn" onclick="shareResult()">📤 Share my archetype</button>
+        <div class="share-card-header">
+          <h4>Know someone who should see this?</h4>
+          <p>Share your archetype — help them plan ahead too.</p>
+        </div>
+
+        <!-- Mini preview of what gets shared -->
+        <div class="share-preview">
+          <div class="share-preview-logo">PlanItEarth · Career Analysis</div>
+          <div class="share-preview-row">
+            <div class="share-preview-emoji" id="share-emoji">🧭</div>
+            <div class="share-preview-text">
+              <div class="share-preview-label">My Career Archetype</div>
+              <div class="share-preview-name" id="share-arch-name">Strategic Adapter</div>
+            </div>
+            <div class="share-preview-score">
+              <div class="share-preview-score-num" id="share-score-num">72</div>
+              <div class="share-preview-score-lbl">Automation</div>
+            </div>
+          </div>
+          <div class="share-preview-sub" id="share-arch-desc">Balancing AI opportunity with human-centred work.</div>
+          <div class="share-preview-url">theplanitearth.com/quiz</div>
+        </div>
+
+        <!-- Social platform buttons -->
+        <div class="share-socials">
+          <button class="share-social-btn ssb-x" onclick="shareToX()">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117Z"/></svg>
+            Post on X
+          </button>
+          <button class="share-social-btn ssb-linkedin" onclick="shareToLinkedIn()">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </button>
+          <button class="share-social-btn ssb-whatsapp" onclick="shareToWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            WhatsApp
+          </button>
+          <button class="share-social-btn ssb-facebook" onclick="shareToFacebook()">
+            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </button>
+          <button class="share-social-btn ssb-copy" id="copy-link-btn" onclick="copyShareLink()">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+            Copy link
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2440,6 +2568,16 @@ function showResults() {
     `specific to your role, and 1, 3 & 5-year horizon forecasts — all generated by AI trained on ` +
     `WEF, McKinsey, and O*NET labour data.`;
 
+  // ── Populate share preview card ──
+  const shareEmoji  = document.getElementById('share-emoji');
+  const shareAName  = document.getElementById('share-arch-name');
+  const shareADesc  = document.getElementById('share-arch-desc');
+  const shareAScore = document.getElementById('share-score-num');
+  if (shareEmoji)  shareEmoji.textContent  = archetype.emoji || '🧭';
+  if (shareAName)  shareAName.textContent  = archetype.name  || 'Strategic Adapter';
+  if (shareADesc)  shareADesc.textContent  = archetype.tagline || archetype.desc || '';
+  if (shareAScore) shareAScore.textContent = autoPct + '%';
+
   setProgress(100, 'Analysis complete', 'Step 4 of 4');
   showScreen('screen-results');
 
@@ -2579,16 +2717,42 @@ function confirmDelivery() {
 }
 
 // ── SHARE ──
-function shareResult() {
-  const text = `I just found out I'm "${state.archetype.name || 'a Strategic Adapter'}" on PlanItEarth — my personalised AI career analysis. Find out yours:`;
-  const url  = 'https://theplanitearth.com/quiz.html';
-  if (navigator.share) {
-    navigator.share({ title: 'My Career Archetype — PlanItEarth', text, url });
-  } else {
-    navigator.clipboard.writeText(text + ' ' + url)
-      .then(() => alert('Link copied to clipboard! Share it with your network.'));
-  }
+function getShareText() {
+  const name = state.archetype?.name || 'a Strategic Adapter';
+  const score = state.scores ? Math.round(state.scores.automation) : 72;
+  return `I just found out I'm a "${name}" on PlanItEarth 🌍 — my automation exposure score: ${score}%. Find yours:`;
 }
+const SHARE_URL = 'https://theplanitearth.com/quiz.html';
+
+function shareToX() {
+  const text = encodeURIComponent(getShareText());
+  const url  = encodeURIComponent(SHARE_URL);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
+}
+function shareToLinkedIn() {
+  const url = encodeURIComponent(SHARE_URL);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=500');
+}
+function shareToWhatsApp() {
+  const text = encodeURIComponent(getShareText() + ' ' + SHARE_URL);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+function shareToFacebook() {
+  const url = encodeURIComponent(SHARE_URL);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+}
+function copyShareLink() {
+  const btn = document.getElementById('copy-link-btn');
+  navigator.clipboard.writeText(getShareText() + ' ' + SHARE_URL).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg> Copy link`;
+    }, 2500);
+  }).catch(() => alert('Could not copy. URL: ' + SHARE_URL));
+}
+function shareResult() { shareToX(); } // fallback for delivery screen link
 
 // ── INIT ──
 (function init() {
@@ -2635,6 +2799,4 @@ function shareResult() {
 </script>
 </body>
 </html>
-
-
 
