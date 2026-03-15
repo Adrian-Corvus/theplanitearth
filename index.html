@@ -457,10 +457,10 @@
     /* Urgency */
     .urgency-section { background: var(--surface); }
     .urgency-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; background: var(--mist); border-radius: 20px; overflow: hidden; }
-    .urgency-card { padding: 36px 24px; background: var(--surface); transition: background .2s; }
+    .urgency-card { padding: clamp(18px, 3vw, 36px) clamp(14px, 3vw, 24px); background: var(--surface); transition: background .2s; }
     .urgency-card:hover { background: var(--surface2); }
-    .urgency-stat { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: var(--sage-lt); line-height: 1; margin-bottom: 14px; letter-spacing: -2px; }
-    .urgency-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; font-weight: 300; }
+    .urgency-stat { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 48px); font-weight: 800; color: var(--sage-lt); line-height: 1; margin-bottom: 10px; letter-spacing: -2px; }
+    .urgency-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; font-weight: 300; }
 
     /* Methodology */
     .methodology-section { background: var(--ink); }
@@ -626,7 +626,8 @@
       .map-section { padding: 60px 20px; }
       .map-dash-body { grid-template-columns: 1fr; }
       .map-sidebar { display: none; }
-      .map-dash-bottom { grid-template-columns: repeat(3,1fr); }
+      .map-dash-bottom { grid-template-columns: repeat(2,1fr); }
+      .map-dash-bottom .mdb-stat:last-child { grid-column: 1 / -1; }
       .section { padding: 60px 20px; }
       .steps-grid { grid-template-columns: 1fr; }
       .methods-grid { grid-template-columns: 1fr; }
@@ -795,7 +796,7 @@
     <div class="sb-divider"></div>
     <div class="sb-section-label">Other</div>
     <a href="/#faq-section" class="sb-link"><span class="sb-icon">❓</span>FAQ</a>
-    <a href="mailto:hello@theplanitearth.com" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
+    <a href="/cdn-cgi/l/email-protection#573f323b3b3817233f32273b36393e23323625233f7934383a" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
   </nav>
   <div class="sb-cta-wrap">
     <a href="quiz.html" class="sb-cta">Analyse My Career — Free →</a>
@@ -1125,7 +1126,7 @@
 <!-- MAP TOOLTIP -->
 <div id="map-tt" class="map-tt"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="data.js"></script>
 <script>
 // Live counter
@@ -1431,11 +1432,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar
 (function() {
   const path = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sb-link').forEach(a => {
-    const href = a.getAttribute('href').split('/').pop().split('#')[0] || 'index.html';
-    if (href === path) a.classList.add('active');
-  });
-})();
-</script>
-
-</body>
-</html>
+    const href = a.get
