@@ -168,146 +168,170 @@
     footer a:hover{color:var(--paper);}
     .fl{display:flex;gap:20px;}
     @media(max-width:900px){.hero{padding:95px 20px 36px;}.chart-section,.cards-section,.quad-section{padding-left:20px;padding-right:20px;}.upsell{margin:0 20px 32px;}.cbar-row{grid-template-columns:100px 1fr 30px;}.scgrid{grid-template-columns:1fr;}.quad-grid{grid-template-columns:1fr;}footer{padding:32px 20px;}}
-    /* ── MOBILE SIDEBAR ── */
-    .hamburger {
-      display: none; flex-direction: column; justify-content: center;
-      gap: 5px; cursor: pointer; padding: 8px; z-index: 500; position: relative;
-      background: none; border: none; flex-shrink: 0;
-    }
-    .hamburger span {
-      display: block; width: 22px; height: 2px;
-      background: var(--paper,#F5F2EC); border-radius: 2px;
-      transition: all .3s cubic-bezier(.22,1,.36,1);
-    }
-    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* Overlay */
-    .sidebar-overlay {
-      display: none; position: fixed; inset: 0; z-index: 250;
-      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
-      opacity: 0; transition: opacity .3s;
+    /* ══════════════════════════════════
+       NAV — clean, no conflicts
+    ══════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 48px;
+      background: rgba(13,15,20,.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .sidebar-overlay.open { display: block; opacity: 1; }
-
-    /* Drawer */
-    .mobile-sidebar {
-      position: fixed; top: 0; right: 0; bottom: 0; z-index: 260;
-      width: min(300px, 85vw);
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
+      color: #F5F2EC; text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .logo img { width: 32px; height: 32px; object-fit: contain; }
+    .logo-earth { color: #7EC09A; }
+    .nav-desktop {
+      display: flex; gap: 28px; align-items: center;
+    }
+    .nav-desktop a {
+      color: rgba(245,242,236,.55); text-decoration: none;
+      font-size: 13px; font-weight: 500; transition: color .2s;
+    }
+    .nav-desktop a:hover { color: #F5F2EC; }
+    .nav-desktop .nav-cta {
+      background: #4A8B62; color: white !important;
+      padding: 9px 20px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; white-space: nowrap;
+    }
+    .nav-desktop .nav-cta:hover { background: #3D7A53; }
+    /* Hamburger — only on mobile */
+    .nav-ham {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none;
+      padding: 6px; z-index: 1001;
+    }
+    .nav-ham span {
+      display: block; width: 24px; height: 2px;
+      background: #F5F2EC; border-radius: 2px;
+      transition: all .3s;
+    }
+    @media (max-width: 900px) {
+      nav { padding: 12px 16px; }
+      .logo { font-size: 15px; }
+      .logo img { width: 26px; height: 26px; }
+      .nav-desktop { display: none; }
+      .nav-ham { display: flex; }
+    }
+    /* ── SIDEBAR ── */
+    .sb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1998;
+      background: rgba(0,0,0,.65); backdrop-filter: blur(3px);
+    }
+    .sb-overlay.open { display: block; }
+    .sb-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 1999;
+      width: min(300px, 82vw);
       background: #131620;
       border-left: 1px solid rgba(255,255,255,.08);
       transform: translateX(100%);
-      transition: transform .35s cubic-bezier(.22,1,.36,1);
+      transition: transform .3s cubic-bezier(.22,1,.36,1);
       display: flex; flex-direction: column;
-      padding: 0;
       overflow-y: auto;
     }
-    .mobile-sidebar.open { transform: translateX(0); }
-
-    /* Sidebar header */
-    .sb-header {
+    .sb-drawer.open { transform: translateX(0); }
+    .sb-top {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 20px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,.07);
     }
     .sb-logo {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
-      color: var(--paper,#F5F2EC); text-decoration: none;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px;
+      color: #F5F2EC; text-decoration: none;
       display: flex; align-items: center; gap: 8px;
     }
-    .sb-logo img { width: 26px; height: 26px; object-fit: contain; }
-    .sb-logo span { color: var(--sage-lt,#7EC09A); }
-    .sb-close {
+    .sb-logo img { width: 24px; height: 24px; object-fit: contain; }
+    .sb-x {
       background: none; border: none; color: rgba(245,242,236,.4);
-      font-size: 22px; cursor: pointer; padding: 4px; line-height: 1;
-      transition: color .2s;
+      font-size: 22px; cursor: pointer; line-height: 1; padding: 4px;
     }
-    .sb-close:hover { color: var(--paper,#F5F2EC); }
-
-    /* Sidebar nav links */
-    .sb-nav { display: flex; flex-direction: column; padding: 12px 0; flex: 1; }
-    .sb-section-label {
+    .sb-x:hover { color: #F5F2EC; }
+    .sb-links { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+    .sb-cat {
       font-size: 9px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: rgba(245,242,236,.3);
-      padding: 14px 20px 6px;
+      text-transform: uppercase; color: rgba(245,242,236,.25);
+      padding: 14px 18px 4px;
     }
-    .sb-link {
+    .sb-a {
       display: flex; align-items: center; gap: 10px;
-      padding: 12px 20px; font-size: 15px; font-weight: 500;
+      padding: 13px 18px; font-size: 15px; font-weight: 500;
       color: rgba(245,242,236,.7); text-decoration: none;
-      transition: all .15s; border-left: 2px solid transparent;
+      border-left: 2px solid transparent; transition: all .15s;
     }
-    .sb-link:hover, .sb-link.active {
-      color: var(--paper,#F5F2EC);
-      background: rgba(255,255,255,.04);
-      border-left-color: var(--sage-lt,#7EC09A);
+    .sb-a:hover, .sb-a.active {
+      color: #F5F2EC; background: rgba(255,255,255,.04);
+      border-left-color: #7EC09A;
     }
-    .sb-link .sb-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
-    .sb-divider { height: 1px; background: rgba(255,255,255,.06); margin: 8px 0; }
-
-    /* CTA in sidebar */
-    .sb-cta-wrap { padding: 16px 20px 24px; }
-    .sb-cta {
+    .sb-icon { width: 20px; text-align: center; flex-shrink: 0; }
+    .sb-hr { height: 1px; background: rgba(255,255,255,.06); margin: 6px 0; }
+    .sb-bottom { padding: 14px 18px 24px; }
+    .sb-cta-btn {
       display: block; text-align: center;
-      background: var(--sage,#4A8B62); color: white;
-      padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700;
-      text-decoration: none; transition: background .2s;
+      background: #4A8B62; color: white;
+      padding: 13px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
     }
-    .sb-cta:hover { background: #3D7A53; }
-
-    @media (max-width: 900px) {
-      .hamburger { display: flex; }
-    }
+    .sb-cta-btn:hover { background: #3D7A53; }
 
   </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><img src="ThePlanItEarthLogoW.png"/>The PlanIt<span style="color:var(--sage-lt,#7EC09A)">Earth</span></a>
-  <button class="hamburger" id="sb-hamburger" onclick="openSidebar()" aria-label="Open menu">
+  <a href="/" class="logo">
+    <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
+    The PlanIt<span class="logo-earth">Earth</span>
+  </a>
+  <div class="nav-desktop">
+    <a href="index-professions.html">Professions</a>
+    <a href="index-sectors.html">Sectors</a>
+    <a href="index-countries.html">Countries</a>
+    <a href="index-deep.html" style="color:#F5C87A">Deep Index ✦</a>
+    <a href="quiz.html" class="nav-cta">Analyse My Career →</a>
+  </div>
+  <button class="nav-ham" id="nav-ham" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
-  <div class="nav-r">
-    <a href="index-professions.html">Professions</a>
-    <a href="index-sectors.html" class="active">Sectors</a>
-    <a href="index-countries.html">Countries</a>
-    <a href="index-deep.html" style="color:var(--amber);font-weight:600">Deep Index ✦</a>
-    <a href="quiz.html" class="nav-cta">Get My Brief →</a>
-  </div>
 </nav>
 
-<!-- ── MOBILE SIDEBAR ── -->
-<div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
-<div class="mobile-sidebar" id="mobile-sidebar">
-  <div class="sb-header">
+<!-- MOBILE SIDEBAR -->
+<div class="sb-overlay" id="sb-overlay"></div>
+<div class="sb-drawer" id="sb-drawer">
+  <div class="sb-top">
     <a href="/" class="sb-logo">
       <img src="ThePlanItEarthLogoW.png" alt="ThePlanItEarth"/>
-      The PlanIt<span>Earth</span>
+      The PlanIt<span style="color:#7EC09A">Earth</span>
     </a>
-    <button class="sb-close"  aria-label="Close menu">✕</button>
+    <button class="sb-x" id="sb-x">✕</button>
   </div>
-  <nav class="sb-nav">
-    <div class="sb-section-label">Main</div>
-    <a href="/" class="sb-link"><span class="sb-icon">🏠</span>Home</a>
-    <a href="/#how-it-works" class="sb-link"><span class="sb-icon">⚙️</span>How it works</a>
-    <a href="quiz.html" class="sb-link"><span class="sb-icon">🎯</span>Analyse My Career</a>
-    <a href="optimise.html" class="sb-link"><span class="sb-icon">✏️</span>Profile Optimisation</a>
-    <div class="sb-divider"></div>
-    <div class="sb-section-label">AI Risk Index</div>
-    <a href="index-professions.html" class="sb-link"><span class="sb-icon">👤</span>185 Professions</a>
-    <a href="index-sectors.html" class="sb-link"><span class="sb-icon">🏭</span>9 Sectors</a>
-    <a href="index-countries.html" class="sb-link"><span class="sb-icon">🌍</span>Countries + Map</a>
-    <a href="index-deep.html" class="sb-link"><span class="sb-icon">✦</span>Deep Index</a>
-    <div class="sb-divider"></div>
-    <div class="sb-section-label">Other</div>
-    <a href="/#faq-section" class="sb-link"><span class="sb-icon">❓</span>FAQ</a>
-    <a href="/cdn-cgi/l/email-protection#670f020b0b0827130f02170b06090e13020615130f4904080a" class="sb-link"><span class="sb-icon">✉️</span>Contact</a>
-  </nav>
-  <div class="sb-cta-wrap">
-    <a href="quiz.html" class="sb-cta">Analyse My Career — Free →</a>
+  <div class="sb-links">
+    <div class="sb-cat">Main</div>
+    <a href="/" class="sb-a"><span class="sb-icon">🏠</span>Home</a>
+    <a href="quiz.html" class="sb-a"><span class="sb-icon">🎯</span>Analyse My Career</a>
+    <a href="optimise.html" class="sb-a"><span class="sb-icon">✏️</span>Profile Optimisation</a>
+    <div class="sb-hr"></div>
+    <div class="sb-cat">AI Risk Index</div>
+    <a href="index-professions.html" class="sb-a"><span class="sb-icon">👤</span>185 Professions</a>
+    <a href="index-sectors.html" class="sb-a"><span class="sb-icon">🏭</span>9 Sectors</a>
+    <a href="index-countries.html" class="sb-a"><span class="sb-icon">🌍</span>Countries + Map</a>
+    <a href="index-deep.html" class="sb-a"><span class="sb-icon">✦</span>Deep Index</a>
+    <div class="sb-hr"></div>
+    <a href="/#faq-section" class="sb-a"><span class="sb-icon">❓</span>FAQ</a>
+    <a href="mailto:hello@theplanitearth.com" class="sb-a"><span class="sb-icon">✉️</span>Contact</a>
+  </div>
+  <div class="sb-bottom">
+    <a href="quiz.html" class="sb-cta-btn">Analyse My Career — Free →</a>
   </div>
 </div>
+
+
+
 
 
 <div class="hero">
@@ -505,41 +529,36 @@ document.getElementById('cards').innerHTML=sorted.map((s,i)=>{
   </a>`;
 }).join('');
 </script>
+
+
 <script>
-(function() {
-  function openSidebar() {
-    var s=document.getElementById('mobile-sidebar');
-    var o=document.getElementById('sb-overlay');
-    var h=document.getElementById('sb-hamburger');
-    if(s)s.classList.add('open');
-    if(o)o.classList.add('open');
-    if(h)h.classList.add('open');
+(function(){
+  var ham = document.getElementById('nav-ham');
+  var overlay = document.getElementById('sb-overlay');
+  var drawer = document.getElementById('sb-drawer');
+  var closeX = document.getElementById('sb-x');
+  function open() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
     document.body.style.overflow='hidden';
   }
-  function closeSidebar() {
-    var s=document.getElementById('mobile-sidebar');
-    var o=document.getElementById('sb-overlay');
-    var h=document.getElementById('sb-hamburger');
-    if(s)s.classList.remove('open');
-    if(o)o.classList.remove('open');
-    if(h)h.classList.remove('open');
+  function close() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
     document.body.style.overflow='';
   }
-  window.openSidebar=openSidebar;
-  window.closeSidebar=closeSidebar;
-  document.addEventListener('DOMContentLoaded',function(){
-    var ham=document.getElementById('sb-hamburger');
-    var ov=document.getElementById('sb-overlay');
-    if(ham)ham.addEventListener('click',openSidebar);
-    if(ov)ov.addEventListener('click',closeSidebar);
-    var path=window.location.pathname.split('/').pop()||'index.html';
-    document.querySelectorAll('.sb-link').forEach(function(a){
-      var href=(a.getAttribute('href')||'').split('/').pop().split('#')[0]||'index.html';
-      if(href===path)a.classList.add('active');
-    });
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+  if(ham) ham.addEventListener('click', open);
+  if(overlay) overlay.addEventListener('click', close);
+  if(closeX) closeX.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  // Active link highlight
+  var path = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.sb-a').forEach(function(a){
+    var h = (a.getAttribute('href')||'').split('/').pop().split('#')[0] || 'index.html';
+    if(h===path) a.classList.add('active');
   });
 })();
 </script>
+
 </body>
 </html>
