@@ -129,7 +129,7 @@
     }
     .option-btn:hover { border-color: var(--sage); background: #F0F7F3; transform: translateX(4px); }
     .option-btn.selected { border-color: var(--sage); background: #F0F7F3; }
-    .option-btn.selected .opt-letter { background: var(--sage); color: white; }
+    .option-btn.selected .opt-letter { display: none; }
     .opt-letter {
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--mist); display: flex; align-items: center; justify-content: center;
@@ -285,7 +285,29 @@
       line-height: 1.05;
     }
     .results-profession {
-      font-size: 18px; color: rgba(245,242,236,.6); font-weight: 300; margin-bottom: 40px;
+      font-size: 18px; color: rgba(245,242,236,.6); font-weight: 300; margin-bottom: 32px;
+    }
+    .results-hero-row {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .results-big-score {
+      text-align: right; flex-shrink: 0;
+    }
+    .rbs-num {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(64px, 8vw, 100px);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -4px;
+    }
+    .rbs-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(245,242,236,.45);
+      text-align: right; margin-top: 4px;
+    }
+    .rbs-sub {
+      font-size: 12px; color: rgba(245,242,236,.35);
+      text-align: right; margin-top: 2px;
     }
 
     .archetype-display {
@@ -328,8 +350,8 @@
     /* Tasks preview */
     .tasks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .task-group { border-radius: 14px; padding: 20px; }
-    .task-group.risk { background: #FDF0EE; }
-    .task-group.safe { background: #EEF5F1; }
+    .task-group.risk { background: rgba(192,57,43,.12); border: 1px solid rgba(192,57,43,.25); }
+    .task-group.safe { background: rgba(61,107,79,.12); border: 1px solid rgba(61,107,79,.25); }
     .task-group-label {
       font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; margin-bottom: 14px;
@@ -339,7 +361,7 @@
     .task-item {
       display: flex; align-items: flex-start; gap: 8px;
       font-size: 13px; font-weight: 400; margin-bottom: 10px;
-      color: var(--paper);
+      color: rgba(245,242,236,.85);
     }
     .task-item:last-child { margin-bottom: 0; }
 
@@ -946,8 +968,17 @@
   <!-- Dark hero -->
   <div class="results-hero">
     <div class="results-eyebrow">Your Career Intelligence Report</div>
-    <div class="results-name" id="r-name">Your Analysis</div>
-    <div class="results-profession" id="r-profession">Loading...</div>
+    <div class="results-hero-row">
+      <div>
+        <div class="results-name" id="r-name">Your Analysis</div>
+        <div class="results-profession" id="r-profession">Loading...</div>
+      </div>
+      <div class="results-big-score">
+        <div class="rbs-num" id="r-auto-pct" style="color:#F5876A">—</div>
+        <div class="rbs-label">AI Replacement<br>Probability</div>
+        <div class="rbs-sub" id="r-auto-sub"></div>
+      </div>
+    </div>
     <div class="archetype-display">
       <div class="arch-emoji" id="r-arch-emoji">🧭</div>
       <div>
@@ -1084,7 +1115,7 @@
   <div style="max-width:520px;width:100%;padding:0 16px">
 
     <!-- Upsell alert (shown only for CV/LinkedIn inputs) -->
-    <div id="upsell-alert" style="display:none;margin-bottom:20px;border-radius:16px;overflow:hidden;border:2px solid var(--amber)">
+    <div id="upsell-alert" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1.5px solid var(--amber)">
       <div style="background:var(--amber);padding:14px 20px;display:flex;align-items:center;gap:10px">
         <span style="font-size:20px">⚠️</span>
         <strong style="color:white;font-size:14px" id="upsell-alert-title">Your profile could be significantly improved</strong>
@@ -1115,10 +1146,10 @@
     </div>
 
     <!-- Main form -->
-    <div class="input-card" style="padding:32px 28px">
-      <h2 style="font-size:22px;margin-bottom:6px">Almost there</h2>
-      <p style="font-size:13px;color:var(--mid);font-weight:300;margin-bottom:24px;line-height:1.6">
-        We'll send your brief to your inbox instantly after payment.
+    <div class="input-card" style="padding:28px">
+      <h2 style="font-size:20px;margin-bottom:4px">Almost there</h2>
+      <p style="font-size:12px;color:var(--mid);font-weight:300;margin-bottom:20px;line-height:1.6">
+        Enter your details and we'll send your brief instantly.
       </p>
 
       <div style="margin-bottom:16px">
@@ -1797,12 +1828,11 @@ function renderQuestion(idx) {
     setTimeout(() => inp.focus(), 100);
   } else {
     // Multiple choice
-    const letters = ['A','B','C','D','E','F','G','H'];
     q.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       if (state.answers[q.id] === opt.value) btn.classList.add('selected');
-      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt.label}`;
+      btn.innerHTML = opt.label;
       btn.onclick = () => selectOption(q.id, opt.value, btn);
       container.appendChild(btn);
     });
@@ -1812,7 +1842,7 @@ function renderQuestion(idx) {
     if (!noOther.includes(q.id)) {
       const otherBtn = document.createElement('button');
       otherBtn.className = 'option-btn' + (state.answers[q.id] === 'other_typed' ? ' selected' : '');
-      otherBtn.innerHTML = `<span class="opt-letter">${letters[q.options.length]}</span>Other — I'll describe it`;
+      otherBtn.innerHTML = 'Other — I\'ll describe it';
       otherBtn.onclick = () => selectOption(q.id, 'other_typed', otherBtn);
       container.appendChild(otherBtn);
 
@@ -2272,6 +2302,19 @@ function showResults() {
   document.getElementById('r-arch-emoji').textContent = archetype.emoji;
   document.getElementById('r-arch-name').textContent  = archetype.name;
   document.getElementById('r-arch-desc').textContent  = archetype.desc;
+
+  // Big replacement probability in hero
+  const autoPct = Math.round(scores.automation);
+  const autoEl  = document.getElementById('r-auto-pct');
+  const autoSub = document.getElementById('r-auto-sub');
+  if (autoEl) {
+    autoEl.textContent = autoPct + '%';
+    autoEl.style.color = autoPct >= 65 ? '#F5876A' : autoPct >= 35 ? '#F5C87A' : '#7EC09A';
+  }
+  if (autoSub) {
+    autoSub.textContent = autoPct >= 65 ? 'High risk' : autoPct >= 35 ? 'Medium risk' : 'Low risk';
+    autoSub.style.color = autoPct >= 65 ? '#F5876A' : autoPct >= 35 ? '#F5C87A' : '#7EC09A';
+  }
 
   // Metrics
   const metricDefs = [
