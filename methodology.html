@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Methodology · The PlanIt Earth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:     #0D0F14;
+      --paper:   #F5F2EC;
+      --sage:    #3D6B4F;
+      --sage-lt: #C8DDD0;
+      --amber:   #D4841A;
+      --mist:    #E8E4DC;
+      --mid:     #8A8880;
+      --purple:  #7B5EA7;
+    }
+    html, body { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--paper); overflow-x: hidden; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--paper); text-decoration: none; }
+    .logo span { color: var(--sage); }
+    .topbar-back { font-size: 13px; color: var(--mid); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+    .topbar-back:hover { color: var(--paper); }
+
+    /* ── HERO ── */
+    .hero { padding: 130px 24px 0; max-width: 860px; margin: 0 auto; position: relative; }
+    .hero::after {
+      content: ''; position: absolute; top: 80px; right: -100px; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(61,107,79,.18) 0%, transparent 70%); pointer-events: none;
+    }
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sage); margin-bottom: 16px; }
+    .hero-title { font-family: 'Syne', sans-serif; font-size: clamp(36px, 5vw, 62px); font-weight: 800; letter-spacing: -2.5px; line-height: 1.03; margin-bottom: 20px; }
+    .hero-title em { font-style: normal; color: var(--sage-lt); }
+    .hero-sub { font-size: 17px; color: rgba(245,242,236,.6); font-weight: 300; line-height: 1.7; max-width: 600px; margin-bottom: 52px; }
+
+    .stats-strip { display: flex; border: 1px solid rgba(255,255,255,.08); border-radius: 20px; overflow: hidden; margin-bottom: 72px; }
+    .stat-block { flex: 1; padding: 28px 32px; border-right: 1px solid rgba(255,255,255,.08); }
+    .stat-block:last-child { border-right: none; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+    .stat-num span { color: var(--sage); }
+    .stat-lbl { font-size: 13px; color: var(--mid); font-weight: 300; line-height: 1.4; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 860px; margin: 0 auto; padding: 0 24px 120px; }
+    .section { display: grid; grid-template-columns: 200px 1fr; gap: 40px; padding: 56px 0; border-top: 1px solid rgba(255,255,255,.07); align-items: start; }
+    .section:first-child { border-top: none; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--sage); padding-top: 6px; position: sticky; top: 90px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 18px; line-height: 1.15; }
+    .doc-p { font-size: 15px; color: rgba(245,242,236,.72); font-weight: 300; line-height: 1.8; margin-bottom: 16px; }
+    .doc-p:last-child { margin-bottom: 0; }
+    .doc-p strong { color: var(--paper); font-weight: 500; }
+    .doc-p a { color: var(--sage-lt); text-underline-offset: 3px; }
+
+    .callout { border-radius: 16px; padding: 22px 24px; margin: 24px 0; }
+    .callout-sage { background: rgba(61,107,79,.12); border: 1px solid rgba(61,107,79,.28); }
+    .callout-amber { background: rgba(212,132,26,.09); border: 1px solid rgba(212,132,26,.28); }
+    .callout-mist { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); }
+    .callout-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+    .callout-sage .callout-label { color: var(--sage-lt); }
+    .callout-amber .callout-label { color: var(--amber); }
+    .callout-mist .callout-label { color: var(--mid); }
+    .callout p { font-size: 14px; color: rgba(245,242,236,.78); font-weight: 300; line-height: 1.7; }
+    .callout p strong { color: var(--paper); font-weight: 500; }
+
+    .formula-box { background: var(--ink); border: 1px solid rgba(61,107,79,.35); border-radius: 16px; padding: 28px 32px; margin: 24px 0; position: relative; overflow: hidden; }
+    .formula-box::before { content: ''; position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; background: radial-gradient(circle, rgba(61,107,79,.2) 0%, transparent 70%); pointer-events: none; }
+    .formula-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--sage); margin-bottom: 14px; }
+    .formula { font-family: 'Syne', sans-serif; font-size: clamp(13px, 2vw, 18px); font-weight: 700; color: var(--paper); letter-spacing: -0.3px; line-height: 1.5; word-break: break-word; }
+    .formula .var { color: var(--sage-lt); }
+    .formula .op { color: var(--mid); }
+    .formula-note { margin-top: 12px; font-size: 12px; color: var(--mid); font-weight: 300; }
+
+    .steps { display: flex; flex-direction: column; margin: 24px 0; }
+    .step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .step:last-child { border-bottom: none; }
+    .step-num { width: 36px; height: 36px; border-radius: 50%; background: rgba(61,107,79,.2); border: 1px solid rgba(61,107,79,.4); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; color: var(--sage-lt); flex-shrink: 0; margin-top: 2px; }
+    .step-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.2px; }
+    .step-desc { font-size: 14px; color: rgba(245,242,236,.65); font-weight: 300; line-height: 1.65; }
+
+    .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    .data-table th { text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid rgba(255,255,255,.09); }
+    .data-table td { padding: 14px 16px; vertical-align: top; border-bottom: 1px solid rgba(255,255,255,.05); color: rgba(245,242,236,.72); font-weight: 300; line-height: 1.55; }
+    .data-table td:first-child { color: var(--paper); font-weight: 500; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; }
+    .badge-green { background: rgba(61,107,79,.25); color: var(--sage-lt); }
+    .badge-amber { background: rgba(212,132,26,.2); color: var(--amber); }
+
+    .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+    .quad { border-radius: 14px; padding: 20px 22px; }
+    .quad-hh { background: rgba(61,107,79,.14); border: 1px solid rgba(61,107,79,.3); }
+    .quad-hl { background: rgba(192,57,43,.12); border: 1px solid rgba(192,57,43,.25); }
+    .quad-lh { background: rgba(123,94,167,.1); border: 1px solid rgba(123,94,167,.25); }
+    .quad-ll { background: rgba(138,136,128,.08); border: 1px solid rgba(138,136,128,.2); }
+    .quad-tag { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .quad-hh .quad-tag { color: var(--sage-lt); }
+    .quad-hl .quad-tag { color: #F5876A; }
+    .quad-lh .quad-tag { color: #A78BD4; }
+    .quad-ll .quad-tag { color: var(--mid); }
+    .quad p { font-size: 13px; color: rgba(245,242,236,.7); font-weight: 300; line-height: 1.6; }
+
+    .source-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 18px 20px; margin: 12px 0; display: flex; gap: 16px; align-items: flex-start; }
+    .source-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(61,107,79,.2); border: 1px solid rgba(61,107,79,.35); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800; color: var(--sage-lt); flex-shrink: 0; }
+    .source-name { font-size: 14px; font-weight: 600; color: var(--paper); margin-bottom: 4px; }
+    .source-cite { font-size: 12px; color: var(--mid); font-weight: 300; line-height: 1.55; }
+    .source-cite a { color: var(--sage-lt); }
+
+    .limit-item { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .limit-item:last-child { border-bottom: none; }
+    .limit-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .limit-desc { font-size: 14px; color: rgba(245,242,236,.65); font-weight: 300; line-height: 1.7; }
+
+    .provenance-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.05); flex-wrap: wrap; }
+    .provenance-row:last-child { border-bottom: none; }
+    .prov-var { font-size: 13px; font-weight: 600; color: var(--paper); min-width: 200px; }
+    .prov-source { font-size: 13px; color: rgba(245,242,236,.6); font-weight: 300; flex: 1; }
+
+    @media (max-width: 700px) {
+      .topbar { padding: 14px 16px; }
+      .hero { padding: 110px 16px 0; }
+      .content { padding: 0 16px 80px; }
+      .stats-strip { flex-direction: column; }
+      .stat-block { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+      .stat-block:last-child { border-bottom: none; }
+      .section { grid-template-columns: 1fr; gap: 16px; }
+      .section-label { position: static; }
+      .quadrant-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topbar">
+    <a href="index.html" class="logo">The PlanIt <span>Earth</span></a>
+    <a href="quiz.html" class="topbar-back">← Try the analysis</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Methodology</div>
+    <h1 class="hero-title">How we measure<br><em>automation pressure</em></h1>
+    <p class="hero-sub">A transparent account of the data pipeline, scoring formulas, and sources behind the Automation Risk &amp; Reskilling Intelligence platform — covering 185 professions across 127 countries.</p>
+    <div class="stats-strip">
+      <div class="stat-block"><div class="stat-num">185<span>+</span></div><div class="stat-lbl">Professions mapped to ISCO-08</div></div>
+      <div class="stat-block"><div class="stat-num">127</div><div class="stat-lbl">Countries with individual indices</div></div>
+      <div class="stat-block"><div class="stat-num">4</div><div class="stat-lbl">Independent data sources</div></div>
+      <div class="stat-block"><div class="stat-num">23,595</div><div class="stat-lbl">Profession × country data points</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="section">
+      <div class="section-label">Overview</div>
+      <div class="section-body">
+        <h2 class="section-title">What this platform is — and isn't</h2>
+        <p class="doc-p">The platform quantifies two things for every combination of profession and country: how likely a given profession is to be disrupted by automation and AI (the <strong>Automation Score</strong>), and how capable a country's workforce is of adapting to that disruption (the <strong>Reskilling Score</strong>).</p>
+        <div class="callout callout-sage">
+          <div class="callout-label">Core question</div>
+          <p>For a given profession in a given country: <strong>how hard is automation hitting it, and how prepared is the workforce to respond?</strong></p>
+        </div>
+        <p class="doc-p">This is <strong>not a prediction engine</strong>. The scores are relative risk indicators — a structured, comparable, evidence-based way to prioritise attention across a large matrix of professions and geographies. They do not claim to forecast exactly which jobs will disappear or when.</p>
+        <p class="doc-p">The automation probability figures come from peer-reviewed academic research (Frey &amp; Osborne), the most widely cited quantitative study in this field. Country-level indices come from publicly available institutional datasets. Neither the underlying research nor this platform should be read as deterministic.</p>
+      </div>
+    </div>
+
+    <!-- DATA SOURCES -->
+    <div class="section">
+      <div class="section-label">Data Sources</div>
+      <div class="section-body">
+        <h2 class="section-title">Four open, institutional datasets</h2>
+        <p class="doc-p">All four underlying datasets are open, institutional, and freely available. No proprietary or paid data feeds are used — ensuring reproducibility and allowing the methodology to be independently verified.</p>
+
+        <div class="source-card">
+          <div class="source-num">1</div>
+          <div>
+            <div class="source-name">Frey &amp; Osborne — Automation Probability</div>
+            <div class="source-cite">Oxford economists analysed 702 US occupational categories and assigned each a probability of computerisation based on susceptibility to machine learning, mobile robotics, and computational intelligence across three bottleneck dimensions: perception &amp; manipulation, creative intelligence, and social intelligence tasks. Supplemented with ISCO-08 and WEF Future of Jobs 2023 for additional emerging roles. <a href="https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf" target="_blank">Read paper →</a></div>
+          </div>
+        </div>
+
+        <div class="source-card">
+          <div class="source-num">2</div>
+          <div>
+            <div class="source-name">Oxford Insights Government AI Readiness Index — AI Adoption</div>
+            <div class="source-cite">Annual index scoring countries on readiness to implement AI, drawing on 30+ sub-indicators covering government strategy, technology infrastructure, data availability, regulatory environment, and human capital. Used as a proxy for AI-driven automation adoption in each country's economy. Non-covered countries estimated from OECD Digital Economy Outlook, WEF Global Competitiveness Index, and ITU ICT Development Index. <a href="https://ourworldindata.org/grapher/ai-readiness-index" target="_blank">View data →</a></div>
+          </div>
+        </div>
+
+        <div class="source-card">
+          <div class="source-num">3</div>
+          <div>
+            <div class="source-name">World Bank Open Data — Employment Growth</div>
+            <div class="source-cite">Employment-to-Population Ratio (SL.EMP.TOTL.SP.ZS), comparing the most recent available year against a five-year prior baseline. Enters the Automation Score as a moderating factor: shrinking labour markets amplify displacement risk; growing markets partially offset it. Growth rates clipped to ±30% to prevent extreme values distorting the composite score. <a href="https://data.worldbank.org/indicator/SL.EMP.TOTL.SP.ZS" target="_blank">View data →</a></div>
+          </div>
+        </div>
+
+        <div class="source-card">
+          <div class="source-num">4</div>
+          <div>
+            <div class="source-name">UNDP Human Development Index — Education Index</div>
+            <div class="source-cite">Education Index component from the UNDP Human Development Report, measuring educational attainment via mean years of schooling for adults and expected years of schooling for children — normalised to [0, 1]. Serves as a structural capacity indicator in the Reskilling Score, representing the supply side of reskilling and the absorptive capacity of the workforce. <a href="https://hdr.undp.org/data-center/human-development-index" target="_blank">View data →</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="section">
+      <div class="section-label">Pipeline</div>
+      <div class="section-body">
+        <h2 class="section-title">Five deterministic steps</h2>
+        <p class="doc-p">The pipeline is fully deterministic and reproducible. Given the same input datasets, the same scores will always be produced.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Occupation Normalisation &amp; Taxonomy Mapping</div>
+              <div class="step-desc">Raw occupation titles are mapped to the ISCO-08 major group taxonomy using a two-stage process: a rule-based keyword matcher first (instant, high throughput), then an LLM via Ollama for ambiguous or non-standard titles. All LLM classifications are cached to disk — each title is classified only once.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Skill Change Rate Estimation (LLM-Augmented)</div>
+              <div class="step-desc">The most analytically nuanced input. Estimated per profession using a large language model with a calibrated prompt and anchored reference scale. Distinct from replacement risk — a truck driver and a software developer may both face disruption, but the pace and nature of skill change differ dramatically. Values cached indefinitely.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-title">Country Index Construction</div>
+              <div class="step-desc">Three country-level indices (AI adoption, employment growth, education) are downloaded, normalised to [0, 1], and merged into a single country table. Live downloads attempted at each quarterly refresh; failures fall back to a curated embedded dataset covering all 127 countries.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <div class="step-title">Score Computation</div>
+              <div class="step-desc">Automation Score and Reskilling Score are computed for each profession × country pair using the multiplicative formulas below. Both outputs are clipped to [0, 1].</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div>
+              <div class="step-title">Output &amp; Refresh Cadence</div>
+              <div class="step-desc">A single flat CSV is produced with one row per profession-country pair (23,595 rows). All source data cached with a 90-day TTL. Skill Change Rate estimates cached indefinitely and only re-queried when the underlying LLM model is updated.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCORING -->
+    <div class="section">
+      <div class="section-label">Scoring</div>
+      <div class="section-body">
+        <h2 class="section-title">The scoring formulas</h2>
+
+        <p class="doc-p"><strong>Automation Score</strong> — a composite measure of effective automation pressure, combining the inherent replaceability of an occupation with the country's actual capacity to deploy automation technology.</p>
+        <div class="formula-box">
+          <div class="formula-label">Automation Score Formula</div>
+          <div class="formula">
+            <span class="var">automation_score</span><span class="op"> = </span><span class="var">automation_probability</span><span class="op"> × </span><span class="var">ai_adoption_index</span><span class="op"> × (1 − </span><span class="var">employment_growth</span><span class="op">)</span>
+          </div>
+          <div class="formula-note">Three-factor multiplicative model. All inputs on [0, 1]. Output clipped to [0, 1].</div>
+        </div>
+        <table class="data-table" style="margin-bottom:32px">
+          <thead><tr><th>Variable</th><th>Source</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td>automation_probability</td><td>Frey &amp; Osborne</td><td>Occupational baseline — does not vary by country</td></tr>
+            <tr><td>ai_adoption_index</td><td>Oxford Insights 2022</td><td>Country's structural propensity to deploy AI — same occupation in a low-adoption country scores lower</td></tr>
+            <tr><td>(1 − employment_growth)</td><td>World Bank 2024</td><td>Labour market correction — shrinking employment amplifies risk; growing employment moderates it</td></tr>
+          </tbody>
+        </table>
+
+        <p class="doc-p"><strong>Reskilling Score</strong> — measures potential and urgency for workforce reskilling. A high score indicates both strong need (rapid skill change) and meaningful structural capacity to respond.</p>
+        <div class="formula-box">
+          <div class="formula-label">Reskilling Score Formula</div>
+          <div class="formula">
+            <span class="var">reskilling_score</span><span class="op"> = </span><span class="var">skill_change_rate</span><span class="op"> × </span><span class="var">tech_adoption</span><span class="op"> × </span><span class="var">education_index</span>
+          </div>
+          <div class="formula-note">Three-factor multiplicative model. All inputs on [0, 1]. Output clipped to [0, 1].</div>
+        </div>
+        <table class="data-table" style="margin-bottom:32px">
+          <thead><tr><th>Variable</th><th>Source</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td>skill_change_rate</td><td>LLM-estimated (calibrated prompt)</td><td>Rate of skill transformation per profession — distinct from replacement risk</td></tr>
+            <tr><td>tech_adoption</td><td>ISCO group weight</td><td>Professionals (Group 2) carry higher weight than Elementary Occupations (Group 9)</td></tr>
+            <tr><td>education_index</td><td>UNDP HDR 2023</td><td>Structural capacity to absorb reskilling — workforce's baseline ability to learn and pivot</td></tr>
+          </tbody>
+        </table>
+
+        <p class="doc-p"><strong>Reading the two scores together:</strong></p>
+        <div class="quadrant-grid">
+          <div class="quad quad-hh"><div class="quad-tag">↑ Automation · ↑ Reskilling</div><p>Strong pressure but real capacity to respond. Priority for structured reskilling programmes.</p></div>
+          <div class="quad quad-hl"><div class="quad-tag">↑ Automation · ↓ Reskilling</div><p>Highest risk zone. Strong displacement pressure with limited structural capacity to adapt. Requires policy-level intervention.</p></div>
+          <div class="quad quad-lh"><div class="quad-tag">↓ Automation · ↑ Reskilling</div><p>Stable profession in a country with high adaptive capacity. Proactive upskilling opportunity.</p></div>
+          <div class="quad quad-ll"><div class="quad-tag">↓ Automation · ↓ Reskilling</div><p>Limited immediate risk. May warrant monitoring as automation expands to lower-probability occupations over time.</p></div>
+        </div>
+
+        <div class="callout callout-amber" style="margin-top:24px">
+          <div class="callout-label">Skill Change Rate — Calibration Scale</div>
+          <p>
+            <strong>0.00–0.15</strong> &nbsp;Almost no change &nbsp;·&nbsp; janitor, agricultural laborer<br>
+            <strong>0.16–0.30</strong> &nbsp;Slow change &nbsp;·&nbsp; cook, security guard, construction worker<br>
+            <strong>0.31–0.45</strong> &nbsp;Moderate change &nbsp;·&nbsp; accountant, cashier, paralegal<br>
+            <strong>0.46–0.60</strong> &nbsp;Fast change &nbsp;·&nbsp; financial analyst, marketing specialist, nurse<br>
+            <strong>0.61–0.80</strong> &nbsp;Very fast change &nbsp;·&nbsp; software developer, radiologist, journalist<br>
+            <strong>0.81–1.00</strong> &nbsp;Near-complete transformation &nbsp;·&nbsp; AI/ML engineer, data scientist, prompt engineer
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIMITATIONS -->
+    <div class="section">
+      <div class="section-label">Limitations</div>
+      <div class="section-body">
+        <h2 class="section-title">What we're transparent about</h2>
+        <p class="doc-p">We believe in being direct about what the data can and cannot tell you. The following limitations are inherent to the methodology and should inform how you use the scores.</p>
+        <div class="limit-item">
+          <div class="limit-title">Skill Change Rate is model-estimated, not measured</div>
+          <div class="limit-desc">Unlike other inputs, Skill Change Rate is not drawn from an empirical dataset — it is estimated by a large language model using a calibrated prompt. The estimates are broadly consistent with domain literature but are not independently validated. Users can adjust rates for specific occupations by editing the LLM cache file directly.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-title">Country indices are structural aggregates, not sectoral</div>
+          <div class="limit-desc">The AI adoption index, employment growth, and education index are national aggregates. They do not differentiate between, say, the tech sector in Germany and the agricultural sector in Germany. For high-level benchmarking this is an acceptable trade-off; for sector-specific analysis, treat country-level scores as broad context.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-title">Scores are relative, not absolute</div>
+          <div class="limit-desc">An Automation Score of 0.85 does not mean "85% of jobs in this profession will be lost." It means this profession-country pair sits near the high end of the relative scale. The scores are designed for comparison and prioritisation, not for forecasting headcount reductions.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROVENANCE -->
+    <div class="section">
+      <div class="section-label">Provenance</div>
+      <div class="section-body">
+        <h2 class="section-title">Data provenance summary</h2>
+        <p class="doc-p">Every input variable, its source, and its validation status at a glance.</p>
+        <div class="callout callout-mist" style="padding: 0 0 0;">
+          <div class="provenance-row"><div class="prov-var">automation_probability</div><div class="prov-source">Frey &amp; Osborne · Oxford University</div><span class="badge badge-green">Empirical</span></div>
+          <div class="provenance-row"><div class="prov-var">ai_adoption_index</div><div class="prov-source">Oxford Insights 2022 · via Our World in Data</div><span class="badge badge-green">Empirical</span></div>
+          <div class="provenance-row"><div class="prov-var">employment_growth</div><div class="prov-source">World Bank Open Data 2024</div><span class="badge badge-green">Empirical</span></div>
+          <div class="provenance-row"><div class="prov-var">education_index</div><div class="prov-source">UNDP Human Development Report 2023</div><span class="badge badge-green">Empirical</span></div>
+          <div class="provenance-row"><div class="prov-var">skill_change_rate</div><div class="prov-source">LLM estimation · calibrated prompt</div><span class="badge badge-amber">Model-estimated</span></div>
+        </div>
+        <p class="doc-p" style="margin-top:20px">The dataset refreshes quarterly. Each refresh attempts live downloads from all four source APIs; failures fall back to the most recently cached values. LLM-estimated skill change rates are versioned separately — when the underlying model is updated, the skill cache is cleared and all professions are re-estimated. Scores from different pipeline versions should not be directly compared without reviewing the changelog.</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

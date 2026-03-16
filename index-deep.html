@@ -128,9 +128,13 @@
     .gate-note{font-size:12px;color:var(--mid);margin-bottom:20px;}
     .gate-btn{display:block;width:100%;padding:17px;background:var(--ink);color:white;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
     .gate-btn:hover{background:var(--sage);transform:translateY(-1px);}
+    .gate-btn:disabled{background:var(--mid)!important;opacity:.55;cursor:not-allowed;transform:none;}
     .gate-trust{font-size:11px;color:var(--mid);text-align:center;margin-top:12px;}
     .gate-free{margin-top:18px;text-align:center;font-size:12px;color:var(--mid);}
     .gate-free a{color:var(--sage);text-decoration:none;}
+    .gate-consent{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;font-size:12px;line-height:1.5;color:var(--text-dim);}
+    .gate-consent input{margin-top:2px;accent-color:var(--sage);flex-shrink:0;}
+    .gate-consent a{color:var(--sage-lt);text-decoration:underline;text-underline-offset:2px;}
 
     /* DEEP APP */
     #app{display:none;padding-top:80px;}
@@ -408,7 +412,7 @@
 <!-- GATE -->
 <div id="gate">
   <div class="gate-card">
-    <div class="gate-badge">✦ DEEP INDEX · 23,959 DATA POINTS</div>
+    <div class="gate-badge">✦ DEEP INDEX · 1,850 DATA POINTS · JAN 2026</div>
     <h1>Your exact risk.<br>Your profession, your country.</h1>
     <p>The only tool that shows you the precise, country-adjusted automation risk for any of 185 professions across 90 major economies — built from four independent academic and institutional datasets.</p>
 
@@ -441,17 +445,27 @@
     </div>
 
     <div class="gate-feats">
-      <div class="gate-feat"><div class="gate-feat-icon">🔍</div><div><strong>Precise profession × country lookup</strong><span>185 professions × 90 countries. Every combination with full score breakdown.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">🔍</div><div><strong>Precise profession × country lookup</strong><span>185 professions × 10 countries. Every combination with full score breakdown.</span></div></div>
       <div class="gate-feat"><div class="gate-feat-icon">📊</div><div><strong>Quadrant analysis</strong><span>Danger Zone · Adapt Now · Stable · Watch. Understand your strategic position, not just a number.</span></div></div>
-      <div class="gate-feat"><div class="gate-feat-icon">🌍</div><div><strong>Country comparison for your profession</strong><span>See all 90 countries ranked for your specific job — side by side.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">🌍</div><div><strong>Country comparison for your profession</strong><span>See all 10 countries ranked for your specific job — side by side.</span></div></div>
       <div class="gate-feat"><div class="gate-feat-icon">🔢</div><div><strong>Full underlying indicators</strong><span>See automation probability, AI adoption index, employment growth, and skill change rate — not just the composite score.</span></div></div>
-      <div class="gate-feat"><div class="gate-feat-icon">📋</div><div><strong>Complete searchable table</strong><span>Filter all 23,959 data points by profession, country, sector, and risk level.</span></div></div>
+      <div class="gate-feat"><div class="gate-feat-icon">📋</div><div><strong>Complete searchable table</strong><span>Filter all 1,850 data points by profession, country, sector, and risk level.</span></div></div>
     </div>
 
     <div class="gate-price"><span class="gate-was">€8</span><span class="gate-now">€4.99</span></div>
-    <div class="gate-note">One-time · Instant access · No account needed · No subscription</div>
+    <div class="gate-note">One-time · Instant access · Updated January 2026 · No account needed · No subscription</div>
 
-    <button class="gate-btn" onclick="startCheckout()">Unlock the Deep Index →</button>
+    <label class="gate-consent" for="deep-withdrawal-waiver">
+      <input type="checkbox" id="deep-withdrawal-waiver" onchange="updateDeepCheckoutConsent()" />
+      <span>
+        I agree that access to the Deep Index begins immediately after purchase and I waive my 14-day withdrawal right once delivery starts. Read the
+        <a href="legal.html?tab=terms" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        and
+        <a href="legal.html?tab=privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+      </span>
+    </label>
+
+    <button class="gate-btn" onclick="startCheckout()" disabled>Unlock the Deep Index →</button>
     <div class="gate-trust">🔒 Stripe checkout · Instant access after payment</div>
     <div class="gate-free">Free version: <a href="index-professions.html">professions</a> · <a href="index-sectors.html">sectors</a> · <a href="index-countries.html">countries</a></div>
   </div>
@@ -460,9 +474,9 @@
 <!-- DEEP APP -->
 <div id="app">
   <div class="deep-hero">
-    <div class="deep-badge">✦ DEEP INDEX · UNLOCKED</div>
+    <div class="deep-badge">✦ DEEP INDEX · UNLOCKED · JAN 2026</div>
     <h1>Profession × Country Risk Database</h1>
-    <p>23,959 data points · Frey & Osborne · Oxford Insights AI Index · World Bank · UNDP HDI</p>
+    <p>1,850 data points · Updated January 2026 · Frey & Osborne · Oxford Insights AI Index · World Bank · UNDP HDI</p>
   </div>
 
   <!-- LOOKUP -->
@@ -519,6 +533,13 @@
 <script>
 const BACKEND_URL='https://theplanitearth-backend.vercel.app';
 
+function updateDeepCheckoutConsent(){
+  const checkbox=document.getElementById('deep-withdrawal-waiver');
+  const btn=document.querySelector('.gate-btn');
+  if(!btn)return;
+  btn.disabled=!(checkbox&&checkbox.checked);
+}
+
 // Flatten PROFESSIONS into rows
 const ALL_ROWS=[];
 PROFESSIONS.forEach(p=>{
@@ -563,7 +584,13 @@ function checkAccess(){
 }
 
 async function startCheckout(){
+  const checkbox=document.getElementById('deep-withdrawal-waiver');
   const btn=document.querySelector('.gate-btn');
+  if(!checkbox||!checkbox.checked){
+    updateDeepCheckoutConsent();
+    alert('Please accept the withdrawal waiver, Terms & Conditions, and Privacy Policy to continue.');
+    return;
+  }
   btn.textContent='Redirecting…';btn.disabled=true;
   try{
     const res=await fetch(`${BACKEND_URL}/api/create-checkout`,{
@@ -575,6 +602,7 @@ async function startCheckout(){
     else throw new Error(data.error||'failed');
   }catch(e){
     btn.textContent='Unlock the Deep Index →';btn.disabled=false;
+    updateDeepCheckoutConsent();
     alert('Something went wrong. Please try again.');
   }
 }
@@ -655,7 +683,7 @@ function lookup(){
       <div class="rc-q-desc">${q.desc}</div>
     </div>
     <div class="rc-comparison">
-      <div class="rc-comp-title">YOUR PROFESSION ACROSS 90 COUNTRIES</div>
+      <div class="rc-comp-title">YOUR PROFESSION ACROSS ALL 10 COUNTRIES</div>
       <div class="comp-bars">${compBars}</div>
     </div>
     <div class="rc-actions" style="margin-top:20px">
