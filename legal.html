@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal · PlanItEarth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:     #0D0F14;
+      --paper:   #F5F2EC;
+      --sage:    #3D6B4F;
+      --sage-lt: #C8DDD0;
+      --amber:   #D4841A;
+      --mist:    #E8E4DC;
+      --mid:     #8A8880;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--ink); color: var(--paper);
+      overflow-x: hidden;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+      color: var(--paper); text-decoration: none;
+    }
+    .logo span { color: var(--sage); }
+    .topbar-back {
+      font-size: 13px; color: var(--mid); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .topbar-back:hover { color: var(--paper); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 130px 24px 60px;
+      text-align: center; max-width: 760px; margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif; font-size: clamp(32px, 5vw, 54px);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .hero-sub {
+      font-size: 16px; color: var(--mid); font-weight: 300; line-height: 1.6;
+      max-width: 520px; margin: 0 auto 40px;
+    }
+
+    /* ── TAB NAV ── */
+    .tab-nav {
+      display: flex; justify-content: center; gap: 8px;
+      margin: 0 auto 0; max-width: 480px; padding: 0 24px;
+    }
+    .tab-btn {
+      flex: 1; padding: 12px 20px; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,.1); background: none;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      color: var(--mid); cursor: pointer; transition: all .2s;
+    }
+    .tab-btn.active {
+      background: var(--sage); border-color: var(--sage); color: white;
+    }
+    .tab-btn:hover:not(.active) { border-color: var(--paper); color: var(--paper); }
+
+    /* ── CONTENT ── */
+    .content-wrap {
+      max-width: 720px; margin: 0 auto; padding: 56px 24px 100px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Last updated pill */
+    .last-updated {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--mid); margin-bottom: 40px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      padding: 6px 14px; border-radius: 100px;
+    }
+    .last-updated::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sage); display: block;
+    }
+
+    /* Doc sections */
+    .doc-section {
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .doc-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .section-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 16px; line-height: 1.2;
+    }
+    .doc-p {
+      font-size: 15px; color: rgba(245,242,236,.75); font-weight: 300;
+      line-height: 1.75; margin-bottom: 14px;
+    }
+    .doc-p:last-child { margin-bottom: 0; }
+    .doc-p strong { color: var(--paper); font-weight: 500; }
+    .doc-p a { color: var(--sage-lt); text-underline-offset: 3px; }
+
+    /* Callout box */
+    .callout {
+      background: rgba(61,107,79,.12); border: 1px solid rgba(61,107,79,.3);
+      border-radius: 14px; padding: 20px 22px; margin: 20px 0;
+    }
+    .callout.amber {
+      background: rgba(212,132,26,.1); border-color: rgba(212,132,26,.3);
+    }
+    .callout-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 8px;
+    }
+    .callout.amber .callout-label { color: var(--amber); }
+    .callout p {
+      font-size: 14px; color: rgba(245,242,236,.8); font-weight: 300;
+      line-height: 1.65;
+    }
+    .callout p strong { color: var(--paper); font-weight: 500; }
+
+    /* Data table */
+    .data-table {
+      width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: 14px;
+    }
+    .data-table th {
+      text-align: left; padding: 10px 16px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--mid);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .data-table td {
+      padding: 14px 16px; vertical-align: top;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      color: rgba(245,242,236,.75); font-weight: 300; line-height: 1.5;
+    }
+    .data-table td:first-child { color: var(--paper); font-weight: 400; white-space: nowrap; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Contact card */
+    .contact-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 14px; padding: 22px 24px; margin-top: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .contact-card p { font-size: 14px; color: rgba(245,242,236,.7); font-weight: 300; }
+    .contact-card a {
+      color: var(--sage-lt); font-weight: 500; text-decoration: none;
+      font-size: 15px; white-space: nowrap;
+    }
+    .contact-card a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .topbar { padding: 14px 16px; }
+      .hero { padding: 110px 16px 48px; }
+      .content-wrap { padding: 40px 16px 80px; }
+      .tab-nav { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <nav class="topbar">
+    <a href="index.html" class="logo">The PlanIt <span>Earth</span></a>
+    <a href="quiz.html" class="topbar-back">← Back to analysis</a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Legal</div>
+    <h1 class="hero-title">Transparency &amp; Trust</h1>
+    <p class="hero-sub">Plain-English legal documents. No jargon, no hidden clauses — just honest terms for an honest product.</p>
+  </div>
+
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('privacy')">Privacy Policy</button>
+    <button class="tab-btn" onclick="switchTab('terms')">Terms &amp; Conditions</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content-wrap">
+
+    <!-- ══ PRIVACY POLICY ══ -->
+    <div class="tab-panel active" id="panel-privacy">
+      <div class="last-updated">Last updated: June 2025</div>
+
+      <div class="doc-section">
+        <div class="section-num">01</div>
+        <h2 class="section-title">The short version</h2>
+        <div class="callout">
+          <div class="callout-label">Plain English Summary</div>
+          <p>When you use PlanItEarth, you share personal information with us (name, email, CV or LinkedIn content, and quiz answers). We use it only to generate your career analysis and deliver your report. <strong>We do not store it, sell it, or share it with anyone</strong> after your session ends. That's the whole story.</p>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">02</div>
+        <h2 class="section-title">Who we are</h2>
+        <p class="doc-p">PlanItEarth is an AI-powered career analysis tool operated by PlanItEarth ("<strong>we</strong>", "<strong>us</strong>", "<strong>our</strong>"). For questions about this policy, contact us at <a href="/cdn-cgi/l/email-protection#c4aca1a8a8ab84b0aca1b4a8a5aaadb0a1a5b6b0aceaa7aba9"><span class="__cf_email__" data-cfemail="28404d444447685c404d58444946415c4d495a5c40064b4745">[email&#160;protected]</span></a>.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">03</div>
+        <h2 class="section-title">What data we collect and why</h2>
+        <p class="doc-p">We collect only the minimum data needed to provide the service:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Why we collect it</th>
+              <th>Stored?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td>Personalise your results and report</td>
+              <td>No — session only</td>
+            </tr>
+            <tr>
+              <td>Email address</td>
+              <td>Deliver your purchased PDF report</td>
+              <td>No — used once for delivery</td>
+            </tr>
+            <tr>
+              <td>Quiz answers</td>
+              <td>Generate your career analysis scores</td>
+              <td>No — processed in memory</td>
+            </tr>
+            <tr>
+              <td>CV or LinkedIn text</td>
+              <td>Extract career context for deeper analysis</td>
+              <td>No — processed in memory</td>
+            </tr>
+            <tr>
+              <td>Payment details</td>
+              <td>Process your purchase</td>
+              <td>Handled by Stripe — we never see your card</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="doc-p">Our lawful basis under GDPR is <strong>contract performance</strong> (Art. 6(1)(b)) — processing your data is necessary to provide the service you requested.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">04</div>
+        <h2 class="section-title">Data retention</h2>
+        <div class="callout">
+          <div class="callout-label">Retention Period</div>
+          <p><strong>Zero.</strong> Personal data (quiz answers, CV text, LinkedIn content) is processed entirely in memory during your active session and is never written to a database or persistent storage. Once your session ends, it is gone. Your email is passed to our email delivery provider solely to send your report, and we do not retain it in a mailing list.</p>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">05</div>
+        <h2 class="section-title">Third parties we use</h2>
+        <p class="doc-p">We use a small number of trusted third-party services to operate the platform:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Stripe</td>
+              <td>Payment processing. Governed by <a href="https://stripe.com/privacy" target="_blank">Stripe's Privacy Policy</a>.</td>
+            </tr>
+            <tr>
+              <td>Anthropic / OpenAI</td>
+              <td>AI analysis of CV/LinkedIn content. Data is not used to train their models per our API agreements.</td>
+            </tr>
+            <tr>
+              <td>Vercel</td>
+              <td>Hosting and serverless backend infrastructure.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="doc-p">We do not use advertising networks, sell data to brokers, or share your information with any other third parties.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">06</div>
+        <h2 class="section-title">Cookies</h2>
+        <p class="doc-p">We use only <strong>essential session cookies</strong> required for the site to function (e.g. maintaining your quiz state). We do not use advertising, tracking, or analytics cookies. No cookie consent banner is required.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">07</div>
+        <h2 class="section-title">Your rights under GDPR</h2>
+        <p class="doc-p">As a resident of the EU/EEA, you have the right to access, rectify, erase, restrict, or object to the processing of your personal data. You also have the right to lodge a complaint with your national supervisory authority (in France: <a href="https://www.cnil.fr" target="_blank">CNIL</a>).</p>
+        <p class="doc-p">Because we do not store your data after your session ends, most of these rights are satisfied automatically. For any questions, email us:</p>
+        <div class="contact-card">
+          <p>Data protection enquiries</p>
+          <a href="/cdn-cgi/l/email-protection#d4bcb1b8b8bb94a0bcb1a4b8b5babda0b1b5a6a0bcfab7bbb9"><span class="__cf_email__" data-cfemail="c7afa2ababa887b3afa2b7aba6a9aeb3a2a6b5b3afe9a4a8aa">[email&#160;protected]</span></a>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">08</div>
+        <h2 class="section-title">Changes to this policy</h2>
+        <p class="doc-p">We may update this policy as the service evolves. Material changes will be noted by updating the date at the top of this page. Continued use of the service after changes constitutes acceptance.</p>
+      </div>
+    </div>
+
+
+    <!-- ══ TERMS & CONDITIONS ══ -->
+    <div class="tab-panel" id="panel-terms">
+      <div class="last-updated">Last updated: June 2025</div>
+
+      <div class="doc-section">
+        <div class="section-num">01</div>
+        <h2 class="section-title">Agreement to these terms</h2>
+        <p class="doc-p">By accessing or using PlanItEarth ("the Service"), you agree to be bound by these Terms and Conditions. If you do not agree, please do not use the Service.</p>
+        <p class="doc-p">The Service is operated by PlanItEarth. Queries: <a href="/cdn-cgi/l/email-protection#49212c252526093d212c39252827203d2c283b3d21672a2624"><span class="__cf_email__" data-cfemail="5038353c3c3f10243835203c313e392435312224387e333f3d">[email&#160;protected]</span></a>.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">02</div>
+        <h2 class="section-title">What the service is</h2>
+        <p class="doc-p">PlanItEarth provides an AI-powered career analysis tool that generates a personalised assessment of how artificial intelligence may affect your profession. Upon payment, you receive a Career Intelligence Brief — a PDF report delivered to your email address.</p>
+        <div class="callout amber">
+          <div class="callout-label">Important Disclaimer</div>
+          <p>The analysis is <strong>informational only</strong>. It is not professional career advice, HR advice, legal advice, or financial advice. Results are AI-generated estimates based on sector data and your inputs — they do not constitute a guarantee of any employment outcome. Always exercise your own judgment and consult qualified professionals for major career decisions.</p>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">03</div>
+        <h2 class="section-title">Purchases &amp; payment</h2>
+        <p class="doc-p">All purchases are processed securely via Stripe. Prices are displayed in Euros (€) and are inclusive of any applicable taxes. By completing a purchase you agree to pay the amount displayed at checkout.</p>
+        <p class="doc-p">Available products:</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Product</th><th>Price</th><th>Includes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Career Intelligence Brief</td>
+              <td>€7.99</td>
+              <td>Personalised PDF report delivered by email</td>
+            </tr>
+            <tr>
+              <td>Brief + Profile Optimisation</td>
+              <td>€9.99</td>
+              <td>Career Brief + CV/LinkedIn optimisation report</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">04</div>
+        <h2 class="section-title">Right of withdrawal &amp; refunds</h2>
+        <p class="doc-p">Under EU Consumer Rights Directive 2011/83/EU, consumers normally have a 14-day right of withdrawal on digital purchases. <strong>By completing your purchase, you explicitly request immediate delivery of the digital content and acknowledge that you lose your right of withdrawal once delivery has begun.</strong></p>
+        <p class="doc-p">This waiver is presented as a checkbox at checkout and must be actively confirmed before payment is processed.</p>
+        <p class="doc-p">If you do not receive your report within 10 minutes of purchase due to a technical failure on our side, contact us at <a href="/cdn-cgi/l/email-protection#90f8f5fcfcffd0e4f8f5e0fcf1fef9e4f5f1e2e4f8bef3fffd"><span class="__cf_email__" data-cfemail="bbd3ded7d7d4fbcfd3decbd7dad5d2cfdedac9cfd395d8d4d6">[email&#160;protected]</span></a> and we will either resend it or issue a full refund within 5 business days.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">05</div>
+        <h2 class="section-title">Intellectual property</h2>
+        <p class="doc-p">The report delivered to you is for your <strong>personal, non-commercial use only</strong>. You may not resell, redistribute, or publish the report without our written consent. All other content on the platform (branding, copy, scoring methodology) is owned by PlanItEarth and may not be reproduced.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">06</div>
+        <h2 class="section-title">Acceptable use</h2>
+        <p class="doc-p">You agree not to use the Service to submit false or misleading information, attempt to reverse-engineer the scoring system, or interfere with the platform in any way. We reserve the right to refuse service at our discretion.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">07</div>
+        <h2 class="section-title">Limitation of liability</h2>
+        <p class="doc-p">To the fullest extent permitted by applicable law, PlanItEarth shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service or reliance on its outputs. Our total aggregate liability shall not exceed the amount you paid for the Service.</p>
+        <p class="doc-p">We do not warrant that the Service will be uninterrupted, error-free, or that results will meet any specific professional standard.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">08</div>
+        <h2 class="section-title">Governing law</h2>
+        <p class="doc-p">These Terms are governed by the laws of France. Any disputes shall be subject to the exclusive jurisdiction of the courts of Paris, France, without prejudice to your rights as a consumer under the laws of your country of residence.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">09</div>
+        <h2 class="section-title">Changes to these terms</h2>
+        <p class="doc-p">We may update these Terms from time to time. The current version is always available at this page, with the date of last update shown above. Continued use of the Service after changes constitutes acceptance of the updated Terms.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="section-num">10</div>
+        <h2 class="section-title">Contact</h2>
+        <p class="doc-p">For any questions regarding these Terms:</p>
+        <div class="contact-card">
+          <p>PlanItEarth · Legal enquiries</p>
+          <a href="/cdn-cgi/l/email-protection#2c44494040436c5844495c404d424558494d5e5844024f4341"><span class="__cf_email__" data-cfemail="2f474a4343406f5b47
