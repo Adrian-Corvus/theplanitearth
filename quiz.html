@@ -2005,7 +2005,58 @@ function getProfessionLabel(answers) {
   return `${exp[answers.experience] || ''} ${map[answers.profession_cat] || 'Professional'}`.trim();
 }
 
-function getTasksForSector(sector) {
+function getTasksForSector(sector, jobTitle = '') {
+  const title = String(jobTitle || '').toLowerCase();
+  const roleProfiles = [
+    {
+      match: ['optical engineer', 'photonics', 'laser', 'optics', 'fiber optics', 'fibre optics', 'optoelectronics'],
+      risk: ['Routine optical simulation runs', 'Standard test-data post-processing', 'First-pass experiment documentation'],
+      safe: ['Physical experiment design and setup', 'Interpreting noisy lab results and failure modes', 'Prototype integration with real-world hardware constraints']
+    },
+    {
+      match: ['software engineer', 'developer', 'frontend', 'backend', 'full stack', 'full-stack'],
+      risk: ['Boilerplate feature implementation', 'Routine test-case generation', 'Basic API and documentation drafting'],
+      safe: ['System architecture tradeoffs', 'Debugging production edge cases', 'Translating ambiguous stakeholder needs into robust systems']
+    },
+    {
+      match: ['data scientist', 'data analyst', 'machine learning', 'ml engineer', 'ai engineer'],
+      risk: ['Routine data cleaning and SQL drafting', 'Standard dashboard generation', 'Baseline model experimentation'],
+      safe: ['Framing the right analytical question', 'Evaluating model reliability and bias in context', 'Turning findings into decisions stakeholders will trust']
+    },
+    {
+      match: ['financial analyst', 'accountant', 'auditor', 'investment analyst'],
+      risk: ['Recurring reconciliations and spreadsheet prep', 'Standard variance reporting', 'First-pass financial modelling'],
+      safe: ['Judgment on unusual transactions or market context', 'Client or stakeholder communication', 'Strategic capital allocation recommendations']
+    },
+    {
+      match: ['nurse', 'doctor', 'physician', 'surgeon', 'radiographer', 'therapist'],
+      risk: ['Standard note drafting and admin follow-up', 'Protocol-driven triage support', 'Routine image or results pre-screening'],
+      safe: ['Patient communication and trust-building', 'Complex diagnosis and escalation judgment', 'Coordinating care across disciplines']
+    },
+    {
+      match: ['lawyer', 'solicitor', 'attorney', 'paralegal', 'compliance'],
+      risk: ['Template contract review', 'Routine legal research summarisation', 'Standard clause drafting'],
+      safe: ['Negotiation strategy in complex matters', 'Novel legal interpretation', 'Client judgment and risk counsel']
+    },
+    {
+      match: ['teacher', 'lecturer', 'professor', 'trainer', 'tutor'],
+      risk: ['First-draft lesson materials', 'Routine marking and feedback summaries', 'Administrative progress reporting'],
+      safe: ['Live teaching adaptation to student needs', 'Mentoring and pastoral support', 'Designing learning experiences for mixed abilities']
+    },
+    {
+      match: ['designer', 'ux', 'ui', 'graphic', 'copywriter', 'brand'],
+      risk: ['First-draft creative variations', 'Template-based asset production', 'Basic campaign copy generation'],
+      safe: ['Original concept direction', 'Client discovery and creative judgment', 'Taste, positioning, and brand coherence']
+    },
+  ];
+
+  const roleProfile = roleProfiles.find(profile =>
+    profile.match.some(term => title.includes(term))
+  );
+  if (roleProfile) {
+    return { risk: roleProfile.risk, safe: roleProfile.safe };
+  }
+
   const tasks = {
     healthcare: {
       risk: ['Routine diagnostic screening', 'Basic clinical documentation', 'Standard report drafting'],
@@ -2016,8 +2067,8 @@ function getTasksForSector(sector) {
       safe: ['Complex deal structuring', 'Client relationship management', 'Strategic financial planning', 'Regulatory interpretation']
     },
     tech: {
-      risk: ['Boilerplate code generation', 'Standard QA testing scripts', 'Basic UI component building'],
-      safe: ['System architecture design', 'Complex debugging & optimisation', 'Stakeholder requirement translation', 'Technical leadership']
+      risk: ['Routine documentation and reporting', 'Standard analysis or testing scripts', 'Template-based technical outputs'],
+      safe: ['System-level problem framing', 'Judgment under real-world constraints', 'Cross-functional technical decision-making']
     },
     legal: {
       risk: ['Contract template review', 'Legal research & citation', 'Standard clause drafting'],
@@ -2630,7 +2681,7 @@ function showResults() {
   const scores   = computeScores(state.answers);
   const archetype = computeArchetype(state.answers);
   const profLabel = getProfessionLabel(state.answers);
-  const taskData  = getTasksForSector(state.answers.profession_cat);
+  const taskData  = getTasksForSector(state.answers.profession_cat, state.answers.job_title || profLabel);
 
   state.scores    = scores;
   state.archetype = archetype;
