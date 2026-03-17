@@ -1887,6 +1887,23 @@ function computeScores(answers) {
   };
   const b = base[answers.profession_cat] || base.other;
   let { auto, aug, income, reg, skill, adoption } = { ...b };
+  const jobTitle = String(answers.job_title || '').toLowerCase();
+
+  // Role-title heuristics: separate physical/lab engineering from desk-only tech work.
+  const experimentalRoleTerms = [
+    'optical engineer', 'photonics', 'laser', 'optoelectronics', 'optomechanical',
+    'fiber optics', 'fibre optics', 'optics', 'electro-optics', 'semiconductor',
+    'hardware engineer', 'systems engineer', 'test engineer', 'field engineer',
+    'manufacturing engineer', 'process engineer', 'r&d', 'research engineer',
+    'research scientist', 'experimental', 'laboratory', 'lab'
+  ];
+  const softwareRoleTerms = [
+    'software', 'frontend', 'front-end', 'backend', 'back-end', 'full stack',
+    'full-stack', 'web developer', 'app developer', 'data analyst',
+    'business analyst', 'qa analyst', 'content designer', 'technical writer'
+  ];
+  const experimentalRole = experimentalRoleTerms.some(term => jobTitle.includes(term));
+  const softwareHeavyRole = softwareRoleTerms.some(term => jobTitle.includes(term));
 
   // Task type
   if (answers.tasks === 'structured')  { auto += 15; aug -= 8; }
@@ -1929,6 +1946,20 @@ function computeScores(answers) {
   if (answers.tech_comfort === 'pioneer')  { aug += 8; skill -= 6; }
   if (answers.tech_comfort === 'low')      { skill += 8; aug -= 6; }
 
+  // Work setting: physical, on-site, and field-based work is generally harder to automate end-to-end.
+  if (answers.work_location === 'onsite')  { auto -= 3; aug += 2; }
+  if (answers.work_location === 'field')   { auto -= 5; reg += 2; aug += 2; }
+
+  // Education often proxies for specialist tacit knowledge in technical and regulated fields.
+  if (answers.education === 'phd')         { auto -= 2; income += 6; reg += 4; }
+  if (answers.education === 'masters')     { income += 3; }
+  if (answers.education === 'professional'){ auto -= 2; reg += 6; income += 3; }
+  if (answers.education === 'vocational')  { auto -= 1; }
+
+  // Advanced technical fluency tends to shift work toward oversight, integration, and judgment.
+  if (answers.digital_skills === 'advanced') { aug += 4; income += 2; }
+  if (answers.digital_skills === 'expert')   { aug += 6; income += 4; }
+
   // Industry
   if (answers.industry === 'startup')      { adoption += 12; skill += 5; }
   if (answers.industry === 'public')       { reg += 8; adoption -= 8; }
@@ -1940,6 +1971,17 @@ function computeScores(answers) {
   // Learning habit
   if (answers.learning_habit === 'consistent') { skill -= 8; aug += 6; }
   if (answers.learning_habit === 'rarely')     { skill += 10; }
+
+  // Job-title nuance within "Technology & Engineering".
+  if (answers.profession_cat === 'tech' && experimentalRole) {
+    auto -= 8;
+    aug += 4;
+    income += 4;
+  }
+  if (answers.profession_cat === 'tech' && softwareHeavyRole) {
+    auto += 4;
+    adoption += 4;
+  }
 
   return {
     automation:     Math.min(100, Math.max(5, Math.round(auto))),
