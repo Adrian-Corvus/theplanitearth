@@ -1452,7 +1452,7 @@
   </div>
 </div>
 
-
+<script src="data.js"></script>
 <script>
 // ── STATE ──
 const state = {
@@ -1875,6 +1875,109 @@ function computeArchetype(answers) {
   return archetypes.urgent;
 }
 
+function normalizeProfessionText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\b(senior|junior|lead|principal|staff|head|mid|level)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function tokenizeProfessionText(value) {
+  return normalizeProfessionText(value).split(' ').filter(Boolean);
+}
+
+function getProfessionDatabase() {
+  try {
+    return Array.isArray(PROFESSIONS) ? PROFESSIONS : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function getProfessionBaseline(jobTitle, professionCat) {
+  const title = normalizeProfessionText(jobTitle);
+  if (!title) return null;
+
+  const aliasProfiles = [
+    {
+      terms: ['optical engineer', 'photonics', 'laser engineer', 'optoelectronics', 'fiber optics', 'fibre optics', 'optics engineer'],
+      baseline: { name: 'Optical / Photonics Engineer', avg_auto: 0.018, avg_resk: 0.39, source: 'alias' }
+    },
+    {
+      terms: ['research engineer', 'systems engineer', 'hardware engineer', 'test engineer'],
+      baseline: { name: 'Advanced Engineering Role', avg_auto: 0.03, avg_resk: 0.39, source: 'alias' }
+    },
+  ];
+
+  const alias = aliasProfiles.find(profile => profile.terms.some(term => title.includes(term)));
+  if (alias) {
+    return {
+      ...alias.baseline,
+      auto: alias.baseline.avg_auto * 100,
+      skill: 30 + alias.baseline.avg_resk * 90,
+      confidence: 0.92,
+    };
+  }
+
+  const db = getProfessionDatabase();
+  if (!db.length) return null;
+
+  const titleTokens = tokenizeProfessionText(title);
+  const preferredSectors = {
+    healthcare: ['Knowledge', 'Technical'],
+    finance: ['Knowledge', 'Management'],
+    tech: ['Knowledge', 'Technical'],
+    legal: ['Knowledge', 'Management'],
+    creative: ['Knowledge', 'Services'],
+    education: ['Knowledge'],
+    other: [],
+  }[professionCat] || [];
+
+  let best = null;
+  let bestScore = -Infinity;
+
+  for (const profession of db) {
+    const candidate = normalizeProfessionText(profession.name);
+    const candidateTokens = tokenizeProfessionText(candidate);
+    let score = 0;
+
+    if (candidate === title) score += 120;
+    if (candidate.includes(title) || title.includes(candidate)) score += 35;
+
+    const overlap = titleTokens.filter(token => candidateTokens.includes(token));
+    score += overlap.length * 12;
+
+    if (title.includes('engineer') && candidate.includes('engineer')) score += 8;
+    if (title.includes('scientist') && candidate.includes('scientist')) score += 8;
+    if (title.includes('analyst') && candidate.includes('analyst')) score += 8;
+    if (title.includes('teacher') && candidate.includes('teacher')) score += 8;
+    if (title.includes('nurse') && candidate.includes('nurse')) score += 8;
+
+    if (!title.includes('routine') && candidate.includes('routine')) score -= 15;
+    if (title.includes('software') && !candidate.includes('software')) score -= 10;
+    if ((title.includes('optical') || title.includes('photonics') || title.includes('laser')) && candidate.includes('engineer')) score += 8;
+
+    if (preferredSectors.includes(profession.sector)) score += 6;
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = profession;
+    }
+  }
+
+  if (!best || bestScore < 18) return null;
+
+  return {
+    ...best,
+    auto: best.avg_auto * 100,
+    skill: 30 + best.avg_resk * 90,
+    confidence: Math.min(0.95, 0.45 + bestScore / 100),
+    source: 'database',
+  };
+}
+
 function computeScores(answers) {
   const base = {
     healthcare: { auto: 45, aug: 82, income: 70, reg: 85, skill: 65, adoption: 60 },
@@ -1888,6 +1991,15 @@ function computeScores(answers) {
   const b = base[answers.profession_cat] || base.other;
   let { auto, aug, income, reg, skill, adoption } = { ...b };
   const jobTitle = String(answers.job_title || '').toLowerCase();
+  const professionBaseline = getProfessionBaseline(answers.job_title, answers.profession_cat);
+  const autoWeight = professionBaseline ? 0.35 : 1;
+
+  if (professionBaseline) {
+    auto = professionBaseline.auto;
+    skill = professionBaseline.skill;
+    if (professionBaseline.avg_auto <= 0.08) aug = Math.max(aug, 84);
+    if (professionBaseline.avg_auto <= 0.04) income = Math.max(income, 62);
+  }
 
   // Role-title heuristics: separate physical/lab engineering from desk-only tech work.
   const experimentalRoleTerms = [
@@ -1906,55 +2018,55 @@ function computeScores(answers) {
   const softwareHeavyRole = softwareRoleTerms.some(term => jobTitle.includes(term));
 
   // Task type
-  if (answers.tasks === 'structured')  { auto += 15; aug -= 8; }
-  if (answers.tasks === 'judgment')    { auto -= 8;  aug += 5; }
-  if (answers.tasks === 'people')      { auto -= 14; aug += 3; }
-  if (answers.tasks === 'creative')    { auto += 5;  aug += 8; }
+  if (answers.tasks === 'structured')  { auto += 15 * autoWeight; aug -= 8; }
+  if (answers.tasks === 'judgment')    { auto -= 8 * autoWeight;  aug += 5; }
+  if (answers.tasks === 'people')      { auto -= 14 * autoWeight; aug += 3; }
+  if (answers.tasks === 'creative')    { auto += 5 * autoWeight;  aug += 8; }
 
   // Experience
-  if (answers.experience === 'junior') { auto += 6; income -= 5; }
-  if (answers.experience === 'senior') { auto -= 5; reg += 5; }
-  if (answers.experience === 'expert') { auto -= 10; reg += 10; income += 8; }
+  if (answers.experience === 'junior') { auto += 6 * autoWeight; income -= 5; }
+  if (answers.experience === 'senior') { auto -= 5 * autoWeight; reg += 5; }
+  if (answers.experience === 'expert') { auto -= 10 * autoWeight; reg += 10; income += 8; }
 
   // AI personal use
   if (answers.ai_personal_use === 'none')    { skill += 12; aug -= 10; }
   if (answers.ai_personal_use === 'regular') { aug += 8; skill -= 5; }
-  if (answers.ai_personal_use === 'central') { aug += 14; skill -= 8; auto -= 8; }
+  if (answers.ai_personal_use === 'central') { aug += 14; skill -= 8; auto -= 8 * autoWeight; }
 
   // Decision level
-  if (answers.decision_level === 'low')       { auto += 12; }
-  if (answers.decision_level === 'strategic') { auto -= 12; income += 8; }
+  if (answers.decision_level === 'low')       { auto += 12 * autoWeight; }
+  if (answers.decision_level === 'strategic') { auto -= 12 * autoWeight; income += 8; }
 
   // Regulatory
-  if (answers.regulatory === 'strict')    { reg += 20; auto -= 8; }
+  if (answers.regulatory === 'strict')    { reg += 20; auto -= 8 * autoWeight; }
   if (answers.regulatory === 'required')  { reg += 10; }
-  if (answers.regulatory === 'none')      { reg -= 15; auto += 8; }
+  if (answers.regulatory === 'none')      { reg -= 15; auto += 8 * autoWeight; }
 
   // Specialisation
-  if (answers.specialisation === 'rare')       { auto -= 12; income += 10; }
-  if (answers.specialisation === 'specialist') { auto -= 6; income += 5; }
-  if (answers.specialisation === 'generalist') { auto += 6; }
+  if (answers.specialisation === 'rare')       { auto -= 12 * autoWeight; income += 10; }
+  if (answers.specialisation === 'specialist') { auto -= 6 * autoWeight; income += 5; }
+  if (answers.specialisation === 'generalist') { auto += 6 * autoWeight; }
 
   // Data work
-  if (answers.data_work === 'heavy')       { auto += 8; adoption += 10; }
-  if (answers.data_work === 'none')        { auto -= 5; }
+  if (answers.data_work === 'heavy')       { auto += 8 * autoWeight; adoption += 10; }
+  if (answers.data_work === 'none')        { auto -= 5 * autoWeight; }
 
   // Writing work
-  if (answers.writing_work === 'central')  { auto += 10; }
+  if (answers.writing_work === 'central')  { auto += 10 * autoWeight; }
 
   // Tech comfort
   if (answers.tech_comfort === 'pioneer')  { aug += 8; skill -= 6; }
   if (answers.tech_comfort === 'low')      { skill += 8; aug -= 6; }
 
   // Work setting: physical, on-site, and field-based work is generally harder to automate end-to-end.
-  if (answers.work_location === 'onsite')  { auto -= 3; aug += 2; }
-  if (answers.work_location === 'field')   { auto -= 5; reg += 2; aug += 2; }
+  if (answers.work_location === 'onsite')  { auto -= 3 * autoWeight; aug += 2; }
+  if (answers.work_location === 'field')   { auto -= 5 * autoWeight; reg += 2; aug += 2; }
 
   // Education often proxies for specialist tacit knowledge in technical and regulated fields.
-  if (answers.education === 'phd')         { auto -= 2; income += 6; reg += 4; }
+  if (answers.education === 'phd')         { auto -= 2 * autoWeight; income += 6; reg += 4; }
   if (answers.education === 'masters')     { income += 3; }
-  if (answers.education === 'professional'){ auto -= 2; reg += 6; income += 3; }
-  if (answers.education === 'vocational')  { auto -= 1; }
+  if (answers.education === 'professional'){ auto -= 2 * autoWeight; reg += 6; income += 3; }
+  if (answers.education === 'vocational')  { auto -= 1 * autoWeight; }
 
   // Advanced technical fluency tends to shift work toward oversight, integration, and judgment.
   if (answers.digital_skills === 'advanced') { aug += 4; income += 2; }
@@ -1963,10 +2075,10 @@ function computeScores(answers) {
   // Industry
   if (answers.industry === 'startup')      { adoption += 12; skill += 5; }
   if (answers.industry === 'public')       { reg += 8; adoption -= 8; }
-  if (answers.industry === 'academic')     { auto -= 5; }
+  if (answers.industry === 'academic')     { auto -= 5 * autoWeight; }
 
   // Client facing
-  if (answers.client_facing === 'relational') { auto -= 10; aug += 5; }
+  if (answers.client_facing === 'relational') { auto -= 10 * autoWeight; aug += 5; }
 
   // Learning habit
   if (answers.learning_habit === 'consistent') { skill -= 8; aug += 6; }
@@ -1974,12 +2086,12 @@ function computeScores(answers) {
 
   // Job-title nuance within "Technology & Engineering".
   if (answers.profession_cat === 'tech' && experimentalRole) {
-    auto -= 8;
+    auto -= 8 * autoWeight;
     aug += 4;
     income += 4;
   }
   if (answers.profession_cat === 'tech' && softwareHeavyRole) {
-    auto += 4;
+    auto += 4 * autoWeight;
     adoption += 4;
   }
 
