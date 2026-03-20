@@ -1479,8 +1479,11 @@ const state = {
 };
 
 // ── QUESTIONS ──
+// Each question may include:
+//   showIf(answers)    → boolean — omit question when false
+//   dynamicText(answers) → string — personalised question text
 const questions = [
-  // ── SECTION 1: WHO ARE YOU ──
+  // ── SECTION 1: ABOUT YOU ──
   {
     id: 'profession_cat',
     section: 'About You',
@@ -1544,7 +1547,9 @@ const questions = [
   {
     id: 'tasks',
     section: 'Your Work',
-    text: 'Which best describes the core of your daily work?',
+    dynamicText: a => a.job_title
+      ? `As a ${a.job_title}, which best describes the core of your daily work?`
+      : 'Which best describes the core of your daily work?',
     options: [
       { label: 'Structured, repeatable tasks with defined rules', value: 'structured' },
       { label: 'Complex problem-solving requiring judgment', value: 'judgment' },
@@ -1588,7 +1593,11 @@ const questions = [
   {
     id: 'writing_work',
     section: 'Your Work',
-    text: 'How much of your role involves writing (reports, content, documents)?',
+    dynamicText: a => {
+      if (a.tasks === 'creative') return 'Writing and content are part of your work — how central are they to your output?';
+      if (a.tasks === 'structured') return 'How much of your structured work involves producing written reports or documents?';
+      return 'How much of your role involves writing (reports, content, documents)?';
+    },
     options: [
       { label: 'Very little', value: 'none' },
       { label: 'Occasional — emails and basic reports', value: 'some' },
@@ -1623,7 +1632,9 @@ const questions = [
   {
     id: 'ai_exposure',
     section: 'AI & Technology',
-    text: 'How much have AI tools entered your current workplace?',
+    dynamicText: a => a.job_title
+      ? `How much have AI tools entered the world of ${a.job_title}s in your workplace?`
+      : 'How much have AI tools entered your current workplace?',
     options: [
       { label: 'Not at all — no AI tools in use', value: 'none' },
       { label: 'Early stages — a few experiments', value: 'aware' },
@@ -1642,6 +1653,35 @@ const questions = [
       { label: 'Yes — AI tools are central to how I work', value: 'central' },
     ]
   },
+  // ── FOLLOW-UP: if actively using AI tools ──
+  {
+    id: 'ai_tools_used',
+    section: 'AI & Technology',
+    showIf: a => ['regular', 'central'].includes(a.ai_personal_use),
+    dynamicText: a => a.job_title
+      ? `Which types of AI tools do you use most as a ${a.job_title}?`
+      : 'Which types of AI tools do you use most?',
+    options: [
+      { label: 'Writing & drafting (ChatGPT, Claude, Copilot)', value: 'writing_ai' },
+      { label: 'Image or design generation (Midjourney, Firefly)', value: 'image_ai' },
+      { label: 'Data & analysis (ChatGPT Code, Julius, Tableau AI)', value: 'data_ai' },
+      { label: 'Coding assistants (GitHub Copilot, Cursor)', value: 'code_ai' },
+      { label: 'Industry-specific AI tools', value: 'industry_ai' },
+    ]
+  },
+  // ── FOLLOW-UP: if not yet using AI tools ──
+  {
+    id: 'ai_barrier',
+    section: 'AI & Technology',
+    showIf: a => a.ai_personal_use === 'none',
+    text: "What's the main reason you haven't started using AI tools yet?",
+    options: [
+      { label: "I don't see how they apply to my work", value: 'irrelevant' },
+      { label: 'Privacy or data security concerns', value: 'security' },
+      { label: 'My employer restricts or discourages their use', value: 'employer' },
+      { label: "I haven't had time to learn them yet", value: 'time' },
+    ]
+  },
   {
     id: 'tech_comfort',
     section: 'AI & Technology',
@@ -1656,7 +1696,9 @@ const questions = [
   {
     id: 'automation_awareness',
     section: 'AI & Technology',
-    text: 'Which statement best matches your view of AI in your field?',
+    dynamicText: a => a.job_title
+      ? `As a ${a.job_title}, which statement best matches your view of AI in your field?`
+      : 'Which statement best matches your view of AI in your field?',
     options: [
       { label: 'AI will not significantly affect my profession', value: 'dismissive' },
       { label: 'AI will change some tasks but not my core role', value: 'cautious' },
@@ -1667,6 +1709,8 @@ const questions = [
   {
     id: 'digital_skills',
     section: 'AI & Technology',
+    // Skip if they said no AI use AND low tech comfort — answer is already clear
+    showIf: a => !(a.ai_personal_use === 'none' && a.tech_comfort === 'low'),
     text: 'How would you rate your current digital and data skills?',
     options: [
       { label: 'Basic — email, documents, standard software', value: 'basic' },
@@ -1691,7 +1735,11 @@ const questions = [
   {
     id: 'job_security_feel',
     section: 'Career & Finances',
-    text: 'How secure do you currently feel in your job?',
+    dynamicText: a => {
+      if (a.ai_exposure === 'deep') return 'With AI already widespread in your workplace, how secure do you currently feel in your role?';
+      if (a.ai_exposure === 'none') return 'Even without AI in your workplace yet, how secure do you feel in your role?';
+      return 'How secure do you currently feel in your job?';
+    },
     options: [
       { label: 'Very insecure — I am worried about my position', value: 'very_insecure' },
       { label: 'Somewhat uncertain — things feel unstable', value: 'uncertain' },
@@ -1710,6 +1758,21 @@ const questions = [
       { label: 'Accelerating — strong momentum and opportunity', value: 'accelerating' },
     ]
   },
+  // ── FOLLOW-UP: if career is stagnant ──
+  {
+    id: 'stagnation_reason',
+    section: 'Career & Finances',
+    showIf: a => a.career_trajectory === 'stagnant',
+    dynamicText: a => a.job_title
+      ? `What's the main barrier to progression for you as a ${a.job_title}?`
+      : "What's the main barrier to your career progression?",
+    options: [
+      { label: 'Limited opportunities within my organisation', value: 'org_limits' },
+      { label: 'My skills feel misaligned with where the market is heading', value: 'skill_gap' },
+      { label: 'Industry-wide slowdown or restructuring', value: 'industry' },
+      { label: 'Personal or life circumstances', value: 'personal' },
+    ]
+  },
   {
     id: 'specialisation',
     section: 'Career & Finances',
@@ -1724,7 +1787,15 @@ const questions = [
   {
     id: 'regulatory',
     section: 'Career & Finances',
-    text: 'Does your profession require a licence, accreditation, or professional registration?',
+    dynamicText: a => {
+      if (['healthcare', 'legal'].includes(a.profession_cat))
+        return 'Your field typically has strong regulatory protection. How strictly does formal licensing apply to your specific role?';
+      if (a.profession_cat === 'finance')
+        return 'Does your finance role require formal accreditation or regulatory authorisation (e.g. FCA, CFA, ACCA)?';
+      if (a.profession_cat === 'tech')
+        return 'Does your specific tech role require any formal certification or professional licensing?';
+      return 'Does your profession require a licence, accreditation, or professional registration?';
+    },
     options: [
       { label: 'No — anyone can do my job without formal credentials', value: 'none' },
       { label: 'Helpful but not required', value: 'optional' },
@@ -1767,6 +1838,21 @@ const questions = [
       { label: 'Very open — I am actively thinking about pivoting', value: 'active' },
     ]
   },
+  // ── FOLLOW-UP: if open to a pivot ──
+  {
+    id: 'pivot_target',
+    section: 'Future Orientation',
+    showIf: a => ['open', 'active'].includes(a.mobility),
+    dynamicText: a => a.job_title
+      ? `If you were to move on from your ${a.job_title} role, what direction interests you most?`
+      : 'If you were to move on from your current role, what direction interests you most?',
+    options: [
+      { label: 'A more senior or leadership version of my current path', value: 'upward' },
+      { label: 'An adjacent role in a different sector', value: 'adjacent' },
+      { label: 'A completely different career field', value: 'pivot' },
+      { label: 'Starting something of my own — freelance or venture', value: 'independent' },
+    ]
+  },
   {
     id: 'network',
     section: 'Future Orientation',
@@ -1781,6 +1867,8 @@ const questions = [
   {
     id: 'geographic_flexibility',
     section: 'Future Orientation',
+    // Field workers already have implicitly low flexibility; skip for them
+    showIf: a => a.work_location !== 'field',
     text: 'How geographically flexible are you?',
     options: [
       { label: 'Not flexible — tied to my current location', value: 'fixed' },
@@ -1790,11 +1878,15 @@ const questions = [
     ]
   },
 
-  // ── SECTION 6: PRIORITIES ──
+  // ── SECTION 6: YOUR PRIORITIES ──
   {
     id: 'biggest_worry',
     section: 'Your Priorities',
-    text: 'What is your biggest career worry right now?',
+    dynamicText: a => {
+      if (a.career_trajectory === 'stagnant') return 'Your career has felt stagnant — what worries you most about that?';
+      if (a.automation_awareness === 'concerned') return "You see AI as a real threat to roles like yours. What concerns you most right now?";
+      return 'What is your biggest career worry right now?';
+    },
     options: [
       { label: 'Being made redundant or replaced by AI', value: 'redundancy' },
       { label: 'My skills becoming outdated too quickly', value: 'obsolescence' },
@@ -1816,7 +1908,11 @@ const questions = [
   {
     id: 'timeline',
     section: 'Your Priorities',
-    text: 'Over what timeframe are you most concerned about AI impact?',
+    dynamicText: a => {
+      if (a.biggest_worry === 'redundancy') return 'How soon do you think that redundancy risk could become real for you?';
+      if (a.biggest_worry === 'obsolescence') return 'How urgent is the skill gap you feel right now?';
+      return 'Over what timeframe are you most concerned about AI impact?';
+    },
     options: [
       { label: 'Immediately — I am worried about the next 12 months', value: 'immediate' },
       { label: 'Near-term — next 1–3 years', value: 'near' },
@@ -1827,7 +1923,11 @@ const questions = [
   {
     id: 'concern',
     section: 'Your Priorities',
-    text: 'What do you most want from this analysis?',
+    dynamicText: a => {
+      if (a.top_priority === 'security') return 'Given your focus on security, what would help you most from this analysis?';
+      if (a.top_priority === 'growth') return 'Given your ambition to grow, what matters most to you from this analysis?';
+      return 'What do you most want from this analysis?';
+    },
     options: [
       { label: 'Know honestly — am I at risk of being replaced?', value: 'risk' },
       { label: 'Understand how to grow my career in an AI world', value: 'growth' },
@@ -1835,7 +1935,26 @@ const questions = [
       { label: 'Get a clear, prioritised list of skills to build', value: 'skills' },
     ]
   },
+  // ── FOLLOW-UP: if they want a skills roadmap ──
+  {
+    id: 'skill_priority',
+    section: 'Your Priorities',
+    showIf: a => a.concern === 'skills',
+    text: 'Which skill area feels most urgent to develop?',
+    options: [
+      { label: 'AI and automation tools specific to my field', value: 'ai_tools' },
+      { label: 'Data literacy and analytical skills', value: 'data' },
+      { label: 'Leadership, strategy, or management skills', value: 'leadership' },
+      { label: 'Communication, writing, or creative skills', value: 'communication' },
+    ]
+  },
 ];
+
+// ── ADAPTIVE QUESTION ENGINE ──
+// Returns the filtered, ordered question list for the current answer state.
+function getActiveQuestions(answers) {
+  return questions.filter(q => !q.showIf || q.showIf(answers));
+}
 
 // ── ARCHETYPE ENGINE ──
 function computeArchetype(answers) {
@@ -1862,20 +1981,67 @@ function computeArchetype(answers) {
     }
   };
 
-  // Simple scoring logic
+  // ── 2026-calibrated archetype scoring ──
+  const title = String(answers.job_title || '').toLowerCase();
   let score = 0;
-  if (answers.tasks === 'structured') score += 3;
-  if (answers.tasks === 'creative') score += 1;
-  if (answers.ai_exposure === 'none') score += 2;
-  if (answers.ai_exposure === 'deep') score -= 2;
-  if (answers.experience === 'junior') score += 1;
-  if (answers.experience === 'expert') score -= 1;
-  if (['finance', 'legal'].includes(answers.profession_cat)) score += 1;
-  if (['healthcare', 'education'].includes(answers.profession_cat)) score -= 1;
 
-  if (score <= -1) return archetypes.augmented;
-  if (score <= 1)  return archetypes.adapter;
-  if (score <= 3)  return archetypes.transition;
+  // Task type — structured repeatable work is agentic AI's primary target
+  if (answers.tasks === 'structured')  score += 4;
+  if (answers.tasks === 'judgment')    score -= 2;
+  if (answers.tasks === 'people')      score -= 3;
+  if (answers.tasks === 'creative')    score += 1;
+
+  // Decision level
+  if (answers.decision_level === 'low')       score += 3;
+  if (answers.decision_level === 'strategic') score -= 3;
+
+  // AI exposure — deep AI already in workplace means faster displacement pressure
+  if (answers.ai_exposure === 'none')  score += 1;  // sheltered, not safe
+  if (answers.ai_exposure === 'deep')  score -= 1;  // adapted, building resilience
+  if (answers.ai_exposure === 'using') score -= 1;
+
+  // Personal AI use — active users are augmenting themselves, not being replaced
+  if (answers.ai_personal_use === 'central') score -= 3;
+  if (answers.ai_personal_use === 'regular') score -= 2;
+  if (answers.ai_personal_use === 'none')    score += 2;
+
+  // Experience — depth of tacit knowledge is a moat
+  if (answers.experience === 'junior') score += 2;
+  if (answers.experience === 'senior') score -= 1;
+  if (answers.experience === 'expert') score -= 2;
+
+  // Regulatory protection — legally can't be replaced even if technically automatable
+  if (answers.regulatory === 'strict')   score -= 3;
+  if (answers.regulatory === 'required') score -= 1;
+  if (answers.regulatory === 'none')     score += 2;
+
+  // Sector signals
+  if (['creative'].includes(answers.profession_cat))          score += 2;  // high LLM exposure
+  if (['finance'].includes(answers.profession_cat))           score += 1;  // high agentic exposure
+  if (['healthcare', 'education'].includes(answers.profession_cat)) score -= 2; // protected + relational
+  if (['legal'].includes(answers.profession_cat))             score -= 1;  // regulated
+
+  // Specific 2026 high-disruption roles
+  const urgentRoleTerms = [
+    'web developer', 'frontend', 'content writer', 'copywriter', 'seo',
+    'social media', 'paralegal', 'bookkeeper', 'data entry', 'customer service',
+    'translator', 'recruiter', 'underwriter', 'qa analyst', 'claims'
+  ];
+  if (urgentRoleTerms.some(t => title.includes(t))) score += 4;
+
+  // Adaptability and learning signal
+  if (answers.adaptability === 'proactive') score -= 2;
+  if (answers.adaptability === 'resistant') score += 2;
+  if (answers.learning_habit === 'consistent') score -= 2;
+  if (answers.learning_habit === 'rarely')     score += 2;
+
+  // Career trajectory
+  if (answers.career_trajectory === 'accelerating') score -= 1;
+  if (answers.career_trajectory === 'stagnant')     score += 2;
+
+  if (score <= -2) return archetypes.augmented;
+  if (score <= 2)  return archetypes.adapter;
+  if (score <= 5)  return archetypes.transition;
   return archetypes.urgent;
 }
 
@@ -1904,14 +2070,220 @@ function getProfessionBaseline(jobTitle, professionCat) {
   const title = normalizeProfessionText(jobTitle);
   if (!title) return null;
 
+  // ── Alias profiles: hand-calibrated for 2026 AI landscape ──
+  // avg_auto: 0–1 probability the role's core output is automatable
+  // avg_resk: 0–1 reskilling pressure
   const aliasProfiles = [
+    // ── Engineering / Physical Science (low automation — physical world, lab work) ──
     {
       terms: ['optical engineer', 'photonics', 'laser engineer', 'optoelectronics', 'fiber optics', 'fibre optics', 'optics engineer'],
       baseline: { name: 'Optical / Photonics Engineer', avg_auto: 0.018, avg_resk: 0.39, source: 'alias' }
     },
     {
       terms: ['research engineer', 'systems engineer', 'hardware engineer', 'test engineer'],
-      baseline: { name: 'Advanced Engineering Role', avg_auto: 0.03, avg_resk: 0.39, source: 'alias' }
+      baseline: { name: 'Advanced Engineering Role', avg_auto: 0.03, avg_resk: 0.40, source: 'alias' }
+    },
+    {
+      terms: ['civil engineer', 'structural engineer', 'geotechnical'],
+      baseline: { name: 'Civil / Structural Engineer', avg_auto: 0.22, avg_resk: 0.42, source: 'alias' }
+    },
+    {
+      terms: ['mechanical engineer', 'aerospace engineer', 'robotics engineer'],
+      baseline: { name: 'Mechanical / Aerospace Engineer', avg_auto: 0.20, avg_resk: 0.44, source: 'alias' }
+    },
+    // ── Healthcare (very low automation — regulation + physical presence) ──
+    {
+      terms: ['surgeon', 'surgical'],
+      baseline: { name: 'Surgeon', avg_auto: 0.04, avg_resk: 0.28, source: 'alias' }
+    },
+    {
+      terms: ['gp', 'general practitioner', 'physician', 'doctor', 'registrar'],
+      baseline: { name: 'Doctor / GP', avg_auto: 0.14, avg_resk: 0.35, source: 'alias' }
+    },
+    {
+      terms: ['nurse', 'nursing', 'midwife'],
+      baseline: { name: 'Nurse / Midwife', avg_auto: 0.09, avg_resk: 0.30, source: 'alias' }
+    },
+    {
+      terms: ['pharmacist', 'pharmacy'],
+      baseline: { name: 'Pharmacist', avg_auto: 0.30, avg_resk: 0.50, source: 'alias' }
+    },
+    {
+      terms: ['radiologist', 'radiology', 'sonographer'],
+      baseline: { name: 'Radiologist', avg_auto: 0.58, avg_resk: 0.65, source: 'alias' }
+      // High task automation (AI diagnostics) but strong regulatory protection floors the risk
+    },
+    {
+      terms: ['physiotherapist', 'physical therapist', 'occupational therapist', 'speech therapist'],
+      baseline: { name: 'Allied Health Professional', avg_auto: 0.14, avg_resk: 0.32, source: 'alias' }
+    },
+    {
+      terms: ['psychologist', 'psychiatrist', 'counsellor', 'therapist'],
+      baseline: { name: 'Mental Health Professional', avg_auto: 0.12, avg_resk: 0.30, source: 'alias' }
+    },
+    {
+      terms: ['social worker', 'caseworker', 'probation'],
+      baseline: { name: 'Social Worker', avg_auto: 0.10, avg_resk: 0.33, source: 'alias' }
+    },
+    // ── Legal (regulatory protection but routine tasks under heavy LLM pressure) ──
+    {
+      terms: ['solicitor', 'barrister', 'attorney'],
+      baseline: { name: 'Solicitor / Barrister', avg_auto: 0.35, avg_resk: 0.52, source: 'alias' }
+    },
+    {
+      terms: ['paralegal', 'legal assistant', 'legal secretary', 'conveyancer'],
+      baseline: { name: 'Paralegal / Legal Assistant', avg_auto: 0.70, avg_resk: 0.82, source: 'alias' }
+    },
+    {
+      terms: ['compliance officer', 'compliance manager', 'regulatory affairs'],
+      baseline: { name: 'Compliance Officer', avg_auto: 0.52, avg_resk: 0.66, source: 'alias' }
+    },
+    // ── Finance (high automation — AI agents now handle most routine finance tasks) ──
+    {
+      terms: ['chartered accountant', 'certified accountant', 'cpa', 'management accountant'],
+      baseline: { name: 'Chartered Accountant', avg_auto: 0.42, avg_resk: 0.62, source: 'alias' }
+    },
+    {
+      terms: ['bookkeeper', 'accounts payable', 'accounts receivable', 'payroll'],
+      baseline: { name: 'Bookkeeper / Payroll', avg_auto: 0.82, avg_resk: 0.88, source: 'alias' }
+    },
+    {
+      terms: ['financial analyst', 'investment analyst', 'equity analyst', 'credit analyst'],
+      baseline: { name: 'Financial Analyst', avg_auto: 0.65, avg_resk: 0.74, source: 'alias' }
+    },
+    {
+      terms: ['actuary', 'actuarial'],
+      baseline: { name: 'Actuary', avg_auto: 0.22, avg_resk: 0.48, source: 'alias' }
+    },
+    {
+      terms: ['insurance underwriter', 'underwriter'],
+      baseline: { name: 'Insurance Underwriter', avg_auto: 0.76, avg_resk: 0.84, source: 'alias' }
+    },
+    {
+      terms: ['loan officer', 'mortgage broker', 'mortgage adviser'],
+      baseline: { name: 'Mortgage / Loan Officer', avg_auto: 0.72, avg_resk: 0.80, source: 'alias' }
+    },
+    // ── Tech (split: experimental/physical stays safe; web/software under agent pressure) ──
+    {
+      terms: ['software engineer', 'software developer'],
+      baseline: { name: 'Software Engineer', avg_auto: 0.55, avg_resk: 0.80, source: 'alias' }
+    },
+    {
+      terms: ['web developer', 'frontend developer', 'front-end developer', 'front end developer',
+              'react developer', 'vue developer', 'angular developer', 'wordpress developer',
+              'webflow developer', 'html developer', 'css developer', 'shopify developer'],
+      baseline: { name: 'Web / Frontend Developer', avg_auto: 0.75, avg_resk: 0.88, source: 'alias' }
+    },
+    {
+      terms: ['devops', 'site reliability', 'platform engineer', 'cloud engineer', 'infrastructure engineer'],
+      baseline: { name: 'DevOps / Platform Engineer', avg_auto: 0.38, avg_resk: 0.62, source: 'alias' }
+    },
+    {
+      terms: ['security engineer', 'cybersecurity', 'penetration tester', 'security analyst'],
+      baseline: { name: 'Security Engineer', avg_auto: 0.28, avg_resk: 0.55, source: 'alias' }
+    },
+    {
+      terms: ['product manager', 'product owner'],
+      baseline: { name: 'Product Manager', avg_auto: 0.32, avg_resk: 0.60, source: 'alias' }
+    },
+    {
+      terms: ['ux designer', 'ui designer', 'ux researcher', 'product designer', 'interaction designer'],
+      baseline: { name: 'UX / Product Designer', avg_auto: 0.52, avg_resk: 0.72, source: 'alias' }
+    },
+    {
+      terms: ['data scientist', 'machine learning engineer', 'ml engineer', 'ai engineer', 'ai researcher'],
+      baseline: { name: 'Data Scientist / ML Engineer', avg_auto: 0.38, avg_resk: 0.65, source: 'alias' }
+    },
+    {
+      terms: ['data analyst', 'business intelligence', 'bi analyst', 'bi developer'],
+      baseline: { name: 'Data Analyst', avg_auto: 0.62, avg_resk: 0.78, source: 'alias' }
+    },
+    {
+      terms: ['business analyst', 'systems analyst', 'process analyst'],
+      baseline: { name: 'Business Analyst', avg_auto: 0.62, avg_resk: 0.76, source: 'alias' }
+    },
+    {
+      terms: ['qa engineer', 'quality assurance', 'test engineer', 'qa analyst', 'software tester'],
+      baseline: { name: 'QA / Test Engineer', avg_auto: 0.70, avg_resk: 0.82, source: 'alias' }
+    },
+    // ── Creative (LLM + image gen tools causing rapid disruption) ──
+    {
+      terms: ['graphic designer', 'visual designer', 'digital designer'],
+      baseline: { name: 'Graphic Designer', avg_auto: 0.64, avg_resk: 0.80, source: 'alias' }
+    },
+    {
+      terms: ['content writer', 'blog writer', 'content creator', 'content marketer'],
+      baseline: { name: 'Content Writer', avg_auto: 0.82, avg_resk: 0.90, source: 'alias' }
+    },
+    {
+      terms: ['copywriter', 'ad copywriter', 'email copywriter'],
+      baseline: { name: 'Copywriter', avg_auto: 0.80, avg_resk: 0.88, source: 'alias' }
+    },
+    {
+      terms: ['seo specialist', 'seo analyst', 'seo manager', 'seo consultant', 'seo'],
+      baseline: { name: 'SEO Specialist', avg_auto: 0.78, avg_resk: 0.88, source: 'alias' }
+    },
+    {
+      terms: ['social media manager', 'social media specialist', 'community manager'],
+      baseline: { name: 'Social Media Manager', avg_auto: 0.76, avg_resk: 0.86, source: 'alias' }
+    },
+    {
+      terms: ['translator', 'interpreter', 'localisation', 'transcriber', 'subtitler'],
+      baseline: { name: 'Translator / Interpreter', avg_auto: 0.84, avg_resk: 0.90, source: 'alias' }
+    },
+    {
+      terms: ['journalist', 'reporter', 'news writer'],
+      baseline: { name: 'Journalist / Reporter', avg_auto: 0.60, avg_resk: 0.78, source: 'alias' }
+    },
+    {
+      terms: ['photographer', 'videographer', 'video editor', 'film editor'],
+      baseline: { name: 'Photographer / Videographer', avg_auto: 0.48, avg_resk: 0.68, source: 'alias' }
+    },
+    {
+      terms: ['marketing manager', 'brand manager', 'digital marketer', 'growth marketer'],
+      baseline: { name: 'Marketing Manager', avg_auto: 0.58, avg_resk: 0.74, source: 'alias' }
+    },
+    // ── Education (lower automation — presence, pastoral, accreditation) ──
+    {
+      terms: ['teacher', 'schoolteacher', 'primary school', 'secondary school'],
+      baseline: { name: 'Schoolteacher', avg_auto: 0.26, avg_resk: 0.50, source: 'alias' }
+    },
+    {
+      terms: ['professor', 'university lecturer', 'academic researcher', 'academic'],
+      baseline: { name: 'Academic / Lecturer', avg_auto: 0.22, avg_resk: 0.48, source: 'alias' }
+    },
+    {
+      terms: ['corporate trainer', 'l&d', 'learning and development', 'instructional designer'],
+      baseline: { name: 'Corporate Trainer / L&D', avg_auto: 0.55, avg_resk: 0.72, source: 'alias' }
+    },
+    // ── Other widely affected roles ──
+    {
+      terms: ['recruiter', 'talent acquisition', 'headhunter', 'hr recruiter'],
+      baseline: { name: 'Recruiter', avg_auto: 0.65, avg_resk: 0.80, source: 'alias' }
+    },
+    {
+      terms: ['customer service', 'customer support', 'help desk', 'call centre', 'call center'],
+      baseline: { name: 'Customer Service Agent', avg_auto: 0.85, avg_resk: 0.90, source: 'alias' }
+    },
+    {
+      terms: ['data entry', 'data processing', 'admin assistant', 'office administrator'],
+      baseline: { name: 'Admin / Data Entry', avg_auto: 0.88, avg_resk: 0.90, source: 'alias' }
+    },
+    {
+      terms: ['project manager', 'programme manager', 'project coordinator'],
+      baseline: { name: 'Project Manager', avg_auto: 0.36, avg_resk: 0.58, source: 'alias' }
+    },
+    {
+      terms: ['hr manager', 'hr business partner', 'human resources', 'people manager'],
+      baseline: { name: 'HR Manager', avg_auto: 0.46, avg_resk: 0.66, source: 'alias' }
+    },
+    {
+      terms: ['architect', 'architectural'],
+      baseline: { name: 'Architect', avg_auto: 0.28, avg_resk: 0.52, source: 'alias' }
+    },
+    {
+      terms: ['supply chain', 'logistics coordinator', 'procurement', 'operations analyst'],
+      baseline: { name: 'Supply Chain / Logistics', avg_auto: 0.68, avg_resk: 0.78, source: 'alias' }
     },
   ];
 
@@ -1983,14 +2355,17 @@ function getProfessionBaseline(jobTitle, professionCat) {
 }
 
 function computeScores(answers) {
+  // ── 2026-calibrated base scores ──
+  // Reflects widespread agentic AI, LLM generation tools, and legislative landscape.
+  // Creative and finance sectors have moved significantly since earlier estimates.
   const base = {
-    healthcare: { auto: 45, aug: 82, income: 70, reg: 85, skill: 65, adoption: 60 },
-    finance:    { auto: 68, aug: 74, income: 52, reg: 60, skill: 78, adoption: 72 },
-    tech:       { auto: 55, aug: 88, income: 58, reg: 30, skill: 85, adoption: 80 },
-    legal:      { auto: 60, aug: 70, income: 58, reg: 75, skill: 72, adoption: 55 },
-    creative:   { auto: 70, aug: 72, income: 45, reg: 20, skill: 80, adoption: 65 },
-    education:  { auto: 38, aug: 75, income: 60, reg: 65, skill: 68, adoption: 45 },
-    other:      { auto: 55, aug: 70, income: 55, reg: 50, skill: 70, adoption: 55 },
+    healthcare: { auto: 42, aug: 85, income: 72, reg: 88, skill: 62, adoption: 65 },
+    finance:    { auto: 72, aug: 76, income: 50, reg: 62, skill: 82, adoption: 78 },
+    tech:       { auto: 62, aug: 88, income: 55, reg: 28, skill: 88, adoption: 88 },
+    legal:      { auto: 65, aug: 72, income: 56, reg: 80, skill: 74, adoption: 58 },
+    creative:   { auto: 78, aug: 70, income: 40, reg: 18, skill: 85, adoption: 72 },
+    education:  { auto: 40, aug: 76, income: 58, reg: 68, skill: 70, adoption: 48 },
+    other:      { auto: 58, aug: 70, income: 53, reg: 48, skill: 72, adoption: 58 },
   };
   const b = base[answers.profession_cat] || base.other;
   let { auto, aug, income, reg, skill, adoption } = { ...b };
@@ -2005,7 +2380,7 @@ function computeScores(answers) {
     if (professionBaseline.avg_auto <= 0.04) income = Math.max(income, 62);
   }
 
-  // Role-title heuristics: separate physical/lab engineering from desk-only tech work.
+  // ── Role-title keyword classification ──
   const experimentalRoleTerms = [
     'optical engineer', 'photonics', 'laser', 'optoelectronics', 'optomechanical',
     'fiber optics', 'fibre optics', 'optics', 'electro-optics', 'semiconductor',
@@ -2013,90 +2388,170 @@ function computeScores(answers) {
     'manufacturing engineer', 'process engineer', 'r&d', 'research engineer',
     'research scientist', 'experimental', 'laboratory', 'lab'
   ];
+  // Roles where LLM coding agents (Cursor, Copilot, v0, Bolt, Lovable) directly replace output
+  const webGenTerms = [
+    'web developer', 'frontend developer', 'front end developer', 'front-end developer',
+    'react developer', 'vue developer', 'angular developer', 'next.js', 'nextjs',
+    'wordpress developer', 'webflow', 'no-code', 'low-code', 'landing page designer',
+    'html developer', 'css developer', 'shopify developer'
+  ];
+  // Roles hollowed out by LLM generation (writing, translation, basic creative)
+  const llmDisruptedTerms = [
+    'content writer', 'copywriter', 'blog writer', 'content creator', 'content marketer',
+    'seo specialist', 'seo analyst', 'seo manager', 'seo writer', 'seo content',
+    'translator', 'interpreter', 'transcriber', 'subtitler', 'localisation',
+    'social media manager', 'social media specialist', 'community manager',
+    'email marketer', 'email copywriter', 'ad copywriter', 'proofreader'
+  ];
+  // Roles heavily affected by agentic AI (multi-step autonomous workflows)
+  const agenticVulnerableTerms = [
+    'data entry', 'data processing', 'claims handler', 'claims processor',
+    'insurance underwriter', 'mortgage broker', 'loan officer', 'credit analyst',
+    'bookkeeper', 'accounts payable', 'accounts receivable', 'payroll',
+    'procurement analyst', 'supply chain analyst', 'logistics coordinator',
+    'customer service', 'customer support', 'help desk', 'call centre',
+    'paralegal', 'legal assistant', 'legal secretary', 'conveyancer',
+    'recruiter', 'talent acquisition', 'hr coordinator', 'hr assistant',
+    'qa analyst', 'quality analyst', 'test analyst', 'business analyst'
+  ];
   const softwareRoleTerms = [
     'software', 'frontend', 'front-end', 'backend', 'back-end', 'full stack',
     'full-stack', 'web developer', 'app developer', 'data analyst',
     'business analyst', 'qa analyst', 'content designer', 'technical writer'
   ];
-  const experimentalRole = experimentalRoleTerms.some(term => jobTitle.includes(term));
-  const softwareHeavyRole = softwareRoleTerms.some(term => jobTitle.includes(term));
 
-  // Task type
+  const experimentalRole   = experimentalRoleTerms.some(t => jobTitle.includes(t));
+  const webGenRole         = webGenTerms.some(t => jobTitle.includes(t));
+  const llmDisruptedRole   = llmDisruptedTerms.some(t => jobTitle.includes(t));
+  const agenticVulnerable  = agenticVulnerableTerms.some(t => jobTitle.includes(t));
+  const softwareHeavyRole  = softwareRoleTerms.some(t => jobTitle.includes(t));
+
+  // ── Legislative / professional protection override ──
+  // These professions are shielded by law, licensing boards, or statutory regulation
+  // even when their tasks are technically automatable. AI cannot legally replace them.
+  const strictProtectionTerms = [
+    'solicitor', 'barrister', 'attorney', 'doctor', 'gp', 'general practitioner',
+    'physician', 'surgeon', 'consultant', 'registrar', 'anaesthetist',
+    'nurse', 'midwife', 'pharmacist', 'dentist', 'dental', 'optometrist', 'optician',
+    'architect', 'chartered accountant', 'certified public accountant', 'actuary',
+    'chartered engineer', 'registered engineer', 'social worker', 'psychologist',
+    'psychiatrist', 'chartered surveyor', 'licensed', 'registered', 'chartered'
+  ];
+  const moderateProtectionTerms = [
+    'teacher', 'professor', 'academic', 'lecturer', 'financial adviser',
+    'financial advisor', 'compliance officer', 'surveyor', 'radiologist',
+    'paramedic', 'physiotherapist', 'occupational therapist', 'speech therapist',
+    'dietitian', 'osteopath', 'chiropractor', 'auditor', 'patent attorney',
+    'town planner', 'urban planner', 'health and safety', 'environmental consultant'
+  ];
+  const hasStrictProtection    = strictProtectionTerms.some(t => jobTitle.includes(t));
+  const hasModerateProtection  = moderateProtectionTerms.some(t => jobTitle.includes(t));
+
+  // Apply legislative protection floor — AI may handle tasks but cannot replace the role
+  if (hasStrictProtection)   { reg = Math.max(reg, 80); auto = Math.min(auto, 50); }
+  if (hasModerateProtection) { reg = Math.max(reg, 62); auto = Math.min(auto, 66); }
+
+  // ── Task type ──
   if (answers.tasks === 'structured')  { auto += 15 * autoWeight; aug -= 8; }
   if (answers.tasks === 'judgment')    { auto -= 8 * autoWeight;  aug += 5; }
   if (answers.tasks === 'people')      { auto -= 14 * autoWeight; aug += 3; }
   if (answers.tasks === 'creative')    { auto += 5 * autoWeight;  aug += 8; }
 
-  // Experience
+  // ── Agentic AI vulnerability ──
+  // Structured desk work at low-to-mid decision level is the direct bullseye
+  // for 2026 agentic AI systems that can chain tasks end-to-end autonomously.
+  const isAgentTarget = answers.tasks === 'structured' &&
+    ['low', 'mid'].includes(answers.decision_level) &&
+    answers.work_location !== 'field';
+  if (isAgentTarget) { auto += 14 * autoWeight; skill += 8; }
+
+  // ── Specific disruption vectors from job title ──
+  if (webGenRole)        { auto += 18 * autoWeight; skill += 12; income -= 8; }
+  if (llmDisruptedRole)  { auto += 20 * autoWeight; skill += 14; income -= 10; }
+  if (agenticVulnerable) { auto += 14 * autoWeight; skill += 10; }
+
+  // ── Experience ──
   if (answers.experience === 'junior') { auto += 6 * autoWeight; income -= 5; }
   if (answers.experience === 'senior') { auto -= 5 * autoWeight; reg += 5; }
   if (answers.experience === 'expert') { auto -= 10 * autoWeight; reg += 10; income += 8; }
 
-  // AI personal use
+  // ── AI personal use ──
   if (answers.ai_personal_use === 'none')    { skill += 12; aug -= 10; }
   if (answers.ai_personal_use === 'regular') { aug += 8; skill -= 5; }
   if (answers.ai_personal_use === 'central') { aug += 14; skill -= 8; auto -= 8 * autoWeight; }
 
-  // Decision level
+  // ── New adaptive answer signals ──
+  // "Irrelevant" barrier = dangerous blind spot, field likely already disrupted
+  if (answers.ai_barrier === 'irrelevant')      { skill += 10; aug -= 8; auto += 6 * autoWeight; }
+  if (answers.ai_barrier === 'employer')        { adoption -= 10; }
+  // Using coding agents is a direct hedge against being replaced by them
+  if (answers.ai_tools_used === 'code_ai')      { aug += 8; auto -= 5 * autoWeight; }
+  if (answers.ai_tools_used === 'data_ai')      { aug += 6; }
+  if (answers.ai_tools_used === 'industry_ai')  { aug += 8; auto -= 4 * autoWeight; }
+  // Stagnation driven by skill gap = compounding pressure
+  if (answers.stagnation_reason === 'skill_gap')   { skill += 10; }
+  if (answers.stagnation_reason === 'industry')    { auto += 5 * autoWeight; }
+  // Active pivot thinkers already hedging = lower urgency
+  if (['open', 'active'].includes(answers.mobility)) { skill -= 6; aug += 4; }
+  if (answers.pivot_target === 'independent')          { income += 4; }
+
+  // ── Decision level ──
   if (answers.decision_level === 'low')       { auto += 12 * autoWeight; }
   if (answers.decision_level === 'strategic') { auto -= 12 * autoWeight; income += 8; }
 
-  // Regulatory
+  // ── Regulatory ──
   if (answers.regulatory === 'strict')    { reg += 20; auto -= 8 * autoWeight; }
   if (answers.regulatory === 'required')  { reg += 10; }
   if (answers.regulatory === 'none')      { reg -= 15; auto += 8 * autoWeight; }
 
-  // Specialisation
+  // ── Specialisation ──
   if (answers.specialisation === 'rare')       { auto -= 12 * autoWeight; income += 10; }
   if (answers.specialisation === 'specialist') { auto -= 6 * autoWeight; income += 5; }
   if (answers.specialisation === 'generalist') { auto += 6 * autoWeight; }
 
-  // Data work
+  // ── Data work ──
   if (answers.data_work === 'heavy')       { auto += 8 * autoWeight; adoption += 10; }
   if (answers.data_work === 'none')        { auto -= 5 * autoWeight; }
 
-  // Writing work
+  // ── Writing work ──
   if (answers.writing_work === 'central')  { auto += 10 * autoWeight; }
 
-  // Tech comfort
+  // ── Tech comfort ──
   if (answers.tech_comfort === 'pioneer')  { aug += 8; skill -= 6; }
   if (answers.tech_comfort === 'low')      { skill += 8; aug -= 6; }
 
-  // Work setting: physical, on-site, and field-based work is generally harder to automate end-to-end.
+  // ── Work setting ──
   if (answers.work_location === 'onsite')  { auto -= 3 * autoWeight; aug += 2; }
   if (answers.work_location === 'field')   { auto -= 5 * autoWeight; reg += 2; aug += 2; }
 
-  // Education often proxies for specialist tacit knowledge in technical and regulated fields.
+  // ── Education ──
   if (answers.education === 'phd')         { auto -= 2 * autoWeight; income += 6; reg += 4; }
   if (answers.education === 'masters')     { income += 3; }
   if (answers.education === 'professional'){ auto -= 2 * autoWeight; reg += 6; income += 3; }
   if (answers.education === 'vocational')  { auto -= 1 * autoWeight; }
 
-  // Advanced technical fluency tends to shift work toward oversight, integration, and judgment.
+  // ── Digital skills ──
   if (answers.digital_skills === 'advanced') { aug += 4; income += 2; }
   if (answers.digital_skills === 'expert')   { aug += 6; income += 4; }
 
-  // Industry
+  // ── Industry ──
   if (answers.industry === 'startup')      { adoption += 12; skill += 5; }
   if (answers.industry === 'public')       { reg += 8; adoption -= 8; }
   if (answers.industry === 'academic')     { auto -= 5 * autoWeight; }
 
-  // Client facing
+  // ── Client facing ──
   if (answers.client_facing === 'relational') { auto -= 10 * autoWeight; aug += 5; }
 
-  // Learning habit
+  // ── Learning habit ──
   if (answers.learning_habit === 'consistent') { skill -= 8; aug += 6; }
   if (answers.learning_habit === 'rarely')     { skill += 10; }
 
-  // Job-title nuance within "Technology & Engineering".
+  // ── Tech sector nuance ──
   if (answers.profession_cat === 'tech' && experimentalRole) {
-    auto -= 8 * autoWeight;
-    aug += 4;
-    income += 4;
+    auto -= 8 * autoWeight; aug += 4; income += 4;
   }
   if (answers.profession_cat === 'tech' && softwareHeavyRole) {
-    auto += 4 * autoWeight;
-    adoption += 4;
+    auto += 4 * autoWeight; adoption += 4;
   }
 
   return {
@@ -2123,46 +2578,309 @@ function getProfessionLabel(answers) {
 
 function getTasksForSector(sector, jobTitle = '') {
   const title = String(jobTitle || '').toLowerCase();
+
+  // ── Role-specific task profiles (2026-calibrated) ──
+  // Listed most-specific first. First match wins.
   const roleProfiles = [
+    // ── Physical / Lab Engineering (very safe — AI cannot replace lab work) ──
     {
       match: ['optical engineer', 'photonics', 'laser', 'optics', 'fiber optics', 'fibre optics', 'optoelectronics'],
-      risk: ['Routine optical simulation runs', 'Standard test-data post-processing', 'First-pass experiment documentation'],
-      safe: ['Physical experiment design and setup', 'Interpreting noisy lab results and failure modes', 'Prototype integration with real-world hardware constraints']
+      risk: ['Routine simulation run setup', 'Standard test-data post-processing', 'First-pass technical documentation'],
+      safe: ['Physical experiment design and bench work', 'Interpreting noisy lab results and failure modes', 'Prototype integration with hardware constraints', 'Novel measurement methodology development']
     },
     {
-      match: ['software engineer', 'developer', 'frontend', 'backend', 'full stack', 'full-stack'],
-      risk: ['Boilerplate feature implementation', 'Routine test-case generation', 'Basic API and documentation drafting'],
-      safe: ['System architecture tradeoffs', 'Debugging production edge cases', 'Translating ambiguous stakeholder needs into robust systems']
+      match: ['hardware engineer', 'systems engineer', 'research engineer', 'test engineer'],
+      risk: ['Standard test script generation', 'Routine compliance documentation', 'First-pass schematic checks'],
+      safe: ['Physical prototype iteration', 'Root-cause analysis in complex systems', 'Cross-discipline integration decisions', 'Real-world constraint navigation']
     },
     {
-      match: ['data scientist', 'data analyst', 'machine learning', 'ml engineer', 'ai engineer'],
-      risk: ['Routine data cleaning and SQL drafting', 'Standard dashboard generation', 'Baseline model experimentation'],
-      safe: ['Framing the right analytical question', 'Evaluating model reliability and bias in context', 'Turning findings into decisions stakeholders will trust']
+      match: ['civil engineer', 'structural engineer', 'mechanical engineer', 'aerospace engineer'],
+      risk: ['Routine CAD modelling iterations', 'Standard load calculation reports', 'Boilerplate specification documents'],
+      safe: ['Site-specific engineering judgment', 'Safety-critical sign-off decisions', 'Client requirement translation', 'Novel design problem-solving']
+    },
+    // ── Web / Frontend Dev (high risk — coding agents and web generators) ──
+    {
+      match: ['web developer', 'frontend developer', 'front-end developer', 'react developer',
+              'vue developer', 'wordpress developer', 'webflow', 'html developer'],
+      risk: ['Building standard UI components from specs', 'Writing boilerplate CSS and layout code',
+             'Creating landing pages and templates', 'Routine bug fixes in known codebases',
+             'Integration of third-party APIs to spec'],
+      safe: ['Defining front-end architecture for complex products', 'Accessibility and performance engineering',
+             'Translating ambiguous UX requirements into system design', 'Debugging obscure cross-browser or rendering issues']
+    },
+    // ── Software Engineering (moderate-high risk, agent-augmented coding) ──
+    {
+      match: ['software engineer', 'software developer', 'backend developer', 'full stack', 'full-stack'],
+      risk: ['Boilerplate feature implementation', 'Routine test-case generation', 'Standard CRUD API development',
+             'Writing documentation from existing code', 'Basic refactoring tasks'],
+      safe: ['System architecture and design decisions', 'Debugging complex production incidents',
+             'Security and performance tradeoffs at scale', 'Translating ambiguous stakeholder needs into durable systems']
+    },
+    // ── DevOps / Security (lower risk — judgment, adversarial context) ──
+    {
+      match: ['devops', 'platform engineer', 'cloud engineer', 'site reliability', 'infrastructure'],
+      risk: ['Routine pipeline configuration', 'Standard monitoring alert setup', 'Boilerplate IaC scripts'],
+      safe: ['Incident response and complex fault diagnosis', 'Architecture decisions for reliability and cost',
+             'Security posture design', 'Capacity planning under uncertainty']
     },
     {
-      match: ['financial analyst', 'accountant', 'auditor', 'investment analyst'],
-      risk: ['Recurring reconciliations and spreadsheet prep', 'Standard variance reporting', 'First-pass financial modelling'],
-      safe: ['Judgment on unusual transactions or market context', 'Client or stakeholder communication', 'Strategic capital allocation recommendations']
+      match: ['security engineer', 'cybersecurity', 'penetration tester', 'security analyst'],
+      risk: ['Routine vulnerability scanning and report generation', 'Standard patch compliance checks'],
+      safe: ['Adversarial thinking and novel attack surface analysis', 'Incident response and forensics',
+             'Architecture review for security design', 'Red team scenario planning']
+    },
+    // ── Data / ML (moderate risk — AI assists but framing and judgment remain human) ──
+    {
+      match: ['data scientist', 'machine learning', 'ml engineer', 'ai engineer', 'ai researcher'],
+      risk: ['Routine data cleaning and feature engineering', 'Standard model training runs',
+             'Basic exploratory analysis reports', 'Boilerplate evaluation dashboards'],
+      safe: ['Framing the right problem and hypothesis', 'Evaluating model reliability and bias in context',
+             'Translating findings into business decisions', 'Designing novel ML approaches for new domains']
     },
     {
-      match: ['nurse', 'doctor', 'physician', 'surgeon', 'radiographer', 'therapist'],
-      risk: ['Standard note drafting and admin follow-up', 'Protocol-driven triage support', 'Routine image or results pre-screening'],
-      safe: ['Patient communication and trust-building', 'Complex diagnosis and escalation judgment', 'Coordinating care across disciplines']
+      match: ['data analyst', 'business intelligence', 'bi analyst'],
+      risk: ['Recurring SQL report generation', 'Standard dashboard builds', 'Routine data validation',
+             'Scheduled summary reporting'],
+      safe: ['Choosing the right metric frameworks', 'Interpreting ambiguous or conflicting data signals',
+             'Stakeholder communication and insight storytelling', 'Connecting data to strategic decisions']
     },
     {
-      match: ['lawyer', 'solicitor', 'attorney', 'paralegal', 'compliance'],
-      risk: ['Template contract review', 'Routine legal research summarisation', 'Standard clause drafting'],
-      safe: ['Negotiation strategy in complex matters', 'Novel legal interpretation', 'Client judgment and risk counsel']
+      match: ['business analyst', 'systems analyst', 'process analyst'],
+      risk: ['Standard requirements documentation', 'Process mapping from existing workflows',
+             'Routine user story drafting', 'Basic gap analysis reports'],
+      safe: ['Navigating political complexity in stakeholder alignment', 'Identifying the right problem to solve',
+             'Facilitating cross-functional decision-making', 'Change management and adoption strategy']
     },
     {
-      match: ['teacher', 'lecturer', 'professor', 'trainer', 'tutor'],
-      risk: ['First-draft lesson materials', 'Routine marking and feedback summaries', 'Administrative progress reporting'],
-      safe: ['Live teaching adaptation to student needs', 'Mentoring and pastoral support', 'Designing learning experiences for mixed abilities']
+      match: ['qa engineer', 'quality assurance', 'software tester', 'qa analyst'],
+      risk: ['Writing routine test cases from specifications', 'Regression test execution',
+             'Standard bug report documentation', 'Automated test script generation'],
+      safe: ['Exploratory testing for edge-case discovery', 'Quality strategy and risk-based prioritisation',
+             'Usability judgment that goes beyond pass/fail', 'Advocating for quality culture across teams']
+    },
+    // ── Finance (high risk for routine tasks, protected for judgment roles) ──
+    {
+      match: ['financial analyst', 'investment analyst', 'equity analyst', 'credit analyst'],
+      risk: ['Routine financial model updates', 'Standard variance and performance reports',
+             'First-pass research note drafting', 'Data aggregation from filings'],
+      safe: ['Judgment on market context and anomalies', 'Client or management communication',
+             'Strategic capital allocation recommendations', 'Interpreting risk beyond the numbers']
     },
     {
-      match: ['designer', 'ux', 'ui', 'graphic', 'copywriter', 'brand'],
-      risk: ['First-draft creative variations', 'Template-based asset production', 'Basic campaign copy generation'],
-      safe: ['Original concept direction', 'Client discovery and creative judgment', 'Taste, positioning, and brand coherence']
+      match: ['chartered accountant', 'management accountant', 'auditor'],
+      risk: ['Recurring reconciliations and period-end close tasks', 'Standard audit sampling procedures',
+             'Routine tax computation runs', 'Management pack generation'],
+      safe: ['Complex tax planning and structuring', 'Judgement calls on unusual transactions',
+             'Client advisory and relationship management', 'Regulatory interpretation in novel situations']
+    },
+    {
+      match: ['bookkeeper', 'accounts payable', 'accounts receivable', 'payroll clerk'],
+      risk: ['Invoice processing and data entry', 'Bank reconciliation', 'Standard payroll runs',
+             'Expense report processing — all substantially automated by agentic AI in 2026'],
+      safe: ['Handling exceptions and disputes', 'Relationship management with suppliers and staff',
+             'Judgment calls on policy edge cases']
+    },
+    {
+      match: ['actuary', 'actuarial'],
+      risk: ['Standard reserve calculations', 'Routine model runs and sensitivities', 'Regulatory return filing'],
+      safe: ['Novel risk modelling for new product types', 'Communicating uncertainty to boards and regulators',
+             'Judgment on long-tail and systemic risk', 'Strategic pricing decisions']
+    },
+    {
+      match: ['insurance underwriter', 'underwriter'],
+      risk: ['Standard risk scoring and quote generation', 'Routine portfolio monitoring reports',
+             'Template-based policy documentation — agentic AI now handles most of the pipeline'],
+      safe: ['Complex or novel risk assessment', 'Client negotiation and broker relationships',
+             'Judgment on outlier cases outside model confidence']
+    },
+    // ── Healthcare (very safe for clinical roles — regulation + physical presence) ──
+    {
+      match: ['surgeon', 'surgical'],
+      risk: ['Surgical report dictation and documentation', 'Pre-op checklist administration'],
+      safe: ['Surgical procedure performance', 'Intraoperative decision-making', 'Complex case planning',
+             'Patient consent and communication', 'Post-operative judgment']
+    },
+    {
+      match: ['doctor', 'gp', 'general practitioner', 'physician', 'consultant', 'registrar'],
+      risk: ['Routine administrative note-writing', 'Standard referral letter drafting',
+             'Protocol-driven triage support', 'Basic prescription generation from confirmed diagnosis'],
+      safe: ['Complex diagnosis requiring differential judgment', 'Patient communication and trust-building',
+             'Ethical and end-of-life decision-making', 'Coordinating care across specialties']
+    },
+    {
+      match: ['nurse', 'midwife', 'nursing'],
+      risk: ['Shift handover documentation', 'Standard medication administration records', 'Routine obs charting'],
+      safe: ['Bedside patient assessment and observation', 'Escalation judgment for deteriorating patients',
+             'Emotional care and family communication', 'Advocacy in complex care situations']
+    },
+    {
+      match: ['radiologist', 'radiology', 'sonographer'],
+      risk: ['Routine image pre-screening and triage — AI now reads standard scans with high accuracy',
+             'Standard report generation from protocol scans'],
+      safe: ['Correlating imaging with full clinical context', 'Complex multi-system case interpretation',
+             'Interventional procedures', 'Communicating uncertain or incidental findings']
+    },
+    {
+      match: ['psychologist', 'psychiatrist', 'therapist', 'counsellor'],
+      risk: ['Session note drafting', 'Routine progress report generation', 'Standardised assessment scoring'],
+      safe: ['Therapeutic relationship and trust', 'Complex diagnosis and formulation',
+             'Crisis assessment and risk management', 'Adapting treatment to individual presentation']
+    },
+    {
+      match: ['physiotherapist', 'physical therapist', 'occupational therapist', 'speech therapist'],
+      risk: ['Standard exercise programme documentation', 'Routine outcome measure scoring'],
+      safe: ['Hands-on treatment and manual techniques', 'Clinical reasoning for complex presentations',
+             'Patient motivation and behaviour change', 'Functional assessment in real environments']
+    },
+    {
+      match: ['pharmacist', 'pharmacy'],
+      risk: ['Standard dispensing workflow', 'Routine drug interaction checks', 'Repeat prescription management'],
+      safe: ['Complex polypharmacy review', 'Patient counselling and adherence support',
+             'Clinical judgment in ambiguous presentations', 'Medicines optimisation in specialist settings']
+    },
+    {
+      match: ['social worker', 'caseworker'],
+      risk: ['Assessment report drafting', 'Case file documentation', 'Standard referral processing'],
+      safe: ['Safeguarding judgment in complex family situations', 'Building trust with vulnerable individuals',
+             'Navigating multi-agency complexity', 'Ethical decision-making under uncertainty']
+    },
+    // ── Legal (regulatory protects practitioners; support roles under heavy LLM pressure) ──
+    {
+      match: ['solicitor', 'barrister', 'attorney'],
+      risk: ['Template contract drafting', 'Routine legal research summarisation',
+             'Standard clause generation', 'First-pass due diligence document review'],
+      safe: ['Negotiation strategy in high-stakes matters', 'Novel legal argument construction',
+             'Client judgment and risk counsel', 'Advocacy and courtroom work',
+             'Regulatory compliance interpretation in novel contexts']
+    },
+    {
+      match: ['paralegal', 'legal assistant', 'legal secretary', 'conveyancer'],
+      risk: ['Document review and summarisation — LLMs now handle this at scale',
+             'Standard contract clause population', 'Routine legal research', 'Template drafting tasks',
+             'Bundle preparation and court filing logistics'],
+      safe: ['Client-facing communication and reassurance', 'Complex matter coordination',
+             'Identifying issues outside standard checklists', 'Judgment in ambiguous instructions']
+    },
+    {
+      match: ['compliance officer', 'compliance manager', 'regulatory affairs'],
+      risk: ['Standard policy documentation drafting', 'Routine regulatory mapping exercises',
+             'Report generation for regular filings'],
+      safe: ['Interpreting new regulation in context', 'Advising on novel product or business model risk',
+             'Building compliance culture across the organisation', 'Regulatory relationship management']
+    },
+    // ── Creative (high disruption from generative tools; concept/strategy remain human) ──
+    {
+      match: ['graphic designer', 'visual designer', 'digital designer'],
+      risk: ['Producing asset variations and resizes', 'Social media template generation',
+             'Stock image sourcing and basic composition', 'First-pass layout from a brief'],
+      safe: ['Original concept and visual direction', 'Brand system development',
+             'Art direction and taste-led judgment', 'Client creative partnership']
+    },
+    {
+      match: ['ux designer', 'ui designer', 'product designer', 'ux researcher'],
+      risk: ['Generating wireframe variations', 'Writing standard usability test scripts',
+             'Basic user persona documentation', 'First-pass copy for UI microcopy'],
+      safe: ['User research synthesis requiring contextual judgment', 'Defining the right product problems to solve',
+             'Design systems at scale', 'Stakeholder alignment and product strategy']
+    },
+    {
+      match: ['content writer', 'blog writer', 'content creator', 'content marketer'],
+      risk: ['Drafting blog posts, articles, and web copy — LLMs now produce first drafts at near-human quality',
+             'Keyword-optimised article production', 'Social post generation', 'Product description writing',
+             'Newsletter content', 'Repurposing existing content across formats'],
+      safe: ['Deep investigative or expert-source journalism', 'Distinctive voice and brand tone ownership',
+             'Long-form editorial strategy', 'Audience relationship and community trust']
+    },
+    {
+      match: ['copywriter', 'ad copywriter', 'email copywriter'],
+      risk: ['Standard ad copy variations', 'Email subject line generation', 'PPC headline testing',
+             'Template-based campaign copy — most of this workflow is now AI-assisted by default'],
+      safe: ['High-concept brand campaigns', 'Emotional storytelling for major launches',
+             'Copy strategy and tone-of-voice definition', 'Creative direction in agency context']
+    },
+    {
+      match: ['seo', 'seo specialist', 'seo analyst', 'seo manager'],
+      risk: ['Keyword research and clustering', 'Content brief generation', 'On-page optimisation recommendations',
+             'Standard SEO audit reporting — largely automated by AI tools in 2026'],
+      safe: ['Strategic SEO architecture for complex sites', 'Technical SEO in novel infrastructure',
+             'Search intent analysis for emerging query patterns', 'Executive-level reporting and buy-in']
+    },
+    {
+      match: ['social media manager', 'social media specialist', 'community manager'],
+      risk: ['Writing standard social posts across platforms', 'Scheduling and content calendar management',
+             'Caption generation and hashtag research', 'Basic performance reporting'],
+      safe: ['Community crisis management', 'Brand voice judgment in sensitive contexts',
+             'Cultural moment and trend interpretation', 'Influencer relationship management']
+    },
+    {
+      match: ['translator', 'interpreter', 'localisation'],
+      risk: ['Standard document translation — neural MT now matches professional quality for most language pairs',
+             'Subtitling from transcript', 'Basic technical manual translation'],
+      safe: ['High-stakes legal, medical, or literary translation', 'Live simultaneous interpretation',
+             'Cultural adaptation beyond literal translation', 'Quality review and post-editing of AI output']
+    },
+    {
+      match: ['marketing manager', 'digital marketer', 'growth marketer', 'brand manager'],
+      risk: ['Campaign asset production', 'Standard media brief drafting', 'Performance report generation',
+             'A/B test copy creation'],
+      safe: ['Go-to-market strategy', 'Brand positioning and differentiation', 'Budget allocation judgment',
+             'Agency and stakeholder management']
+    },
+    // ── Education (safe for teaching proper; disrupted for content-only roles) ──
+    {
+      match: ['teacher', 'schoolteacher', 'primary', 'secondary school'],
+      risk: ['Lesson plan first drafts', 'Routine marking and written feedback', 'Administrative reporting'],
+      safe: ['Live classroom teaching and adaptation', 'Pastoral care and student support',
+             'Behaviour management and safeguarding', 'Parent and carer relationships']
+    },
+    {
+      match: ['professor', 'lecturer', 'academic'],
+      risk: ['First-draft lecture slides and materials', 'Standard assignment marking', 'Routine literature summaries'],
+      safe: ['Original research design and investigation', 'Complex student supervision',
+             'Academic judgment and peer review', 'Curriculum strategy and innovation']
+    },
+    {
+      match: ['corporate trainer', 'l&d', 'learning and development', 'instructional designer'],
+      risk: ['Generating standard training content and e-learning modules', 'Producing assessment questions',
+             'Course outline drafting from learning objectives'],
+      safe: ['Needs analysis and learning strategy', 'Live facilitation and group dynamics',
+             'Coaching and individual development conversations', 'Measuring learning impact in context']
+    },
+    // ── Other widely disrupted roles ──
+    {
+      match: ['recruiter', 'talent acquisition', 'headhunter'],
+      risk: ['CV screening and shortlisting — AI agents now do this in minutes across thousands of applications',
+             'Job description writing', 'Interview scheduling and coordination', 'Standard rejection communications'],
+      safe: ['Candidate experience and relationship building', 'Negotiation and offer management',
+             'Executive and specialist search', 'Employer brand and talent strategy']
+    },
+    {
+      match: ['customer service', 'customer support', 'help desk', 'call centre', 'call center'],
+      risk: ['Responding to routine enquiries — conversational AI now handles 70–80% of standard contacts',
+             'FAQ-based support', 'Order status and account queries', 'First-level triage routing'],
+      safe: ['Complex complaint resolution requiring empathy and judgment', 'High-value customer retention',
+             'Escalation handling in emotionally charged situations', 'Relationship management for key accounts']
+    },
+    {
+      match: ['project manager', 'programme manager', 'project coordinator'],
+      risk: ['Status report drafting', 'Meeting minute generation', 'Standard RAID log updates',
+             'Resource allocation modelling from existing data'],
+      safe: ['Stakeholder alignment in politically complex programmes', 'Risk judgment under real uncertainty',
+             'Leading teams through ambiguity and change', 'Defining scope and priorities in novel projects']
+    },
+    {
+      match: ['architect'],
+      risk: ['Generating initial design concepts and massing studies', 'Standard specification documentation',
+             'Routine planning application drawings'],
+      safe: ['Site-specific design vision and client relationship', 'Navigating planning and heritage constraints',
+             'Construction coordination and technical problem-solving', 'Design quality judgment and ethics']
+    },
+    {
+      match: ['supply chain', 'logistics coordinator', 'procurement analyst'],
+      risk: ['Standard purchase order processing', 'Routine supplier performance reporting',
+             'Demand forecasting from historical data', 'Shipment tracking and exception flagging'],
+      safe: ['Supplier negotiation and relationship management', 'Crisis response in supply disruptions',
+             'Strategic sourcing decisions', 'Sustainability and ethics judgment in sourcing']
     },
   ];
 
@@ -2175,32 +2893,32 @@ function getTasksForSector(sector, jobTitle = '') {
 
   const tasks = {
     healthcare: {
-      risk: ['Routine diagnostic screening', 'Basic clinical documentation', 'Standard report drafting'],
-      safe: ['Complex patient consultation', 'Interdisciplinary care coordination', 'Rare case diagnosis', 'Ethical judgement calls']
+      risk: ['Routine clinical documentation and note-drafting', 'Protocol-driven triage and pre-screening', 'Standard diagnostic imaging review'],
+      safe: ['Complex patient consultation requiring judgment', 'Interdisciplinary care coordination', 'Rare and atypical case diagnosis', 'Ethical and end-of-life decision-making', 'Physical examination and hands-on care']
     },
     finance: {
-      risk: ['Rule-based data entry & reconciliation', 'Standard report generation', 'Basic client portfolio rebalancing'],
-      safe: ['Complex deal structuring', 'Client relationship management', 'Strategic financial planning', 'Regulatory interpretation']
+      risk: ['Automated reconciliation and period-end close', 'Standard report and dashboard generation', 'Rule-based compliance filing', 'Routine portfolio rebalancing — agentic AI handles most of this pipeline'],
+      safe: ['Complex deal structuring and negotiation', 'Client relationship management and trust', 'Novel regulatory interpretation', 'Strategic financial advice in ambiguous situations']
     },
     tech: {
-      risk: ['Routine documentation and reporting', 'Standard analysis or testing scripts', 'Template-based technical outputs'],
-      safe: ['System-level problem framing', 'Judgment under real-world constraints', 'Cross-functional technical decision-making']
+      risk: ['Boilerplate code generation and standard feature builds', 'Routine QA and test-case writing', 'Standard documentation and API specs', 'Template-based infrastructure scripts'],
+      safe: ['System architecture and design decisions', 'Security and reliability tradeoffs at scale', 'Debugging complex production failures', 'Cross-functional technical leadership']
     },
     legal: {
-      risk: ['Contract template review', 'Legal research & citation', 'Standard clause drafting'],
-      safe: ['Courtroom advocacy', 'Complex negotiation strategy', 'Novel legal interpretation', 'Client trust & counsel']
+      risk: ['Contract template review and standard clause drafting', 'Routine legal research summarisation', 'Document bundle preparation — LLMs now handle this at speed'],
+      safe: ['Courtroom advocacy and oral argument', 'Complex negotiation and deal strategy', 'Novel legal interpretation in untested areas', 'Client judgment, ethics, and trust']
     },
     creative: {
-      risk: ['Basic copywriting from briefs', 'Template-based design work', 'Stock image curation'],
-      safe: ['Brand strategy direction', 'Original concept development', 'Client creative direction', 'Cultural insight application']
+      risk: ['First-draft copy and content from briefs', 'Template-based design asset production', 'Social media content generation', 'Basic image and video editing — generative tools cover most standard requests'],
+      safe: ['Original creative concept and direction', 'Brand strategy and cultural positioning', 'Client creative relationships', 'Distinctive voice and aesthetic judgment']
     },
     education: {
-      risk: ['Content delivery (lecture-style)', 'Basic assessment marking', 'Standard lesson planning'],
-      safe: ['Mentoring & pastoral care', 'Personalised learning design', 'Complex student support', 'Critical thinking facilitation']
+      risk: ['Lecture content creation and slides', 'Routine assignment marking and feedback', 'Standard lesson planning and resource generation'],
+      safe: ['Live teaching, adaptation, and classroom management', 'Mentoring and pastoral care', 'Safeguarding judgment', 'Personalised learning design for complex needs', 'Critical thinking facilitation']
     },
     other: {
-      risk: ['Repetitive administrative tasks', 'Standard data processing', 'Template-based outputs'],
-      safe: ['Strategic decision-making', 'Human relationship management', 'Creative problem-solving', 'Complex judgement calls']
+      risk: ['Repetitive data processing and entry', 'Standard report and document generation', 'Template-based task execution — agentic AI systems can now chain these automatically'],
+      safe: ['Strategic decision-making under real uncertainty', 'Human relationship and trust management', 'Novel problem-solving with incomplete information', 'Physical, hands-on, or site-specific work']
     }
   };
   return tasks[sector] || tasks.other;
@@ -2243,12 +2961,14 @@ function selectMethod(method, el) {
 
 // ── QUIZ ──
 function renderQuestion(idx) {
-  const q = questions[idx];
+  const activeQs = getActiveQuestions(state.answers);
+  const q = activeQs[idx];
+  if (!q) return;
   const container = document.getElementById('q-options');
   container.innerHTML = '';
 
-  // Section label
-  const prevSection = idx > 0 ? questions[idx-1].section : null;
+  // Section label — compare to previous active question
+  const prevSection = idx > 0 ? activeQs[idx-1].section : null;
   const sectionEl = document.getElementById('q-section');
   if (q.section && q.section !== prevSection) {
     sectionEl.textContent = q.section.toUpperCase();
@@ -2257,11 +2977,13 @@ function renderQuestion(idx) {
     sectionEl.style.display = 'none';
   }
 
-  document.getElementById('q-num').textContent = `Question ${idx+1} of ${questions.length}`;
-  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-num').textContent = `Question ${idx+1} of ${activeQs.length}`;
+  // Use dynamic text if defined, otherwise fall back to static text
+  document.getElementById('q-text').textContent =
+    q.dynamicText ? q.dynamicText(state.answers) : q.text;
 
   const nextBtn = document.getElementById('quiz-next');
-  nextBtn.textContent = idx === questions.length - 1 ? 'See My Results →' : 'Continue →';
+  nextBtn.textContent = idx === activeQs.length - 1 ? 'See My Results →' : 'Continue →';
 
   // Text input question
   if (q.type === 'text') {
@@ -2294,7 +3016,8 @@ function renderQuestion(idx) {
     });
 
     // Add "Other" option to questions that benefit from it (not already having one)
-    const noOther = ['profession_cat','industry','concern','top_priority','timeline','biggest_worry'];
+    const noOther = ['profession_cat','industry','concern','top_priority','timeline','biggest_worry',
+                     'ai_tools_used','ai_barrier','stagnation_reason','pivot_target','skill_priority'];
     if (!noOther.includes(q.id)) {
       const otherBtn = document.createElement('button');
       otherBtn.className = 'option-btn' + (state.answers[q.id] === 'other_typed' ? ' selected' : '');
@@ -2346,12 +3069,14 @@ function selectOption(qId, value, btn) {
 }
 
 function quizNext() {
-  const q = questions[state.currentQ];
+  const activeQs = getActiveQuestions(state.answers);
+  const q = activeQs[state.currentQ];
+  if (!q) return;
   const ans = state.answers[q.id];
   if (!ans) return;
-  const pct = Math.round(((state.currentQ + 1) / questions.length) * 60) + 20;
-  setProgress(pct, `${q.section || 'Quiz'} · ${state.currentQ + 1}/${questions.length}`, 'Step 2 of 4');
-  if (state.currentQ < questions.length - 1) {
+  const pct = Math.round(((state.currentQ + 1) / activeQs.length) * 60) + 20;
+  setProgress(pct, `${q.section || 'Quiz'} · ${state.currentQ + 1}/${activeQs.length}`, 'Step 2 of 4');
+  if (state.currentQ < activeQs.length - 1) {
     renderQuestion(state.currentQ + 1);
   } else {
     startAnalysis();
