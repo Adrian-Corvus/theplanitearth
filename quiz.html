@@ -1287,7 +1287,7 @@
         <div class="eyebrow">Career Intelligence Brief</div>
         <h3>Your complete personalised report</h3>
         <div class="price-display"><span style="font-size:16px;font-weight:400;text-decoration:line-through;color:#aaa;margin-right:6px">€12</span><span style="font-size:22px;font-weight:700">€7.99</span></div>
-        <div class="price-note">One-time · or €9.99 with Profile Optimisation</div>
+        <div class="price-note" id="price-note-bundle">One-time · or €9.99 with Profile Optimisation</div>
         <div class="payment-includes">
           <div class="pay-item"><div class="pay-check">✓</div>Full 6-dimension dashboard</div>
           <div class="pay-item"><div class="pay-check">✓</div>Complete task-level breakdown</div>
@@ -3700,6 +3700,12 @@ function goToPayment() {
     } else {
       upsellAlert.style.display = 'none';
       if (planSelector) planSelector.style.display = 'flex';
+      // Hide bundle option for quiz-only users (no CV/LinkedIn to optimise)
+      const bundleBtn = document.getElementById('plan-btn-bundle');
+      const priceNoteBundle = document.getElementById('price-note-bundle');
+      const isQuiz = state.method === 'quiz';
+      if (bundleBtn) bundleBtn.style.display = isQuiz ? 'none' : '';
+      if (priceNoteBundle) priceNoteBundle.style.display = isQuiz ? 'none' : '';
       selectPlan('brief');
     }
   }
