@@ -1159,6 +1159,45 @@
   setInterval(()=>{n+=Math.floor(Math.random()*3)+1;el.textContent=n.toLocaleString();},22000+Math.random()*13000);
 })();
 
+// Currency conversion
+(async function() {
+  try {
+    // Get user's currency
+    const geoRes = await fetch('https://ipapi.co/json/');
+    const geo = await geoRes.json();
+    const currency = geo.currency || 'EUR';
+    if (currency === 'EUR') return; // No change needed
+
+    // Get exchange rates
+    const rateRes = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const rateData = await rateRes.json();
+    const rate = rateData.rates[currency];
+    if (!rate) return;
+
+    // Prices in EUR
+    const prices = { brief: 7.99, bundle: 9.99, old: 12.00 };
+
+    // Convert and format
+    const convert = (eur) => (eur * rate).toFixed(2);
+    const formatPrice = (eur) => {
+      const local = convert(eur);
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(local);
+    };
+
+    // Update all price texts
+    const updatePrices = () => {
+      document.body.innerHTML = document.body.innerHTML.replace(/€(\d+(?:\.\d{2})?)/g, (match, eur) => {
+        const num = parseFloat(eur);
+        return formatPrice(num);
+      });
+    };
+
+    updatePrices();
+  } catch (e) {
+    console.log('Currency conversion failed:', e);
+  }
+})();
+
 const iso3={
   'Australia':'AUS','Brazil':'BRA','Canada':'CAN','China':'CHN',
   'France':'FRA','Germany':'DEU','India':'IND','Japan':'JPN',

@@ -1458,6 +1458,48 @@
 
 <script src="data.js"></script>
 <script>
+// Currency conversion
+(async function() {
+  try {
+    // Get user's currency
+    const geoRes = await fetch('https://ipapi.co/json/');
+    const geo = await geoRes.json();
+    const currency = geo.currency || 'EUR';
+    if (currency === 'EUR') return; // No change needed
+
+    // Get exchange rates
+    const rateRes = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const rateData = await rateRes.json();
+    const rate = rateData.rates[currency];
+    if (!rate) return;
+
+    // Prices in EUR
+    const prices = { brief: 7.99, bundle: 9.99, old: 12.00 };
+
+    // Convert and format
+    const convert = (eur) => (eur * rate).toFixed(2);
+    const formatPrice = (eur) => {
+      const local = convert(eur);
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(local);
+    };
+
+    // Store for later use
+    window.currencyData = { currency, rate, formatPrice };
+
+    // Update all price texts
+    const updatePrices = () => {
+      document.body.innerHTML = document.body.innerHTML.replace(/€(\d+(?:\.\d{2})?)/g, (match, eur) => {
+        const num = parseFloat(eur);
+        return formatPrice(num);
+      });
+    };
+
+    updatePrices();
+  } catch (e) {
+    console.log('Currency conversion failed:', e);
+  }
+})();
+
 // ── STATE ──
 const state = {
   method: null,
@@ -3656,7 +3698,11 @@ function selectPlan(plan) {
   }
   // Update checkout button label
   const btn = document.getElementById('checkout-btn');
-  if (btn) btn.textContent = plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+  if (btn) {
+    const price = plan === 'bundle' ? 9.99 : 7.99;
+    const displayPrice = window.currencyData ? window.currencyData.formatPrice(price) : `€${price}`;
+    btn.textContent = `Continue to Payment — ${displayPrice} →`;
+  }
 }
 
 function goToPayment() {
@@ -3763,7 +3809,7 @@ async function completePurchase() {
     console.error(err);
     errEl.textContent = 'Something went wrong. Please try again or contact us at hello@theplanitearth.com';
     errEl.style.display = 'block';
-    btn.textContent = state.plan === 'bundle' ? 'Continue to Payment — €9.99 →' : 'Continue to Payment — €7.99 →';
+    btn.textContent = state.plan === 'bundle' ? `Continue to Payment — ${window.currencyData ? window.currencyData.formatPrice(9.99) : '€9.99'} →` : `Continue to Payment — ${window.currencyData ? window.currencyData.formatPrice(7.99) : '€7.99'} →`;
     updateCheckoutConsent();
   }
 }

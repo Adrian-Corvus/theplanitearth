@@ -361,7 +361,7 @@
 
 
 <div class="hero">
-  <div class="eyebrow">2025 AI Risk Index · 23,959 data points</div>
+  <div class="eyebrow">2025 AI Risk Index · 1,850 data points</div>
   <h1>Will AI replace<br>your <em>profession?</em></h1>
   <p class="hero-sub">Ranked automation risk scores for 185 professions across 10 countries. Built from peer-reviewed research and four independent institutional datasets — not opinion.</p>
   <div class="source-chips">
@@ -550,6 +550,42 @@ buildSectors();render();
     var h = (a.getAttribute('href')||'').split('/').pop().split('#')[0] || 'index.html';
     if(h===path) a.classList.add('active');
   });
+})();
+
+// Currency conversion
+(async function() {
+  try {
+    // Get user's currency
+    const geoRes = await fetch('https://ipapi.co/json/');
+    const geo = await geoRes.json();
+    const currency = geo.currency || 'EUR';
+    if (currency === 'EUR') return; // No change needed
+
+    // Get exchange rates
+    const rateRes = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const rateData = await rateRes.json();
+    const rate = rateData.rates[currency];
+    if (!rate) return;
+
+    // Convert and format
+    const convert = (eur) => (eur * rate).toFixed(2);
+    const formatPrice = (eur) => {
+      const local = convert(eur);
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(local);
+    };
+
+    // Update all price texts
+    const updatePrices = () => {
+      document.body.innerHTML = document.body.innerHTML.replace(/€(\d+(?:\.\d{2})?)/g, (match, eur) => {
+        const num = parseFloat(eur);
+        return formatPrice(num);
+      });
+    };
+
+    updatePrices();
+  } catch (e) {
+    console.log('Currency conversion failed:', e);
+  }
 })();
 </script>
 
