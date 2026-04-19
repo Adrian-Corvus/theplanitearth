@@ -957,11 +957,11 @@
       </div>
     </div>
     <div class="map-dash-bottom">
-      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--red-lt)">38.6%</div><div class="mdb-stat-label">Highest avg. risk (US)</div></div>
-      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--sage-lt)">22.8%</div><div class="mdb-stat-label">Lowest avg. risk (Brazil)</div></div>
-      <div class="mdb-stat"><div class="mdb-stat-val">96%</div><div class="mdb-stat-label">Peak score (Telemarketer, US)</div></div>
-      <div class="mdb-stat"><div class="mdb-stat-val">0.2%</div><div class="mdb-stat-label">Lowest score (Psychiatrist)</div></div>
-      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--amber-lt)">±39pts</div><div class="mdb-stat-label">Max country spread</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--red-lt)">18.6%</div><div class="mdb-stat-label">Highest avg. risk (India)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--sage-lt)">9.8%</div><div class="mdb-stat-label">Lowest avg. risk (Malawi)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val">52%</div><div class="mdb-stat-label">Peak score (Data Entry Clerks)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val">2.1%</div><div class="mdb-stat-label">Lowest score (Hunters &amp; Trappers)</div></div>
+      <div class="mdb-stat"><div class="mdb-stat-val" style="color:var(--amber-lt)">±31pts</div><div class="mdb-stat-label">Max country spread</div></div>
     </div>
   </div>
 </section>
@@ -1227,18 +1227,20 @@ const numericIso={
   '108':'BDI','834':'TZA','508':'MOZ','454':'MWI','894':'ZMB','716':'ZWE','710':'ZAF',
   '426':'LSO','748':'SWZ','516':'NAM','072':'BWA','450':'MDG','480':'MUS','174':'COM',
   '690':'SYC','646':'RWA','562':'NER','204':'BEN','768':'TGO','466':'MLI','854':'BFA',
+  '048':'BHR','120':'CMR','188':'CRI','192':'CUB','196':'CYP','214':'DOM',
+  '233':'EST','242':'FJI','268':'GEO','352':'ISL','512':'OMN',
 };
 const metaByIso={};
 Object.entries(COUNTRY_META).forEach(([n,d])=>{metaByIso[d.iso]={name:n,...d};});
 
 const colorScale=d3.scaleLinear()
-  .domain([0.20,0.28,0.39])
+  .domain([0.10,0.14,0.19])
   .range(['#2A6B4A','#C67B1A','#B03020'])
   .clamp(true);
 
 const tt=document.getElementById('map-tt');
 
-function rc(s){return s>=.35?'#F5876A':s>=.25?'#E8922A':'#7EC09A';}
+function rc(s){return s>=.28?'#F5876A':s>=.14?'#E8922A':'#7EC09A';}
 function pctf(s){return(s*100).toFixed(1)+'%';}
 
 // Shared world topology — fetched once, used by both maps
@@ -1391,7 +1393,7 @@ const qcols = {
   red:   { bg:'rgba(217,79,61,.15)',  border:'rgba(217,79,61,.3)',  text:'#F5876A' },
   amber: { bg:'rgba(232,146,42,.15)', border:'rgba(232,146,42,.3)', text:'#F5C87A' },
 };
-const autoCol = a => a >= 65 ? '#F5876A' : a >= 35 ? '#F5C87A' : '#7EC09A';
+const autoCol = a => a >= 28 ? '#F5876A' : a >= 14 ? '#F5C87A' : '#7EC09A';
 
 let hrcIdx = 0;
 let hrcTimer;

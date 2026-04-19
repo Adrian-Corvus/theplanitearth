@@ -432,9 +432,9 @@
 <script>
 let activeSec='all', activeRisks=new Set(), view='t';
 
-function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
-function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium':'Low Risk';}
-function rc2(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function rl(s){return s>=.28?'H':s>=.14?'M':'L';}
+function rlabel(s){return s>=.28?'High Risk':s>=.14?'Medium':'Low Risk';}
+function rc2(s){return s>=.28?'#C0392B':s>=.14?'#D4841A':'#3D6B4F';}
 function pct(s){return Math.round(s*100);}
 
 function buildSectors(){

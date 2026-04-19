@@ -421,25 +421,25 @@
       <div class="hook-row">
         <span class="hook-prof">💼 Accountant</span>
         <div class="hook-compare">
-          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score hi">91%</div></div>
-          <div class="hook-c"><div class="flag">🇮🇳</div><div class="score">55%</div></div>
-          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">54%</div></div>
+          <div class="hook-c"><div class="flag">🇮🇳</div><div class="score hi">51%</div></div>
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score">45%</div></div>
+          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">24%</div></div>
         </div>
       </div>
       <div class="hook-row">
-        <span class="hook-prof">📞 Telemarketer</span>
+        <span class="hook-prof">📞 Call Centre Agent</span>
         <div class="hook-compare">
-          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score hi">96%</div></div>
-          <div class="hook-c"><div class="flag">🇩🇪</div><div class="score">80%</div></div>
-          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">56%</div></div>
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score hi">43%</div></div>
+          <div class="hook-c"><div class="flag">🇩🇪</div><div class="score">31%</div></div>
+          <div class="hook-c"><div class="flag">🇮🇳</div><div class="score lo">29%</div></div>
         </div>
       </div>
       <div class="hook-row">
         <span class="hook-prof">💻 Software Developer</span>
         <div class="hook-compare">
-          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score">4.6%</div></div>
-          <div class="hook-c"><div class="flag">🇯🇵</div><div class="score">3.9%</div></div>
-          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">2.7%</div></div>
+          <div class="hook-c"><div class="flag">🇮🇳</div><div class="score hi">43%</div></div>
+          <div class="hook-c"><div class="flag">🇺🇸</div><div class="score">36%</div></div>
+          <div class="hook-c"><div class="flag">🇧🇷</div><div class="score lo">24%</div></div>
         </div>
       </div>
     </div>
@@ -551,14 +551,14 @@ PROFESSIONS.forEach(p=>{
   });
 });
 
-function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
-function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
-function rc(s){return s>=.65?'#C0392B':s>=.35?'#D4841A':'#3D6B4F';}
+function rl(s){return s>=.28?'H':s>=.14?'M':'L';}
+function rlabel(s){return s>=.28?'High Risk':s>=.14?'Medium Risk':'Low Risk';}
+function rc(s){return s>=.28?'#C0392B':s>=.14?'#D4841A':'#3D6B4F';}
 function pct(s){return Math.round(s*100);}
 function pctf(s){return(s*100).toFixed(1)+'%';}
 
 function quadrant(auto, resk){
-  const hi_auto=auto>=.35, hi_resk=resk>=.25;
+  const hi_auto=auto>=.20, hi_resk=resk>=.15;
   if(hi_auto&&hi_resk) return{cls:'q1',tag:'Danger Zone',label:'HIGH AUTO · HIGH RESK',desc:'Strong displacement pressure — but your country has capacity to reskill. Act now with structured upskilling.'};
   if(hi_auto&&!hi_resk) return{cls:'q2',tag:'High Exposure',label:'HIGH AUTO · LOW RESK',desc:'Highest risk zone. Strong automation pressure with limited structural reskilling capacity. Requires proactive career pivoting.'};
   if(!hi_auto&&hi_resk) return{cls:'q3',tag:'Stable',label:'LOW AUTO · HIGH RESK',desc:'Your role is well-protected. Strong reskilling capacity means you can keep growing and adapting without urgency.'};
@@ -719,7 +719,7 @@ function renderTable(){
   });
   document.getElementById('t-count').textContent=rows.length+' rows';
   const display=rows.slice(0,500);
-  const lv=s=>s>=.65?'H':s>=.35?'M':'L';
+  const lv=s=>s>=.28?'H':s>=.14?'M':'L';
   const qlabel=r=>{
     const q=quadrant(r.auto,r.resk);
     const qmap={'q1':'q1','q2':'q2','q3':'q3','q4':'q4'};

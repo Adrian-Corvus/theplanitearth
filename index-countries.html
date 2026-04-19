@@ -398,9 +398,9 @@
 <script src="data.js"></script>
 <script>
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function rl(s){return s>=.65?'H':s>=.35?'M':'L';}
-function rlabel(s){return s>=.65?'High Risk':s>=.35?'Medium Risk':'Low Risk';}
-function rc(s){return s>=.65?'#F5876A':s>=.35?'#F5C87A':'#7EC09A';}
+function rl(s){return s>=.28?'H':s>=.14?'M':'L';}
+function rlabel(s){return s>=.28?'High Risk':s>=.14?'Medium Risk':'Low Risk';}
+function rc(s){return s>=.28?'#F5876A':s>=.14?'#F5C87A':'#7EC09A';}
 function pct(s){return Math.round(s*100);}
 function pctf(s){return(s*100).toFixed(1)+'%';}
 
@@ -462,6 +462,8 @@ const numericIso = {
   '800':'UGA','804':'UKR','784':'ARE','826':'GBR','834':'TZA','840':'USA','854':'BFA',
   '858':'URY','860':'UZB','862':'VEN','887':'YEM','894':'ZMB','051':'ARM','031':'AZE',
   '807':'MKD','704':'VNM','156':'CHN','344':'HKG','158':'TWN','702':'SGP',
+  '048':'BHR','072':'BWA','384':'CIV','120':'CMR','188':'CRI','192':'CUB',
+  '196':'CYP','214':'DOM','233':'EST','242':'FJI','268':'GEO','352':'ISL','512':'OMN',
 };
 
 const countryByIso = {};
@@ -471,7 +473,7 @@ Object.entries(COUNTRY_META).forEach(([name, d]) => {
 
 // Colour scale matching index.html
 const colorScale = d3.scaleLinear()
-  .domain([0.18, 0.28, 0.40])
+  .domain([0.10, 0.14, 0.19])
   .range(['#2A6B4A','#C67B1A','#B03020'])
   .clamp(true);
 
