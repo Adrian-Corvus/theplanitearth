@@ -402,7 +402,12 @@
   <button class="fbtn a" id="fr-M" onclick="toggleRisk('M',this)">🟡 Medium</button>
   <button class="fbtn g" id="fr-L" onclick="toggleRisk('L',this)">🟢 Low</button>
   <select class="sortsel" id="srt" onchange="render()">
-    <option value="auto-d">Highest risk first</option>
+    <option value="auto-d">Highest risk first (global avg)</option>
+    <option value="us-d">Highest risk — United States</option>
+    <option value="uk-d">Highest risk — United Kingdom</option>
+    <option value="in-d">Highest risk — India</option>
+    <option value="de-d">Highest risk — Germany</option>
+    <option value="cn-d">Highest risk — China</option>
     <option value="auto-a">Lowest risk first</option>
     <option value="resk-d">Highest reskilling</option>
     <option value="var-d">Biggest country variation</option>
@@ -474,11 +479,13 @@ function render(){
     if(activeRisks.size&&!activeRisks.has(rl(p.avg_auto)))return false;
     return true;
   });
+  const countrySort = {'us-d':'United States','uk-d':'United Kingdom','in-d':'India','de-d':'Germany','cn-d':'China'};
   d.sort((a,b)=>{
     if(s==='auto-d')return b.avg_auto-a.avg_auto;
     if(s==='auto-a')return a.avg_auto-b.avg_auto;
     if(s==='resk-d')return b.avg_resk-a.avg_resk;
     if(s==='var-d')return b.variation-a.variation;
+    if(countrySort[s]){const c=countrySort[s];return (b.c[c]?.[0]??0)-(a.c[c]?.[0]??0);}
     return a.name.localeCompare(b.name);
   });
 
